@@ -1,0 +1,16 @@
+package com.example.service;
+
+import com.example.domain.Article;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+* @author 24668
+* @description 针对表【tb_article(文章表)】的数据库操作Service
+* @createDate 2022-09-23 19:32:15
+*/
+public interface ArticleService extends IService<Article> {
+
+    String publishArticle(Article article);
+}
