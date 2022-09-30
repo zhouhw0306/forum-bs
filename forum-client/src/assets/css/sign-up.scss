@@ -1,13 +1,13 @@
-@use "var.scss" as *;
-@use "global.scss" as *;
+@import "var.scss";
+@import "global.scss";
 
 .signUp {
   position: absolute;
-  top: $header-height + 20px;
+  top: $header-height;
   background-color: $color-white;
   border-radius: 10px;
   width: 350px;
-  left:37%;
+  margin-left: 900px;
   padding: 30px 30px;
 
   .signUp-head {

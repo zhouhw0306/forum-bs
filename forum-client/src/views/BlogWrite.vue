@@ -1,9 +1,9 @@
 <template>
-  <div id="write" :data-title="title">
+  <div id="write" v-title :data-title="title">
     <el-container>
       <the-header :simple=true>
         <el-col :span="4" :offset="2">
-          <div class="me-write-info">发帖</div>
+          <div class="me-write-info">写文章</div>
         </el-col>
         <el-col :span="4" :offset="6">
           <div class="me-write-btn">
@@ -25,11 +25,12 @@
             </el-input>
 
           </div>
+          <div id="placeholder" style="visibility: hidden;height: 89px;display: none;"></div>
           <markdown-editor :editor="articleForm.editor" class="me-write-editor"></markdown-editor>
         </el-main>
       </el-container>
 
-      <el-dialog title=" 分类 / 标签"
+      <el-dialog title="摘要 分类 标签"
                  :visible.sync="publishVisible"
                  :close-on-click-modal=false
                  custom-class="me-dialog">
@@ -57,217 +58,222 @@
 </template>
 
 <script>
-import TheHeader from '@/components/TheHeader'
-import MarkdownEditor from '@/components/article/MarkdownEditor'
-import {publishArticle, getArticleById} from '@/api/index'
-import {getAllCategorys} from '@/api'
-import {getAllTags} from '@/api'
+  import TheHeader from '@/components/TheHeader'
+  import MarkdownEditor from '@/components/MarkdownEditor'
+  import {publishArticle, getArticleById} from '@/api/index'
+  import {getAllCategorys} from '@/api/index'
+  import {getAllTags} from '@/api/index'
 
-export default {
-  name: 'BlogWrite',
-  mounted() {
+  export default {
+    name: 'BlogWrite',
+    mounted() {
 
-    if(this.$route.params.id){
-      this.getArticleById(this.$route.params.id)
-    }
+      if(this.$route.params.id){
+        this.getArticleById(this.$route.params.id)
+      }
 
-    this.getCategorysAndTags()
-    let but = document.getElementsByClassName("op-icon fa fa-mavon-eye-slash selected")
-    but[0].click();
-  },
-  data() {
-    return {
-      publishVisible: false,
-      categorys: [],
-      tags: [],
-      articleForm: {
-        id: '',
-        title: '',
-        category: '',
+      this.getCategorysAndTags()
+      this.editorToolBarToFixedWrapper = this.$_.throttle(this.editorToolBarToFixed, 200)
+
+      window.addEventListener('scroll', this.editorToolBarToFixedWrapper, false);
+    },
+    beforeDestroy() {
+      window.removeEventListener('scroll', this.editorToolBarToFixedWrapper, false)
+    },
+    data() {
+      return {
+        publishVisible: false,
+        categorys: [],
         tags: [],
-        editor: {
-          value: '',
-          ref: '',//保存mavonEditor实例  实际不该这样
-          default_open: 'edit',
-          toolbars: {
-            bold: true, // 粗体
-            italic: true, // 斜体
-            header: true, // 标题
-            underline: true, // 下划线
-            strikethrough: true, // 中划线
-            mark: true, // 标记
-            superscript: true, // 上角标
-            subscript: true, // 下角标
-            quote: true, // 引用
-            ol: true, // 有序列表
-            ul: true, // 无序列表
-            imagelink: true, // 图片链接
-            code: true, // code
-            table: true, // 表格
-            fullscreen: true, // 全屏编辑
-            readmodel: true, // 沉浸式阅读
-            help: true, // 帮助
-            undo: true, // 上一步
-            redo: true, // 下一步
-            trash: true, // 清空
-            navigation: true, // 导航目录
-            //subfield: true, // 单双栏模式
-            preview: true, // 预览
+        articleForm: {
+          id: '',
+          title: '',
+          category: '',
+          tags: [],
+          editor: {
+            value: '',
+            ref: '',//保存mavonEditor实例  实际不该这样
+            default_open: 'edit',
+            toolbars: {
+              bold: true, // 粗体
+              italic: true, // 斜体
+              header: true, // 标题
+              underline: true, // 下划线
+              strikethrough: true, // 中划线
+              mark: true, // 标记
+              superscript: true, // 上角标
+              subscript: true, // 下角标
+              quote: true, // 引用
+              ol: true, // 有序列表
+              ul: true, // 无序列表
+              imagelink: true, // 图片链接
+              code: true, // code
+              fullscreen: true, // 全屏编辑
+              readmodel: true, // 沉浸式阅读
+              help: true, // 帮助
+              undo: true, // 上一步
+              redo: true, // 下一步
+              trash: true, // 清空
+              navigation: true, // 导航目录
+              //subfield: true, // 单双栏模式
+              preview: true, // 预览
+            }
           }
+        },
+        rules: {
+          category: [
+            {required: true, message: '请选择文章分类', trigger: 'change'}
+          ],
+          tags: [
+            {type: 'array', required: true, message: '请选择标签', trigger: 'change'}
+          ]
         }
-      },
-      rules: {
-        category: [
-          {required: true, message: '请选择文章分类', trigger: 'change'}
-        ],
-        tags: [
-          {type: 'array', required: true, message: '请选择标签', trigger: 'change'}
-        ]
       }
-    }
-  },
-  computed: {
-    title (){
-      return '写帖子'
-    }
-  },
-  methods: {
-    getArticleById(id) {
-      let that = this
-      getArticleById(id).then(data => {
-        that.articleForm.editor.value = data.data.data.content
-        that.articleForm.id = data.data.data.id
-        that.articleForm.title = data.data.data.title
-      }).catch(error => {
-        if (error !== 'error') {
-          that.$message({type: 'error', message: '文章加载失败', showClose: true})
-        }
-      })
     },
-    publishShow() {
-      if (!this.articleForm.title) {
-        this.$message({message: '标题不能为空哦', type: 'warning', showClose: true})
-        return
+    computed: {
+      title (){
+        return '写文章 - For Fun'
       }
-
-      if (this.articleForm.title.length > 30) {
-        this.$message({message: '标题不能大于30个字符', type: 'warning', showClose: true})
-        return
-      }
-
-      if (!this.articleForm.editor.ref.d_render) {
-        this.$message({message: '内容不能为空哦', type: 'warning', showClose: true})
-        return
-      }
-
-      this.publishVisible = true;
     },
-    publish(articleForm) {
-      if (!this.$store.getters.loginIn){
-        this.$message({type: 'error', message: '请先登录', showClose: true})
-        return;
-      }
-      let that = this
+    methods: {
+      getArticleById(id) {
+        let that = this
+        getArticleById(id).then(data => {
 
-      this.$refs[articleForm].validate((valid) => {
-        if (valid) {
+          Object.assign(that.articleForm, data.data)
+          that.articleForm.editor.value = data.data.body.content
 
           let tags = this.articleForm.tags.map(function (item) {
-            return {id: item};
-          });
+            return item.id;
+          })
 
-          let article = {
-            id: this.articleForm.id,
-            title: this.articleForm.title,
-            categoryId : this.articleForm.category, //分类
-            tags: tags, //标签
-            content: this.articleForm.editor.value,
-            contentHtml: this.articleForm.editor.ref.d_render
+          this.articleForm.tags = tags
+
+
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: '文章加载失败', showClose: true})
           }
+        })
+      },
+      publishShow() {
+        if (!this.articleForm.title) {
+          this.$message({message: '标题不能为空哦', type: 'warning', showClose: true})
+          return
+        }
 
-          this.publishVisible = false;
+        if (this.articleForm.title.length > 30) {
+          this.$message({message: '标题不能大于30个字符', type: 'warning', showClose: true})
+          return
+        }
 
-          let loading = this.$loading({
-            lock: true,
-            text: '发布中，请稍后...'
-          })
+        if (!this.articleForm.editor.ref.d_render) {
+          this.$message({message: '内容不能为空哦', type: 'warning', showClose: true})
+          return
+        }
 
-          publishArticle(article).then((res) => {
-            loading.close();
-            if (res.data.code === 0){
+        this.publishVisible = true;
+      },
+      publish(articleForm) {
+
+        let that = this
+
+        this.$refs[articleForm].validate((valid) => {
+          if (valid) {
+
+            let tags = this.articleForm.tags.map(function (item) {
+              return {id: item};
+            });
+
+            let article = {
+              id: this.articleForm.id,
+              title: this.articleForm.title,
+              categoryId : this.articleForm.category, //分类
+              tags: tags, //标签
+              content: this.articleForm.editor.value,
+              contentHtml: this.articleForm.editor.ref.d_render
+            }
+
+            this.publishVisible = false;
+
+            let loading = this.$loading({
+              lock: true,
+              text: '发布中，请稍后...'
+            })
+
+            publishArticle(article).then((res) => {
+              loading.close();
               that.$message({message: '发布成功啦', type: 'success', showClose: true})
-              that.$router.replace({path: `/view/${res.data.data}`})
-            }else {
-              that.$message({message: '发布失败', type: 'error', showClose: true})
-            }
-          }).catch((error) => {
-            loading.close();
-            if (error !== 'error') {
-              that.$message({message: '发布失败', type: 'error', showClose: true});
-            }
-          })
+              that.$router.push({path: `/view/${res.data.data.articleId}`})
 
+            }).catch((error) => {
+              loading.close();
+              if (error !== 'error') {
+                that.$message({message: error, type: 'error', showClose: true});
+              }
+            })
+
+          } else {
+            return false;
+          }
+        });
+      },
+      cancel() {
+        this.$confirm('文章将不会保存, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('/')
+        })
+      },
+      getCategorysAndTags() {
+        let that = this
+        getAllCategorys().then(res => {
+          that.categorys = res.data
+          console.log(that.categorys)
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: '文章分类加载失败', showClose: true})
+          }
+        })
+
+        getAllTags().then(res => {
+          that.tags = res.data
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: '标签加载失败', showClose: true})
+          }
+        })
+
+      },
+      editorToolBarToFixed() {
+
+        let toolbar = document.querySelector('.v-note-op');
+        let curHeight = document.documentElement.scrollTop || document.body.scrollTop;
+        if (curHeight >= 160) {
+          document.getElementById("placeholder").style.display = "block"; //bad  用计算属性较好
+          toolbar.classList.add("me-write-toolbar-fixed");
         } else {
-          return false;
+          document.getElementById("placeholder").style.display = "none";
+          toolbar.classList.remove("me-write-toolbar-fixed");
         }
-      });
-    },
-    cancel() {
-      this.$confirm('文章将不会保存, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // this.$router.push('/')
-        this.$router.go(-1)
-      })
-    },
-    getCategorysAndTags() {
-      let that = this
-      getAllCategorys().then(res => {
-        that.categorys = res.data
-      }).catch(error => {
-        if (error !== 'error') {
-          that.$message({type: 'error', message: '文章分类加载失败', showClose: true})
-        }
-      })
-
-      getAllTags().then(res => {
-        that.tags = res.data
-      }).catch(error => {
-        if (error !== 'error') {
-          that.$message({type: 'error', message: '标签加载失败', showClose: true})
-        }
-      })
-
-    },
-    editorToolBarToFixed() {
-
-      let toolbar = document.querySelector('.v-note-op');
-      let curHeight = document.documentElement.scrollTop || document.body.scrollTop;
-      if (curHeight >= 160) {
-        document.getElementById("placeholder").style.display = "block"; //bad  用计算属性较好
-        toolbar.classList.add("me-write-toolbar-fixed");
-      } else {
-        document.getElementById("placeholder").style.display = "none";
-        toolbar.classList.remove("me-write-toolbar-fixed");
       }
+    },
+    components: {
+      'the-header': TheHeader,
+      'markdown-editor': MarkdownEditor
+    },
+    //组件内的守卫 调整body的背景色
+    beforeRouteEnter(to, from, next) {
+      window.document.body.style.backgroundColor = '#fff';
+      next();
+    },
+    beforeRouteLeave(to, from, next) {
+      window.document.body.style.backgroundColor = '#f5f5f5';
+      next();
     }
-  },
-  components: {
-    'the-header': TheHeader,
-    'markdown-editor': MarkdownEditor
-  },
-  //组件内的守卫 调整body的背景色
-  beforeRouteEnter(to, from, next) {
-    window.document.body.style.backgroundColor = '#fff';
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    window.document.body.style.backgroundColor = '#f5f5f5';
-    next();
   }
-}
 </script>
 
 <style>
@@ -289,13 +295,11 @@ export default {
   }
 
   .me-write-box {
-    max-width: 80vw;
+    max-width: 700px;
     margin: 80px auto 0;
-    box-shadow: 0 0 3px 3px #eceaea;
   }
 
   .me-write-main {
-    /*border: #f4f4f5 solid 2px;*/
     padding: 0;
   }
 
@@ -310,9 +314,12 @@ export default {
   }
 
   .me-write-editor {
-    height: 550px !important;
+    min-height: 650px !important;
   }
 
+  .me-header-left {
+    margin-top: 10px;
+  }
 
   .me-title img {
     max-height: 2.4rem;
@@ -325,16 +332,8 @@ export default {
     top: 60px;
   }
 
-  .v-note-wrapper{
-    box-shadow: none !important;
-
-  }
-  .v-note-show{
-    padding-left: 15px !important;
-  }
   .v-note-op {
-    border-bottom: 1px solid #dedfe0 !important;
-    background-color: white !important;
+    box-shadow: none !important;
   }
 
   .auto-textarea-input, .auto-textarea-block {

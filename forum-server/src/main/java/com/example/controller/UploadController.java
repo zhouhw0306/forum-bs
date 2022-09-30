@@ -2,47 +2,67 @@ package com.example.controller;
 
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.bo.QiNiuImage;
-import com.example.utils.QiniuServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 /**
- * @author zhw
+ * @author 24668
  */
-@Slf4j
 @RestController
-@Api(tags = "上传文章图片接口")
 public class UploadController {
 
-    @Resource
-    QiniuServiceImpl qiniuService;
+    @Value("${me.upload.path}")
+    private String baseFolderPath;
 
     @PostMapping("/upload")
-    @ApiOperation(value = "上传文章中的图片")
-    public Result<Map<String, Object>> upload(MultipartFile image) {
-        try {
-            String filePath = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            String baseFolder = "articleFile/" + filePath;
+    public Result upload(HttpServletRequest request, MultipartFile image) {
 
-            QiNiuImage qiNiuImage = qiniuService.saveToQiNiu(image, baseFolder);
+        Result r = new Result();
 
-            Map<String, Object> map = new HashMap<>(1);
-            map.put("url", qiNiuImage.getFileName());
-            return Result.simple(map);
-        } catch (Exception e) {
-            e.printStackTrace();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+        StringBuffer url = new StringBuffer();
+        String filePath = sdf.format(new Date());
+
+        File baseFolder = new File(baseFolderPath + filePath);
+        if (!baseFolder.exists()) {
+            baseFolder.mkdirs();
         }
-        return Result.error(ResultCode.UPLOAD_ERROR);
+
+        url.append(request.getScheme())
+                .append("://")
+                .append(request.getServerName())
+                .append(":")
+                .append(request.getServerPort())
+                .append(request.getContextPath())
+                .append("/articleFile/")
+                .append(filePath);
+
+        String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
+
+        try {
+
+            File dest = new File(baseFolder, imgName);
+            image.transferTo(dest);
+
+            url.append("/").append(imgName);
+
+            r.setResultCode(ResultCode.SUCCESS);
+
+            r.simple().put("url", url);
+
+        } catch (IOException e) {
+            r.setResultCode(ResultCode.UPLOAD_ERROR);
+        }
+
+        return r;
     }
 }

@@ -1,21 +1,16 @@
 <template>
-  <div data-title="codebase" style="margin:60px auto 10px">
+  <div v-title data-title="鸭鸭论坛" style="margin:10px auto">
     <el-container>
 
-      <!--导航栏-->
-      <nav-type style="position: fixed"/>
-
       <!--文章-->
-      <el-main style="margin-left: 220px">
+      <el-main class="me-articles">
         <article-page></article-page>
       </el-main>
 
       <!--侧边栏-->
       <el-aside>
-        <card-list/>
-        <card-msg/>
-        <card-hot/>
-        <push-art/>
+        <card-msg class="card"></card-msg>
+        <card-hot class="card"></card-hot>
       </el-aside>
 
     </el-container>
@@ -23,16 +18,13 @@
 </template>
 
 <script>
-import ArticlePage from '@/components/article/ArticlePage'
+import ArticlePage from '@/components/ArticlePage'
 import CardMsg from '@/components/card/CardMsg'
 import CardHot from "@/components/card/CardHot";
-import CardList from "@/components/card/CardList";
-import PushArt from "@/components/card/PushArt";
-import NavType from "@/components/card/NavType";
 
 export default {
   name: 'MainPage',
-  components: {ArticlePage,CardMsg,CardHot,CardList,NavType,PushArt}
+  components: {ArticlePage,CardMsg,CardHot}
 }
 </script>
 
@@ -40,24 +32,26 @@ export default {
 
 /*主窗口*/
 .el-container {
-  padding-top: 60px;
-  width: 80vw;
+  padding-top: 100px;
+  paddingn-left: 500px;
+  width: 1000px;
   padding-bottom: 80px;
 }
 
 .el-aside {
-  /*width: 260px;*/
+  margin-left: 60px;
+  width: 260px;
 }
 
 .el-main {
-  padding: 0;
-  margin: 0 50px;
-  min-width: 500px;
+  padding: 0px;
   line-height: 16px;
 }
 
 .el-card {
-  border-radius: 5px;
+  /*background-color: white;*/
+  /*height: 300px;*/
+  border-radius: 15px;
 }
 
 .el-card:not(:first-child) {

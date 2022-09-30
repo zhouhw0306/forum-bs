@@ -1,10 +1,10 @@
 <template>
   <div id="home">
-    <el-container>
+    <el-container style="background-image: linear-gradient(to bottom right, #97a4ff, #86fcb5)">
 
       <the-header :activeIndex="activeIndex"></the-header>
 
-      <router-view class="me-container"/>
+      <router-view class="me-container" />
 
       <the-footer v-show="footerShow"></the-footer>
 
@@ -22,7 +22,7 @@ export default {
   data (){
     return {
       activeIndex: '/',
-      footerShow:false
+      footerShow:true
     }
   },
   beforeRouteEnter (to, from, next){
@@ -31,7 +31,12 @@ export default {
     })
   },
   beforeRouteUpdate (to, from, next) {
-    this.footerShow = to.path === '/';
+    if(to.path == '/'){
+      this.footerShow = true
+    }else{
+      this.footerShow = false
+    }
+    this.activeIndex = to.path
     next()
   }
 }
@@ -42,7 +47,6 @@ body{
   background-color: whitesmoke;
 }
 .me-container{
-  margin-top: 60px;
-  min-height: calc(100vh - 60px);
+  /*margin: 100px auto 140px;*/
 }
 </style>

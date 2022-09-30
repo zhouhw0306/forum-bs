@@ -1,10 +1,10 @@
 package com.example.service;
 
-import com.example.domain.dao.Category;
+import com.example.domain.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
-* @author zhw
+* @author 24668
 * @description 针对表【tb_category】的数据库操作Service
 * @createDate 2022-09-27 15:27:10
 */

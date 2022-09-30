@@ -1,8 +1,10 @@
 <template>
   <el-footer class="me-area">
     <div class="me-footer">
-      <p>编程社区 2023
-          <b to="/" class="me-login-design-color"><a href="https://github.com/zhouhw0306">Zhou</a></b>
+      <p>Designed by
+        <strong>
+          <router-link to="/" class="me-login-design-color">ForFun</router-link>
+        </strong>
       </p>
     </div>
   </el-footer>
@@ -16,9 +18,7 @@ export default {
   data() {
     return {}
   },
-  methods: {
-
-  },
+  methods: {},
   mounted() {
   }
 }

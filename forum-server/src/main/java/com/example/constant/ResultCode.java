@@ -1,7 +1,8 @@
 package com.example.constant;
 
 /**
- * api接口返回 code和 message
+ * api接口返回 code和message
+ *
  * @author zhw
  */
 public enum ResultCode {

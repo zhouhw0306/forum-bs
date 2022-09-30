@@ -12,21 +12,7 @@ export const mixin = {
       },
       // 获取图片信息
       attachImageUrl (srcUrl) {
-        return srcUrl ? (srcUrl.startsWith('http') ? srcUrl : this.$store.state.configure.HOST + srcUrl)  : ''
+        return srcUrl ? this.$store.state.configure.HOST + srcUrl || '../assets/img/user.jpg' : ''
       },
-      urlToLink (content){
-        if (!content) {
-          return "";
-        }
-        let urlPattern = /(https?:\/\/|www\.)[a-zA-Z_0-9\-@]+(\.\w[a-zA-Z_0-9\-:]+)+(\/[\(\)~#&\-=?\+\%/\.\w]+)?/g;
-        content = content.replace(urlPattern, function (match) {
-          let href = match;
-          if (match.indexOf("http") === -1) {
-            href = "http://" + match; //加粗样式
-          }
-          return '<a style="color: #409EFF" target="_blank" href="' + href + '">' + match + "</a>";
-        });
-        return content;
-      }
     }
 }

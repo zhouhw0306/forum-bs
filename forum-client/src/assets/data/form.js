@@ -9,13 +9,27 @@ const rules = {
   sex: [
     { required: true, message: '请选择性别', trigger: 'change' }
   ],
+  phoneNum: [
+    { message: '请选择日期', trigger: 'blur' }
+  ],
   email: [
+    { message: '请输入邮箱地址', trigger: 'blur' },
     { required: true,type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+  ],
+  birth: [
+    { type: 'date', message: '请选择日期', trigger: 'change' }
+  ],
+  introduction: [
+    { message: '请输入介绍', trigger: 'blur' }
+  ],
+  location: [
+    { message: '请输入地区', trigger: 'change' }
   ],
   checkCode: [
     { required: true, message: '请输入验证码', trigger: 'blur' }
   ]
 }
+
 // 地区选择
 const cities = [{
   value: '北京',
@@ -120,33 +134,8 @@ const cities = [{
   value: '台湾',
   label: '台湾'
 }]
-// 资源表单
-const sourceForm = {
-      cover: [{
-        required: true,
-        message: '请输入封面',
-        trigger: 'blur'
-      }],
-      category: [{
-        required: true,
-        message: '请选择类型',
-        trigger: 'blur'
-      }],
-      title: [{
-        required: true,
-        message: '请输入标题',
-        trigger: 'blur'
-      }],
-      description: [{
-        required: true,
-        message: '请输入信息',
-        trigger: 'blur'
-      }],
-      content: []
-}
 
 export {
   rules,
-  cities,
-  sourceForm
+  cities
 }
