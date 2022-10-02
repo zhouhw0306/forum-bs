@@ -19,9 +19,9 @@
           <el-menu-item index="/log">日志</el-menu-item>
           <el-menu-item index="/schoolBoard">校园墙</el-menu-item>
 
-          <el-col :span="4" :offset="4">
-            <el-menu-item @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>
-          </el-col>
+<!--          <el-col :span="4" :offset="5">-->
+            <el-menu-item style="margin-left: 10%" @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>
+<!--          </el-col>-->
         </el-menu>
       </el-col>
 

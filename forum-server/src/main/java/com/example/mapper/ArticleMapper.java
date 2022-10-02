@@ -11,6 +11,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ArticleMapper extends BaseMapper<Article> {
 
+    void updateCommCount(String articleId);
+
+    void addViewCount(String articleId);
 }
 
 

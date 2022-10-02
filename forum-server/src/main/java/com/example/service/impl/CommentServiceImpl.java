@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
 import com.example.domain.Comment;
 import com.example.domain.User;
+import com.example.mapper.ArticleMapper;
 import com.example.mapper.UserMapper;
 import com.example.service.CommentService;
 import com.example.mapper.CommentMapper;
 import com.example.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -28,7 +30,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Resource
     UserMapper userMapper;
 
+    @Resource
+    ArticleMapper articleMapper;
+
     @Override
+    @Transactional
     public Result addComm(Comment comment) {
         commentMapper.insert(comment);
         //封装author对象
@@ -40,6 +46,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             User toUser = userMapper.selectById(comment1.getToUid());
             comment1.setToUser(toUser);
         }
+        articleMapper.updateCommCount(comment.getArticleId());
         return Result.success(comment1);
     }
 }

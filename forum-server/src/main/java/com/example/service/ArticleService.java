@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.constant.Result;
 import com.example.domain.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 public interface ArticleService extends IService<Article> {
 
     String publishArticle(Article article);
+
+    Result addViewCount(String id);
 }

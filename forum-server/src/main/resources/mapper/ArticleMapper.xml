@@ -23,4 +23,13 @@
         comment_count,view_count,
         create_time,update_time
     </sql>
+
+    <insert id="addViewCount">
+        UPDATE tb_article SET view_count = view_count + 1 WHERE id=#{articleId}
+    </insert>
+
+    <update id="updateCommCount">
+        UPDATE tb_article SET comment_count = comment_count + 1 WHERE id=#{articleId}
+    </update>
+
 </mapper>

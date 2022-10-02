@@ -104,7 +104,7 @@
   import {mixin} from "@/mixins"
   import MarkdownEditor from '@/components/MarkdownEditor'
   import CommmentItem from '@/components/CommentItem'
-  import {getTypeById, getCommentsByArticle, pushComment, getArticle, getAuthor, getTags} from '@/api/index'
+  import {getTypeById, getCommentsByArticle, pushComment, getArticle, getAuthor, getTags, addViewCount} from '@/api/index'
 
   export default {
     name: 'BlogView',
@@ -145,6 +145,10 @@
         this.getTypeById()
         this.getCommentsByArticle()
       }
+      //添加阅读量
+      addViewCount(this.$route.params.id).then(res => {
+        console.log(res)
+      })
     },
     computed: {
       avatar() {

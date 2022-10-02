@@ -1,7 +1,7 @@
 <template>
 
   <el-card class="me-area" :body-style="{ padding: '16px' }" style="border-radius: 15px">
-    <el-skeleton :rows="3" :loading="loading" animated />
+
     <div class="me-article-header">
 
       <a @click="view(id)" class="me-article-title">{{title}}</a>
@@ -58,16 +58,16 @@ export default {
       type:['','success','warning','danger'],
       author:{},
       tags: {},
-      smallContent:'',
-      loading:true //骨架屏
+      smallContent:''
     }
   },
   mounted() {
     this.InitAuthor(this.userId)
     this.InitTags(this.id)
-    this.loading=false
     if (this.content.length>100){
       this.smallContent = this.content.substring(0,99)+'......'
+    }else {
+      this.smallContent = this.content
     }
   },
   methods: {

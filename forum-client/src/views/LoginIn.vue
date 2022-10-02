@@ -1,6 +1,6 @@
 <template>
 <div class="login-in" >
-  <img src="../assets/img/bg.jpg" width="1473px" height="710px">
+  <img src="../assets/img/bg.jpg" width="1px" height="710px">
   <div class="login" >
     <div class="login-head">
       <span>帐号登录</span>

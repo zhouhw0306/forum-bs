@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.constant.Result;
 import com.example.domain.Article;
 import com.example.domain.ArticleTagRelation;
 import com.example.domain.Tag;
@@ -51,6 +52,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             }
             return artId;
         }
+    }
+
+    @Override
+    public Result addViewCount(String id) {
+        articleMapper.addViewCount(id);
+        return Result.success();
     }
 }
 

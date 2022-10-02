@@ -66,4 +66,10 @@ public class ArticleController {
 
         return Result.success(articles);
     }
+
+    //添加文章阅读量
+    @GetMapping("/addViewCount/{id}")
+    public Result addViewCount(@PathVariable("id") String id){
+        return articleService.addViewCount(id);
+    }
 }

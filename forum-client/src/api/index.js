@@ -66,3 +66,6 @@ export const getCommentsByArticle = (params) => get(`comment/getCommentsByArticl
 
 //发布评论
 export const pushComment = (params) => post(`comment/pushComment`,params)
+
+//添加文章阅览量
+export const addViewCount = (id) => get(`articles/addViewCount/${id}`)
