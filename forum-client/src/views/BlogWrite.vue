@@ -224,7 +224,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$router.push('/')
+          // this.$router.push('/')
+          this.$router.go(-1)
         })
       },
       getCategorysAndTags() {

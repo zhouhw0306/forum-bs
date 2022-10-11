@@ -25,11 +25,51 @@ const rules = {
   location: [
     { message: '请输入地区', trigger: 'change' }
   ],
+  dept: [
+    { required: true, message: '请输入系部', trigger: 'change' }
+  ],
   checkCode: [
     { required: true, message: '请输入验证码', trigger: 'blur' }
   ]
 }
-
+// 系部选择
+const depts = [{
+  value: '信息工程系',
+  label: '信息工程系'
+}, {
+  value: '化学化工系',
+  label: '化学化工系'
+},{
+  value: '数学系',
+  label: '数学系'
+}, {
+  value: '物理系',
+  label: '物理系'
+}, {
+  value: '电子科学与工程系',
+  label: '电子科学与工程系'
+}, {
+  value: '管理系',
+  label: '管理系'
+}, {
+  value: '法律系',
+  label: '法律系'
+}, {
+  value: '新闻传播系',
+  label: '新闻传播系'
+},{
+  value: '汉语言文学系',
+  label: '汉语言文学系'
+}, {
+  value: '哲学系',
+  label: '哲学系'
+}, {
+  value: '生命科学系',
+  label: '生命科学系'
+}, {
+  value: '医学系',
+  label: '医学系'
+},]
 // 地区选择
 const cities = [{
   value: '北京',
@@ -137,5 +177,6 @@ const cities = [{
 
 export {
   rules,
-  cities
+  cities,
+  depts
 }

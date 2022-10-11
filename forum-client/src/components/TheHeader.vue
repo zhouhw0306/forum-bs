@@ -13,14 +13,13 @@
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/category/all">文章分类</el-menu-item>
-          <el-menu-item index="/tag/all">标签</el-menu-item>
-          <el-menu-item index="/archives">文章归档</el-menu-item>
+          <el-menu-item index="/carePost" @click="toCarePost">我的关注</el-menu-item>
+          <el-menu-item index="/type/all">分类</el-menu-item>
           <el-menu-item index="/log">日志</el-menu-item>
           <el-menu-item index="/schoolBoard">校园墙</el-menu-item>
-
+          <el-menu-item index="/nav">校园导航</el-menu-item>
 <!--          <el-col :span="4" :offset="5">-->
-            <el-menu-item style="margin-left: 10%" @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>
+<!--            <el-menu-item style="margin-left: 10%" @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>-->
 <!--          </el-col>-->
         </el-menu>
       </el-col>
@@ -33,9 +32,11 @@
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
 
           <template v-if="!loginIn">
-            <el-menu-item index="/login">
-              <el-button type="text">登录</el-button>
-            </el-menu-item>
+            <el-tooltip class="item" effect="dark" content="登录后可发帖和评论" placement="bottom">
+              <el-menu-item index="/login">
+                <el-button type="text">登录</el-button>
+              </el-menu-item>
+            </el-tooltip>
             <el-menu-item index="/register">
               <el-button type="text">注册</el-button>
             </el-menu-item>
@@ -46,8 +47,10 @@
               <template slot="title">
                 <img class="me-header-picture" :src="attachImageUrl(avatar)"/>
               </template>
+              <el-menu-item index @click="setting"><i class="el-icon-back"></i>个人资料</el-menu-item>
               <el-menu-item index @click="logout"><i class="el-icon-back"></i>退出</el-menu-item>
             </el-submenu>
+
           </template>
         </el-menu>
       </el-col>
@@ -99,20 +102,46 @@ export default {
       localStorage.removeItem('token')
       this.$router.go(0)
       this.notify("退出成功",'success')
+    },
+    setting() {
+      if(this.loginIn){
+        this.$router.push({path:'/setting'})
+      }
+    },
+    toCarePost(){
+      if (!this.$store.getters.loginIn){
+        this.$router.push({path : '/login'})
+      }else {
+        this.$router.push({path : '/carePost'})
+      }
     }
   }
 }
 </script>
 
 <style>
-
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+.demonstration {
+  display: block;
+  color: #8492a6;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
 .el-header {
   position: fixed;
   z-index: 1024;
   min-width: 100%;
   box-shadow: 0 2px 3px hsla(0, 0%, 7%, .1), 0 0 0 1px hsla(0, 0%, 7%, .1);
 }
-
+.me-header{
+  background: rgba(255,255,255,0.7);
+}
 .me-title {
   margin-top: 10px;
   font-size: 24px;

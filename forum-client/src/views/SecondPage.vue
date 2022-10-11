@@ -2,16 +2,14 @@
   <div v-title data-title="鸭鸭论坛" style="margin:10px auto">
     <el-container>
 
-      <!--文章-->
+      <!--我关注的文章-->
       <el-main class="me-articles">
-        <article-page></article-page>
+        <article-page :query={isCareMe:true}></article-page>
       </el-main>
 
       <!--侧边栏-->
       <el-aside>
-        <card-list class="card"></card-list>
-        <card-msg class="card"></card-msg>
-        <card-hot class="card"></card-hot>
+        <card-me class="card"></card-me>
       </el-aside>
 
     </el-container>
@@ -20,13 +18,11 @@
 
 <script>
 import ArticlePage from '@/components/ArticlePage'
-import CardMsg from '@/components/card/CardMsg'
-import CardHot from "@/components/card/CardHot";
-import CardList from "@/components/card/CardList";
+import CardMe from '@/components/card/CardMe'
 
 export default {
-  name: 'MainPage',
-  components: {ArticlePage,CardMsg,CardHot,CardList}
+  name: 'SecondPage',
+  components: {ArticlePage,CardMe}
 }
 </script>
 

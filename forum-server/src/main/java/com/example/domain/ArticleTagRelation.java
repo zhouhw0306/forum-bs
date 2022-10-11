@@ -32,7 +32,7 @@ public class ArticleTagRelation implements Serializable {
     private Integer tagId;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8655758938628832695L;
 
     public ArticleTagRelation(String articleId, Integer tagId) {
         this.articleId = articleId;

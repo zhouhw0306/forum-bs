@@ -1,5 +1,5 @@
 <template>
-  <div id="home">
+  <div id="home" style="height: 100%">
     <el-container style="background-image: linear-gradient(to bottom right, #97a4ff, #86fcb5)">
 
       <the-header :activeIndex="activeIndex"></the-header>
@@ -48,5 +48,7 @@ body{
 }
 .me-container{
   /*margin: 100px auto 140px;*/
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
 }
 </style>

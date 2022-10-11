@@ -8,7 +8,11 @@
         element-loading-text="拼命加载中"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(245,245,245)"></div>
+
+    <el-empty v-if="this.$route.path=='/carePost'" description="快去关注更多人吧"></el-empty>
+
   </div>
+
 
 </template>
 

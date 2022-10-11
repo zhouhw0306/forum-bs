@@ -24,6 +24,7 @@ export default {
     },
     query: {
       type: Object,
+      isCareMe: Boolean,
       default() {
         return {}
       }

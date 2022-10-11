@@ -5,16 +5,17 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
  * 
  * @author 24668
- * @TableName tb_category
+ * @TableName tb_notification
  */
-@TableName(value ="tb_category")
+@TableName(value ="tb_notification")
 @Data
-public class Category implements Serializable {
+public class Notification implements Serializable {
 
     /**
      * 
@@ -23,20 +24,20 @@ public class Category implements Serializable {
     private Integer id;
 
     /**
-     * 头像
+     * 标题
      */
-    private String avatar;
+    private String title;
 
     /**
-     * 分类名
+     * 内容
      */
-    private String categoryName;
+    private String content;
 
     /**
-     * 描述
+     * 创建时间
      */
-    private String description;
+    private Date createTime;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = -7049964225082687735L;
+    private static final long serialVersionUID = 287984246061046551L;
 }

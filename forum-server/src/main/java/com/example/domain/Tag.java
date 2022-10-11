@@ -32,5 +32,5 @@ public class Tag implements Serializable {
     private String tagName;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -66078278895318126L;
 }

@@ -9,8 +9,14 @@ export const SignUp = (params) => post(`api/user/add`, params)
 export const ApiSendCode = (params) => post(`api/sigIn/code`, params)
 // 根据id获取User对象
 export const getAuthor = (params) => get(`api/getById`,params)
+// 根据积分排序
+export const getByScore = () => get(`api/getByScore`)
+// 更新用户信息
+export const updateUser = (params) => post(`api/updateUser`,params)
 
 // =======================> 文章 API
+//获得热帖
+export const getHot = () => get(`articles/getHot`)
 //根据文章id获取标签
 export const getTags = (params) => get(`tag/getByArticleId`,params)
 //获得所有分类
@@ -28,6 +34,7 @@ export function getArticles(query, page) {
             pageNumber: page.pageNumber,
             pageSize: page.pageSize,
             sort: page.sort,
+            isCareMe: query.isCareMe
             // year: query.year,
             // month: query.month,
             // tagId: query.tagId,
@@ -69,3 +76,21 @@ export const pushComment = (params) => post(`comment/pushComment`,params)
 
 //添加文章阅览量
 export const addViewCount = (id) => get(`articles/addViewCount/${id}`)
+
+// =======================> 公告 API
+//获得所有公告
+export const getAllNotify = () => get(`notify/getAll`)
+
+// =======================> 关注关系 API
+//判断用户是否关注某人
+export const isFollow = (params) => post(`subScribe/isFollowAuthor`,params)
+//关注
+export const addFollow = (params) => post(`subScribe/addFollow`,params)
+//移除关注
+export const removeFollow = (params) => post(`subScribe/removeFollow`,params)
+
+//获得个人数据getPersonal
+export const getPersonal = () => get(`api/getPersonal`)
+
+//获得背景图
+export const initBg = () => get('api/initBg')

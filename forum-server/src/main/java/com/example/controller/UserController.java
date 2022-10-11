@@ -1,24 +1,40 @@
 package com.example.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
+import com.example.domain.Article;
+import com.example.domain.Subscribe;
 import com.example.domain.User;
+import com.example.service.ArticleService;
+import com.example.service.SubscribeService;
 import com.example.service.UserService;
 import com.example.utils.EmailUtils;
 import com.example.utils.JWTUtil;
 import com.example.utils.MD5Util;
+import com.example.utils.UserUtils;
+import com.example.vo.Personal;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +52,12 @@ public class UserController {
 
     @Resource
     UserService userService;
+
+    @Resource
+    SubscribeService subscribeService;
+
+    @Resource
+    ArticleService articleService;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
@@ -58,6 +80,8 @@ public class UserController {
         user.setPassword("it's a secret");
         user.setToken(token);
         //缓存到Redis
+
+
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
         /**
          * 使用Jackson2JsonRedisSerialize 替换默认序列化
@@ -84,8 +108,8 @@ public class UserController {
         String userCode = req.getParameter("checkCode").trim();
         String birth = req.getParameter("birth").trim();
         String location = req.getParameter("location").trim();
-        String Avatar = req.getParameter("avatar").trim();
-
+        String avatar = req.getParameter("avatar").trim();
+        String dept = req.getParameter("dept").trim();
         // 验证是否为空
         if (username.equals("") || username == null){
             return Result.error(ResultCode.USER_Register_ERROR);
@@ -125,9 +149,9 @@ public class UserController {
         user.setSex(Integer.parseInt(sex));
         user.setEmail(email);
         user.setIntroduction("这个家伙很懒,什么都没有写...");
-        user.setAvatar(Avatar);
+        user.setAvatar(avatar);
         user.setLocation(location);
-
+        user.setDept(dept);
         boolean res = userService.save(user);
         if (res) {
             return Result.success();
@@ -162,7 +186,90 @@ public class UserController {
     @GetMapping("/getById")
     public Result getById(String id){
         User user = userService.getById(id);
+        user.setPassword("it's a secret");
         return Result.success(user);
     }
 
+    //根据积分排行
+    @GetMapping("/getByScore")
+    public Result getByScore(){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id","username","avatar","score");
+        queryWrapper.last("order by score desc limit 6");
+        List<User> list = userService.list(queryWrapper);
+        return Result.success(list);
+    }
+
+    //更新用户信息
+    @PostMapping("/updateUser")
+    public Result updateUser(@RequestBody User user){
+        User newUser = new User();
+        newUser.setUpdateTime(DateUtil.date());
+        newUser.setBirth(user.getBirth());
+        newUser.setDept(user.getDept());
+        newUser.setUsername(user.getUsername());
+        newUser.setSex(user.getSex());
+        newUser.setPhoneNum(user.getPhoneNum());
+        newUser.setEmail(user.getEmail());
+        newUser.setIntroduction(user.getIntroduction());
+        newUser.setLocation(user.getLocation());
+        newUser.setId(user.getId());
+        boolean b = userService.updateById(newUser);
+        return b?Result.success():Result.error(ResultCode.ERROR);
+    }
+
+    //更新头像
+    @PostMapping("/avatar/update")
+    public Result updateAvatar(@RequestParam("file") MultipartFile avatarFile, @RequestParam("id") String id){
+        if (avatarFile.isEmpty()) {
+            return Result.error(ResultCode.UPLOAD_ERROR);
+        }
+        String fileName = System.currentTimeMillis()+avatarFile.getOriginalFilename();
+        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "forum-server/data/avatarImages" ;
+        File file1 = new File(filePath);
+        if (!file1.exists()){
+            file1.mkdir();
+        }
+        File dest = new File(filePath + System.getProperty("file.separator") + fileName);
+        String storeAvatarPath = "/avatarImages/"+fileName;
+        try {
+            avatarFile.transferTo(dest);
+            User user = new User();
+            user.setId(id);
+            user.setAvatar(storeAvatarPath);
+            boolean res = userService.updateById(user);
+            if (res){
+                return Result.success(storeAvatarPath);
+            }else {
+                return Result.error(ResultCode.UPLOAD_ERROR);
+            }
+        }catch (IOException e){
+            return Result.error(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
+        }
+    }
+
+    //获得个人数据
+    @GetMapping("getPersonal")
+    public Result getPersonal(){
+        String userId = UserUtils.getCurrentUser();
+        User user = userService.getById(userId);
+        Personal personal = new Personal();
+        personal.setScore(user.getScore());
+        List<Article> articles = articleService.list(new QueryWrapper<Article>().eq("user_id", userId));
+        personal.setWriteNum(articles.size());
+        List<Subscribe> subscribes = subscribeService.list(new QueryWrapper<Subscribe>().eq("subscribe", userId));
+        List<Subscribe> be_subscribes = subscribeService.list(new QueryWrapper<Subscribe>().eq("be_subscribe", userId));
+        personal.setIdol(subscribes.size());
+        personal.setFollowers(be_subscribes.size());
+        return Result.success(personal);
+    }
+
+    //获得背景图
+    @GetMapping("initBg")
+    public Result initBg(){
+        String JsonSrc = HttpUtil.get("https://api.btstu.cn/sjbz/?lx=dongman&format=json");
+        JSONObject jsonObject = JSONUtil.parseObj(JsonSrc);
+        String imgurl = jsonObject.getStr("imgurl");
+        return Result.success(imgurl);
+    }
 }

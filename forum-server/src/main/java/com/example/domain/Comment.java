@@ -78,5 +78,5 @@ public class Comment implements Serializable {
     private User toUser;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6663138067522613942L;
 }

@@ -2,7 +2,9 @@
   <div class="me-view-body" v-title :data-title="title">
     <el-container class="me-view-container">
       <el-main>
-
+        <div @click="back">
+          <a><i class="el-icon-back"></i> 返回</a>
+        </div>
         <div class="me-view-card">
           <h1 class="me-view-title">{{article.title}}</h1>
           <div class="me-view-author">
@@ -10,7 +12,7 @@
               <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"></img>
             </a>
             <div class="me-view-info">
-              <span>{{article.author.username}}</span>
+              <span>{{article.author.username}}</span><button @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
               <div class="me-view-meta">
                 <span style="padding-right: 20px">发布时间:   {{article.createTime}}</span>
                 <span style="padding-right: 20px">阅读   {{article.viewCount}}</span>
@@ -104,7 +106,17 @@
   import {mixin} from "@/mixins"
   import MarkdownEditor from '@/components/MarkdownEditor'
   import CommmentItem from '@/components/CommentItem'
-  import {getTypeById, getCommentsByArticle, pushComment, getArticle, getAuthor, getTags, addViewCount} from '@/api/index'
+  import {
+    getTypeById,
+    getCommentsByArticle,
+    pushComment,
+    getArticle,
+    getAuthor,
+    getTags,
+    addViewCount,
+    isFollow,
+    addFollow, removeFollow
+  } from '@/api/index'
 
   export default {
     name: 'BlogView',
@@ -136,7 +148,9 @@
         comments: [],
         comment: {
           content: ''
-        }
+        },
+        follow: '',
+        isFollow: false //是否关注作者
       }
     },
     mounted() {
@@ -145,25 +159,77 @@
         this.getTypeById()
         this.getCommentsByArticle()
       }
+      //判断是否关注作者
+      this.InitIsFollow()
       //添加阅读量
-      addViewCount(this.$route.params.id).then(res => {
-        console.log(res)
-      })
+      addViewCount(this.$route.params.id)
     },
     computed: {
       avatar() {
         let avatar = this.$store.getters.avatar
-
         if (avatar !== null) {
           return avatar
         }
-        return '/avatarImages/aaa.jpg'
+        return '/avatarImages/default_user.jpg'
       },
       title() {
         return `${this.article.title} - 帖子 - school`
       }
     },
     methods: {
+      back(){
+        this.$router.go(-1)
+      },
+      //更新关注关系
+      updateFollow(){
+        if (!this.$store.getters.loginIn){
+          this.$message.error('请先登录')
+          return
+        }
+        let params = new URLSearchParams()
+        params.append('userId',this.$store.getters.userId)
+        params.append('authorId',this.article.author.id)
+        //取消关注
+        if(this.isFollow){
+          removeFollow(params).then(res => {
+            if (res.code === 0){
+              this.isFollow = false
+              this.follow = '+关注'
+              this.$message.success('取消成功')
+            }else {
+              this.$message.error('取消失败')
+            }
+          })
+        }else {
+        //关注作者
+          addFollow(params).then(res => {
+            if (res.code === 0){
+              this.isFollow = true
+              this.follow = '已关注'
+              this.$message.success('关注成功')
+            }else {
+              this.$message.error('关注失败')
+            }
+          })
+        }
+      },
+      //判断是否关注文章作者
+      InitIsFollow(){
+        let userId = this.$store.getters.userId
+        //未登录直接返回
+        if (userId === '' || userId === null){
+          this.follow='+关注'
+          this.isFollow=false
+          return
+        }
+        let params = new URLSearchParams()
+        params.append('userId',userId)
+        params.append('authorId',this.article.author.id)
+        isFollow(params).then(res => {
+          this.isFollow = res.data
+          res.data ? this.follow='已关注' : this.follow='+关注'
+        }).catch( err => {this.$message.error(err.msg)})
+      },
       tagOrCategory(type, id) {
         this.$router.push({path: `/${type}/${id}`})
       },
@@ -372,5 +438,17 @@
   .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
     background: #fff !important;
   }
-
+  .follow{
+    background-color: #f25d8e;
+    color: #fff;
+    border-style: none;
+  }
+  .btnOf{
+    border-style: none;
+    border-radius: 3px;
+    margin-left: 3px;
+  }
+  .btnOf:hover{
+    background-color: #dbdada;
+  }
 </style>
