@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.example.domain.Category">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-            <result property="categoryname" column="categoryname" jdbcType="VARCHAR"/>
+            <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
     </resultMap>
 

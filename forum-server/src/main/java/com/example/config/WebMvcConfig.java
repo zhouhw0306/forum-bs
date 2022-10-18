@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -44,7 +45,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         //使用拦截器注册表进行添加 自定义拦截器
         registry.addInterceptor(jwtInterceptor())
                 //添加拦截路径
-                .addPathPatterns("/**")
+                .addPathPatterns("/comment/pushComment","/upload","/articles/publish")
                 //设置放行路径
                 .excludePathPatterns("/**").order(1);
 
@@ -61,5 +62,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
     public RefreshTokenInterceptor refreshTokenInterceptor(){
         return new RefreshTokenInterceptor();
+    }
+
+    /**
+     * 资源路径映射配置
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/avatarImages/**").addResourceLocations("file:"+System.getProperty("user.dir")+"/forum-server/data/avatarImages/");
+        registry.addResourceHandler("/articleFile/**").addResourceLocations("file:"+System.getProperty("user.dir")+"/forum-server/data/articleFile/");
     }
 }

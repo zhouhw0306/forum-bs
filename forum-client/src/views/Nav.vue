@@ -15,6 +15,12 @@
       {{ dateFormat(date) }}
     </div>
 
+    <div>
+      <div>
+
+      </div>
+      <span></span>
+    </div>
 
   </div>
 

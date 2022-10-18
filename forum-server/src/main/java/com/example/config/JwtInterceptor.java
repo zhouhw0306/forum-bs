@@ -24,10 +24,8 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
-
-
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String token = request.getHeader("token");
         // 如果不是映射到方法直接通过
         if (!(handler instanceof HandlerMethod)){
@@ -55,8 +53,6 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // 用户id + 密码 + token 验证
         boolean flag = JWTUtil.verify(token, userId, user.getPassword());
-
-
 
         return flag;
     }

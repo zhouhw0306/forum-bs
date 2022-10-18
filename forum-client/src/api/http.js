@@ -1,5 +1,6 @@
 /* eslint-disable */
 import axios from 'axios';
+import router from "@/router";
 
 axios.defaults.timeout = 100000;  //超时时间设置
 axios.defaults.withCredentials = true;  //true允许跨域
@@ -96,7 +97,7 @@ export function get(url, params = {}) {
    * 封装post请求
    * @param url
    * @param data
-   * @returns {Promise}
+   * @returns {Promise}l
    */
 
 export function post(url, data = {}) {

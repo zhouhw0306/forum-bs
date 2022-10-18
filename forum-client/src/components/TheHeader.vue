@@ -6,7 +6,7 @@
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
           <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span> 校园论坛</span>
+          <span style="color: #ff843c"> 校园论坛</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">

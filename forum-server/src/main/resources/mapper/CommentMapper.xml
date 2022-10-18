@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.example.domain.Comment">
             <id property="id" column="id" jdbcType="CHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="articleId" column="article_id" jdbcType="CHAR"/>
             <result property="authorId" column="author_id" jdbcType="CHAR"/>
             <result property="parentId" column="parent_id" jdbcType="CHAR"/>

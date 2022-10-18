@@ -1,13 +1,11 @@
 package com.example.controller;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
@@ -28,11 +26,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -41,7 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+
+import static com.example.utils.RedisConstants.*;
 
 /**
  * @author zhw
@@ -88,8 +84,8 @@ public class UserController {
          */
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        stringRedisTemplate.opsForHash().putAll(token,userMap);
-        stringRedisTemplate.expire(token,30,TimeUnit.MINUTES);
+        stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
+        stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL,TimeUnit.MINUTES);
 
         result.setResultCode(ResultCode.SUCCESS);
         result.setData(user);
@@ -111,14 +107,14 @@ public class UserController {
         String avatar = req.getParameter("avatar").trim();
         String dept = req.getParameter("dept").trim();
         // 验证是否为空
-        if (username.equals("") || username == null){
+        if ("".equals(username)){
             return Result.error(ResultCode.USER_Register_ERROR);
         }
-        if (password.equals("") || password == null){
+        if ("".equals(password)){
             return Result.error(ResultCode.USER_Register_ERROR);
         }
         // 验证码
-        String checkCode = stringRedisTemplate.opsForValue().get(email);
+        String checkCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY +email);
         System.out.println("正确的验证码"+checkCode);
         if (!StringUtils.equalsIgnoreCase(userCode,checkCode)){
             return Result.error(ResultCode.USER_CHECK_CODE_ERROR);
@@ -177,7 +173,7 @@ public class UserController {
         // 新邮箱注册  4位随机字符
         String checkCode = RandomUtil.randomString(4);
         System.out.println("验证码"+checkCode);
-        stringRedisTemplate.opsForValue().set(email,checkCode,1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + email,checkCode,LOGIN_CODE_TTL, TimeUnit.MINUTES);
         EmailUtils.sendSimpleEmail(checkCode,email,jms);
         return Result.success();
     }

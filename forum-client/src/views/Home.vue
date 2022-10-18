@@ -1,6 +1,6 @@
 <template>
   <div id="home" style="height: 100%">
-    <el-container style="background-image: linear-gradient(to bottom right, #97a4ff, #86fcb5)">
+    <el-container :style="bg">
 
       <the-header :activeIndex="activeIndex"></the-header>
 
@@ -15,6 +15,7 @@
 <script>
 import TheHeader from "../components/TheHeader";
 import TheFooter from "../components/TheFooter";
+import {initBg} from "@/api";
 
 export default {
   name:'Home',
@@ -22,8 +23,12 @@ export default {
   data (){
     return {
       activeIndex: '/',
-      footerShow:true
+      footerShow:true,
+      bg:'background: whitesmoke',
     }
+  },
+  created() {
+    initBg().then(res => {this.bg = `background: url(${res.data}) no-repeat center;background-size: cover;  min-height: 100vh;`})
   },
   beforeRouteEnter (to, from, next){
     next(vm => {

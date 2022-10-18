@@ -31,13 +31,13 @@ public class EmailUtils {
         }
     }
 
-    public static String sendHtmlEmail(JavaMailSender jms) {
+    public static String sendHtmlEmail(JavaMailSender jms,String mail) {
         MimeMessage message = null;
         try {
             message = jms.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setFrom(from);
-            helper.setTo("2466864587@qq.com"); // 接收地址
+            helper.setTo(mail); // 接收地址
             helper.setSubject("一封HTML格式的邮件"); // 标题
             // 带HTML格式的内容
             StringBuffer sb = new StringBuffer("<p style='color:#42b983'>使用Spring Boot发送HTML格式邮件。</p>");
