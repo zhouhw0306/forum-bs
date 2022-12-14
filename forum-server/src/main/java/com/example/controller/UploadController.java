@@ -5,6 +5,7 @@ import com.example.constant.ResultCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ * 上传接口
  * @author 24668
  */
 @RestController

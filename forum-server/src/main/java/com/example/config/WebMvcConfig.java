@@ -11,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
+
 /**
  * @author zhw
  */
@@ -46,12 +48,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor())
                 //添加拦截路径
                 .addPathPatterns("/comment/pushComment","/upload","/articles/publish")
-                //设置放行路径
-                .excludePathPatterns("/**").order(1);
+                .order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/**").order(0);
+                .addPathPatterns("/**").order(0);
     }
 
     @Bean

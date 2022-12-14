@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
  * @TableName tb_article
  */
 @TableName(value ="tb_article")
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class Article implements Serializable {
 

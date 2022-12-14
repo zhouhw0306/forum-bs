@@ -1,7 +1,9 @@
 package com.example.config;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import static com.example.utils.RedisConstants.LOGIN_TOKEN_TTL;
 /**
  * @author 24668
  */
+@Slf4j
 public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Resource
@@ -20,7 +23,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
+        log.info("进入token拦截器刷新token");
         String token = request.getHeader("token");
         if (StrUtil.isBlank(token)){
             return true;

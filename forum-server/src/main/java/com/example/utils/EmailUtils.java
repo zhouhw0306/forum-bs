@@ -21,8 +21,8 @@ public class EmailUtils {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(from);
             message.setTo(mail); // 接收地址
-            message.setSubject("鸭鸭校园论坛"); // 标题
-            message.setText("【鸭鸭】欢迎注册鸭鸭校园论坛,验证码是: "+code+" ,如与您无关,请忽略"); // 内容
+            message.setSubject("编程交流社区"); // 标题
+            message.setText("【鸭鸭】欢迎注册鸭鸭编程交流社区,验证码是: "+code+" ,如与您无关,请忽略"); // 内容
             jms.send(message);
             return "发送成功";
         } catch (Exception e) {

@@ -20,7 +20,9 @@ import com.example.utils.JWTUtil;
 import com.example.utils.MD5Util;
 import com.example.utils.UserUtils;
 import com.example.vo.Personal;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -40,8 +42,10 @@ import java.util.concurrent.TimeUnit;
 import static com.example.utils.RedisConstants.*;
 
 /**
+ * 用户接口
  * @author zhw
  */
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -115,7 +119,7 @@ public class UserController {
         }
         // 验证码
         String checkCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY +email);
-        System.out.println("正确的验证码"+checkCode);
+        log.info("正确的验证码:{}",checkCode);
         if (!StringUtils.equalsIgnoreCase(userCode,checkCode)){
             return Result.error(ResultCode.USER_CHECK_CODE_ERROR);
         }
@@ -172,7 +176,7 @@ public class UserController {
         }
         // 新邮箱注册  4位随机字符
         String checkCode = RandomUtil.randomString(4);
-        System.out.println("验证码"+checkCode);
+        log.info("生成的验证码:{}",checkCode);
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + email,checkCode,LOGIN_CODE_TTL, TimeUnit.MINUTES);
         EmailUtils.sendSimpleEmail(checkCode,email,jms);
         return Result.success();

@@ -6,6 +6,7 @@ import com.example.domain.Comment;
 import com.example.domain.User;
 import com.example.service.CommentService;
 import com.example.service.UserService;
+import com.example.utils.SensitiveFilter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * 评论接口
  * @author zhou
  */
 @RestController
@@ -25,6 +27,9 @@ public class CommentController {
 
     @Resource
     UserService userService;
+
+    @Resource
+    SensitiveFilter sensitiveFilter;
 
     /**
      *  加载文章评论
@@ -66,7 +71,7 @@ public class CommentController {
      */
     @PostMapping("/pushComment")
     public Result pushComment(Comment comment){
-
+        comment.setContent(sensitiveFilter.filter(comment.getContent()));
         return commentService.addComm(comment);
     }
 }

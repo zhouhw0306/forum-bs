@@ -6,7 +6,7 @@
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
           <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span style="color: #ff843c"> 校园论坛</span>
+          <span style="color: #ff843c"> 编程社区</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">
@@ -16,8 +16,8 @@
           <el-menu-item index="/carePost" @click="toCarePost">我的关注</el-menu-item>
           <el-menu-item index="/type/all">分类</el-menu-item>
           <el-menu-item index="/log">日志</el-menu-item>
-          <el-menu-item index="/schoolBoard">校园墙</el-menu-item>
-          <el-menu-item index="/nav">校园导航</el-menu-item>
+          <el-menu-item index="/schoolBoard">留言墙</el-menu-item>
+          <el-menu-item index="/nav">编程导航</el-menu-item>
 <!--          <el-col :span="4" :offset="5">-->
 <!--            <el-menu-item style="margin-left: 10%" @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>-->
 <!--          </el-col>-->

@@ -10,6 +10,7 @@ import com.example.domain.Subscribe;
 import com.example.domain.User;
 import com.example.service.ArticleService;
 import com.example.service.SubscribeService;
+import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 
 
 /**
+ * 文章接口
  * @author 24668
  */
 @RestController
@@ -29,6 +31,9 @@ public class ArticleController {
 
     @Resource
     private SubscribeService subscribeService;
+
+    @Resource
+    private SensitiveFilter sensitiveFilter;
 
     //id查询
     @GetMapping("/{id}")
@@ -50,7 +55,7 @@ public class ArticleController {
     //添加或更新
     @PostMapping("/publish")
     public Result saveArticle(@RequestBody Article article) {
-
+        article.setContent(sensitiveFilter.filter(article.getContent()));
         String articleId = articleService.publishArticle(article);
 
         Result r = Result.success();
