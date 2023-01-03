@@ -2,6 +2,7 @@ package com.example.utils;
 
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -31,9 +32,9 @@ public class UserUtils {
     public static String getCurrentUser() {
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader("token");
-//        if (StringUtils.isBlank(token)) {
-//            return null;
-//        }
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
 //        Map<Object, Object> userMap = userUtils.stringRedisTemplate.opsForHash().entries(token);
 //        if (userMap.isEmpty()){
 //            return null;

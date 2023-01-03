@@ -21,6 +21,12 @@
     </properties>
     <dependencies>
 
+        <!-- spring cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
         <!--Redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

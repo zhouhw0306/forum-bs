@@ -94,3 +94,12 @@ export const getPersonal = () => get(`api/getPersonal`)
 
 //获得背景图
 export const initBg = () => get('api/initBg')
+
+//获取资源
+export const getTableData = (params) => post(`source/vo`,params)
+
+//点赞
+export const thumb = (params) => post('source/thumb',params)
+
+//收藏
+export const favour = (params) => post('source/favour',params)

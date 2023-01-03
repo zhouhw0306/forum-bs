@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
 import com.example.domain.Subscribe;
 import com.example.service.SubscribeService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,12 +40,14 @@ public class SubScribeController {
 
     //关注
     @PostMapping("/addFollow")
+    @CacheEvict(value = "article", allEntries=true)
     public Result addFollow(String userId, String authorId) {
         boolean flag = subscribeService.save(new Subscribe(authorId, userId));
         return flag ? Result.success() : Result.error();
     }
     //移除关注
     @PostMapping("/removeFollow")
+    @CacheEvict(value = "article", allEntries=true)
     public Result removeFollow(String userId, String authorId) {
         QueryWrapper<Subscribe> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("subscribe",userId);

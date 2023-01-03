@@ -12,7 +12,7 @@
               <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"></img>
             </a>
             <div class="me-view-info">
-              <span>{{article.author.username}}</span><button @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
+              <span>{{article.author.username}}</span><button v-if="this.article.author.id != this.$store.getters.userId" @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
               <div class="me-view-meta">
                 <span style="padding-right: 20px">发布时间:   {{article.createTime}}</span>
                 <span style="padding-right: 20px">阅读   {{article.viewCount}}</span>
@@ -21,7 +21,7 @@
 
             </div>
             <el-button
-              v-if="this.article.author.id == this.$store.state.userId"
+              v-if="this.article.author.id == this.$store.getters.userId"
               @click="editArticle()"
               style="position: absolute;left: 60%;"
               size="mini"

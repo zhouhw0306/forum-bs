@@ -25,6 +25,7 @@ a:hover {
 }
 .me-area{
   background-color: #fff;
+  overflow: hidden;
 }
 html{height:100%;}
 body{min-height:100%;}

@@ -6,21 +6,27 @@
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
           <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span style="color: #ff843c"> 编程社区</span>
+          <span style="color: black"> 编程社区</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/carePost" @click="toCarePost">我的关注</el-menu-item>
-          <el-menu-item index="/type/all">分类</el-menu-item>
-          <el-menu-item index="/log">日志</el-menu-item>
-          <el-menu-item index="/schoolBoard">留言墙</el-menu-item>
+          <el-menu-item index="/carePost" @click="toCarePost">关注</el-menu-item>
+          <el-menu-item index="/tools">资源</el-menu-item>
+          <el-menu-item index="/world">世界</el-menu-item>
           <el-menu-item index="/nav">编程导航</el-menu-item>
-<!--          <el-col :span="4" :offset="5">-->
-<!--            <el-menu-item style="margin-left: 10%" @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>-->
-<!--          </el-col>-->
+          <div style="width: 300px;margin-top: 10px;margin-right: 20px;float: right">
+            <el-input placeholder="请输入想要搜索的媒体用户" v-model="searchUser">
+              <i
+                  slot="suffix"
+                  style="cursor: pointer"
+                  class="el-input__icon el-icon-search"
+                  @click="selUser"
+              ></i>
+            </el-input>
+          </div>
         </el-menu>
       </el-col>
 
@@ -76,7 +82,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      searchUser: "" //搜索框输入
+    }
   },
   computed: {
     ...mapGetters([
@@ -87,6 +95,7 @@ export default {
     ]),
   },
   methods: {
+    selUser() {},//搜索触发事件
     toWrite(){
       if (!this.$store.getters.loginIn){
         this.$message({type: 'error', message: '请先登录', showClose: true})
@@ -144,11 +153,12 @@ export default {
 }
 .me-title {
   margin-top: 10px;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .me-header-left {
   margin-top: 10px;
+  white-space: nowrap;
 }
 
 .me-title img {

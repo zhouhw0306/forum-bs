@@ -83,10 +83,6 @@ public class User implements Serializable {
      */
     private Integer score;
 
-    /**
-     * 系部
-     */
-    private String dept;
 
     @TableField(exist = false)
     private String token;

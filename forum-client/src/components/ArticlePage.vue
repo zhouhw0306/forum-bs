@@ -109,7 +109,7 @@ export default {
 }
 /*每个帖子的间隔*/
 .el-card:not(:first-child) {
-  margin-top: 15px;
+  margin-top: 5px;
 
 }
 </style>

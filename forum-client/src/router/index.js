@@ -15,11 +15,11 @@ const routes = [
   {
     path: '',
     component: resolve => require(['../views/Home'], resolve),
-    meta: { title: '校园论坛' },
+    meta: { title: '编程论坛' },
     children: [
       {
         path: '/',
-        component: resolve => require(['../views/MainPage'], resolve),
+        component: resolve => require(['../views/MainPage'], resolve)
       },
       {
         path: '/view/:id',
@@ -27,23 +27,37 @@ const routes = [
       },
       {
         path: '/login',
-        component: resolve => require(['../views/LoginIn'], resolve),
+        component: resolve => require(['../views/LoginIn'], resolve)
       },
       {
         path: '/register',
-        component: resolve => require(['../views/SignUp'], resolve),
+        component: resolve => require(['../views/SignUp'], resolve)
       },
       {
         path: '/setting',
-        component: resolve => require(['../views/Setting'], resolve),
+        component: resolve => require(['../views/Setting'], resolve)
       },
       {
         path: '/carePost',
-        component: resolve => require(['../views/SecondPage'], resolve),
+        component: resolve => require(['../views/SecondPage'], resolve)
       },
       {
         path: '/nav',
-        component: resolve => require(['../views/Nav'], resolve),
+        component: resolve => require(['../views/Nav'], resolve)
+      },
+      {
+        path: '/source',
+        component: resolve => require(['../views/Source'], resolve),
+        children: [
+          {
+            path: '/tools',
+            component: resolve => require(['../components/source/Tools'], resolve)
+          }
+        ]
+      },
+      {
+        path: '/world',
+        component: resolve => require(['../views/World'], resolve)
       }
     ]
   },

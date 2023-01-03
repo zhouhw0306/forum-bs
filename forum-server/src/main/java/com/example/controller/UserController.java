@@ -109,7 +109,6 @@ public class UserController {
         String birth = req.getParameter("birth").trim();
         String location = req.getParameter("location").trim();
         String avatar = req.getParameter("avatar").trim();
-        String dept = req.getParameter("dept").trim();
         // 验证是否为空
         if ("".equals(username)){
             return Result.error(ResultCode.USER_Register_ERROR);
@@ -151,7 +150,6 @@ public class UserController {
         user.setIntroduction("这个家伙很懒,什么都没有写...");
         user.setAvatar(avatar);
         user.setLocation(location);
-        user.setDept(dept);
         boolean res = userService.save(user);
         if (res) {
             return Result.success();
@@ -206,7 +204,6 @@ public class UserController {
         User newUser = new User();
         newUser.setUpdateTime(DateUtil.date());
         newUser.setBirth(user.getBirth());
-        newUser.setDept(user.getDept());
         newUser.setUsername(user.getUsername());
         newUser.setSex(user.getSex());
         newUser.setPhoneNum(user.getPhoneNum());

@@ -1,6 +1,6 @@
 <template>
 
-  <el-card class="me-area" :body-style="{ padding: '16px' }" style="border-radius: 15px">
+  <el-card class="me-area" :body-style="{ padding: '16px' }">
 
     <div class="me-article-header">
 
@@ -114,7 +114,6 @@ export default {
 <style scoped>
 
 .me-article-header {
-  /*padding: 10px 18px;*/
   padding: 10px 1px;
 }
 
@@ -140,6 +139,9 @@ export default {
   font-size: 13px;
   line-height: 24px;
   margin-bottom: 10px;
+  /*white-space: nowrap;*/
+  /*text-overflow: ellipsis;*/
+  /*overflow: hidden;*/
 }
 
 .me-article-author {

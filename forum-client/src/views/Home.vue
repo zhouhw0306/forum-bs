@@ -1,6 +1,6 @@
 <template>
-  <div id="home" style="height: 100%">
-    <el-container :style="bg">
+  <div id="home" style="height: 100%;background: url(https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png)">
+    <el-container style="min-height: calc(100vh);">
 
       <the-header :activeIndex="activeIndex"></the-header>
 
@@ -23,13 +23,13 @@ export default {
   data (){
     return {
       activeIndex: '/',
-      footerShow:true,
-      bg:'background: whitesmoke',
+      footerShow:true
+      //bg:'background: whitesmoke',
     }
   },
-  created() {
-    initBg().then(res => {this.bg = `background: url(${res.data}) no-repeat center;background-size: cover;  min-height: 100vh;`})
-  },
+  // created() {
+  //   initBg().then(res => {this.bg = `background: url(${res.data}) no-repeat center;background-size: cover;  min-height: 100vh;`})
+  // },
   beforeRouteEnter (to, from, next){
     next(vm => {
       vm.activeIndex = to.path

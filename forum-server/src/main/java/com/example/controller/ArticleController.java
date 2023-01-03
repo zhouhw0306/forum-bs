@@ -12,6 +12,8 @@ import com.example.service.ArticleService;
 import com.example.service.SubscribeService;
 import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -54,6 +56,7 @@ public class ArticleController {
 
     //添加或更新
     @PostMapping("/publish")
+    @CacheEvict(value = "article", allEntries=true)
     public Result saveArticle(@RequestBody Article article) {
         article.setContent(sensitiveFilter.filter(article.getContent()));
         String articleId = articleService.publishArticle(article);
@@ -62,8 +65,10 @@ public class ArticleController {
         r.simple().put("articleId", articleId);
         return r;
     }
+
     //获得全部根据创建时间排序
     @GetMapping("/getAll")
+    @Cacheable(value = "article",keyGenerator = "keyGenerator")
     public Result listArticles(@RequestParam Integer pageNumber,
                                @RequestParam Integer pageSize,
                                @RequestParam(defaultValue = "false") Boolean isCareMe,

@@ -1,6 +1,6 @@
 <template>
 <div class="signUp-page">
-  <img src="../assets/logo.png" width="1px" height="710px">
+<!--  <img src="../assets/favicon.ico" width="1px" height="710px">-->
   <div class="signUp">
     <div class="signUp-head">
       <span>用户注册</span>
@@ -25,11 +25,6 @@
       <el-form-item prop="location" label="地区">
         <el-select v-model="registerForm.location" placeholder="地区" style="width:100%">
           <el-option v-for="item in cities" :key="item.value" :label="item.label" :value="item.value"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item prop="dept" label="系部">
-        <el-select v-model="registerForm.dept" placeholder="系部" style="width:100%">
-          <el-option v-for="item in depts" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="email" label="邮箱">
@@ -61,7 +56,7 @@
 
 <script>
 import { mixin } from '../mixins'
-import { rules, cities ,depts} from '../assets/data/form'
+import { rules, cities } from '../assets/data/form'
 import { SignUp,ApiSendCode } from '../api/index'
 
 export default {
@@ -78,18 +73,15 @@ export default {
         email: '',
         checkCode:'',
         location: '',
-        dept:'',
         birth: ''
       },
       rules: {}, //表单验证
       cities: [], //地区
-      depts : [] //系部
     }
   },
   created () {
     this.rules = rules //表单验证
     this.cities = cities
-    this.depts = depts
   },
   methods: {
     sendCode(){
@@ -153,10 +145,6 @@ export default {
         this.$message.error("性别不能为空");
         return
       }
-      if (this.registerForm.dept===''){
-        this.$message.error("系部不能为空");
-        return
-      }
       if (this.registerForm.email===''){
         this.$message.error("邮箱不能为空");
         return
@@ -180,7 +168,6 @@ export default {
       params.append('checkCode', this.registerForm.checkCode)
       params.append('birth', datetime)
       params.append('location', this.registerForm.location)
-      params.append('dept',this.registerForm.dept)
       params.append('avatar', '/avatarImages/user.jpg')
       SignUp(params)
         .then(res => {

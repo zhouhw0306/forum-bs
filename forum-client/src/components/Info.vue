@@ -36,16 +36,6 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item prop="dept" label="系部">
-          <el-select v-model="registerForm.dept" placeholder="系部" style="width:100%">
-            <el-option
-                v-for="item in depts"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
     <div class="btn">
       <div @click="saveMsg()">保存</div>
@@ -57,7 +47,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { cities,depts} from '../assets/data/form'
+import { cities} from '../assets/data/form'
 import { updateUser, getAuthor } from '../api/index'
 
 export default {
@@ -72,11 +62,9 @@ export default {
         email: '',
         birth: '',
         introduction: '',
-        location: '',
-        dept:''
+        location: ''
       },
-      cities: [],
-      depts:[]
+      cities: []
     }
   },
   computed: {
@@ -86,7 +74,6 @@ export default {
   },
   created () {
     this.cities = cities
-    this.depts = depts
   },
   mounted () {
     this.getMsg(this.userId)

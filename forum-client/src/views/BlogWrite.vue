@@ -139,15 +139,17 @@
       getArticleById(id) {
         let that = this
         getArticleById(id).then(data => {
-
-          Object.assign(that.articleForm, data.data)
-          that.articleForm.editor.value = data.data.body.content
-
-          let tags = this.articleForm.tags.map(function (item) {
-            return item.id;
-          })
-
-          this.articleForm.tags = tags
+//console.log(data.data.data)
+          //Object.assign(that.articleForm, data.data.data)
+          that.articleForm.editor.value = data.data.data.content
+          that.articleForm.id = data.data.data.id
+          that.articleForm.title = data.data.data.title
+          // that.articleForm.tags = data.data.data.tags
+          // let tags = that.articleForm.tags.map(function (item) {
+          //   return item.id;
+          // })
+          //
+          // that.articleForm.tags = tags
 
 
         }).catch(error => {
@@ -232,7 +234,6 @@
         let that = this
         getAllCategorys().then(res => {
           that.categorys = res.data
-          console.log(that.categorys)
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: '文章分类加载失败', showClose: true})
@@ -318,9 +319,6 @@
     min-height: 650px !important;
   }
 
-  .me-header-left {
-    margin-top: 10px;
-  }
 
   .me-title img {
     max-height: 2.4rem;
