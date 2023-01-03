@@ -1,6 +1,6 @@
 <template>
-  <div id="home">
-    <el-container style="background-image: linear-gradient(to bottom right, #97a4ff, #86fcb5)">
+  <div id="home" style="height: 100%;background: url(https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png)">
+    <el-container style="min-height: calc(100vh);">
 
       <the-header :activeIndex="activeIndex"></the-header>
 
@@ -15,6 +15,7 @@
 <script>
 import TheHeader from "../components/TheHeader";
 import TheFooter from "../components/TheFooter";
+import {initBg} from "@/api";
 
 export default {
   name:'Home',
@@ -23,8 +24,12 @@ export default {
     return {
       activeIndex: '/',
       footerShow:true
+      //bg:'background: whitesmoke',
     }
   },
+  // created() {
+  //   initBg().then(res => {this.bg = `background: url(${res.data}) no-repeat center;background-size: cover;  min-height: 100vh;`})
+  // },
   beforeRouteEnter (to, from, next){
     next(vm => {
       vm.activeIndex = to.path
@@ -48,5 +53,7 @@ body{
 }
 .me-container{
   /*margin: 100px auto 140px;*/
+  margin-top: 60px;
+  min-height: calc(100vh - 60px);
 }
 </style>

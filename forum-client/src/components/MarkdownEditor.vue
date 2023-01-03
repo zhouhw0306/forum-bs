@@ -3,6 +3,8 @@
     style="padding-left: 25px"
     class="me-editor"
     ref="md"
+    :ishljs="true"
+    toolbarsBackground="#cfdffc"
     v-model="editor.value"
     @imgAdd="imgAdd"
     v-bind="editor">

@@ -6,22 +6,27 @@
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
           <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span> 校园论坛</span>
+          <span style="color: black"> 编程社区</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/category/all">文章分类</el-menu-item>
-          <el-menu-item index="/tag/all">标签</el-menu-item>
-          <el-menu-item index="/archives">文章归档</el-menu-item>
-          <el-menu-item index="/log">日志</el-menu-item>
-          <el-menu-item index="/schoolBoard">校园墙</el-menu-item>
-
-          <el-col :span="4" :offset="4">
-            <el-menu-item @click="toWrite"><i class="el-icon-edit"></i>发帖</el-menu-item>
-          </el-col>
+          <el-menu-item index="/carePost" @click="toCarePost">关注</el-menu-item>
+          <el-menu-item index="/tools">资源</el-menu-item>
+          <el-menu-item index="/world">世界</el-menu-item>
+          <el-menu-item index="/nav">编程导航</el-menu-item>
+          <div style="width: 300px;margin-top: 10px;margin-right: 20px;float: right">
+            <el-input placeholder="请输入想要搜索的媒体用户" v-model="searchUser">
+              <i
+                  slot="suffix"
+                  style="cursor: pointer"
+                  class="el-input__icon el-icon-search"
+                  @click="selUser"
+              ></i>
+            </el-input>
+          </div>
         </el-menu>
       </el-col>
 
@@ -33,9 +38,11 @@
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
 
           <template v-if="!loginIn">
-            <el-menu-item index="/login">
-              <el-button type="text">登录</el-button>
-            </el-menu-item>
+            <el-tooltip class="item" effect="dark" content="登录后可发帖和评论" placement="bottom">
+              <el-menu-item index="/login">
+                <el-button type="text">登录</el-button>
+              </el-menu-item>
+            </el-tooltip>
             <el-menu-item index="/register">
               <el-button type="text">注册</el-button>
             </el-menu-item>
@@ -46,8 +53,10 @@
               <template slot="title">
                 <img class="me-header-picture" :src="attachImageUrl(avatar)"/>
               </template>
+              <el-menu-item index @click="setting"><i class="el-icon-back"></i>个人资料</el-menu-item>
               <el-menu-item index @click="logout"><i class="el-icon-back"></i>退出</el-menu-item>
             </el-submenu>
+
           </template>
         </el-menu>
       </el-col>
@@ -73,7 +82,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      searchUser: "" //搜索框输入
+    }
   },
   computed: {
     ...mapGetters([
@@ -84,6 +95,7 @@ export default {
     ]),
   },
   methods: {
+    selUser() {},//搜索触发事件
     toWrite(){
       if (!this.$store.getters.loginIn){
         this.$message({type: 'error', message: '请先登录', showClose: true})
@@ -99,27 +111,54 @@ export default {
       localStorage.removeItem('token')
       this.$router.go(0)
       this.notify("退出成功",'success')
+    },
+    setting() {
+      if(this.loginIn){
+        this.$router.push({path:'/setting'})
+      }
+    },
+    toCarePost(){
+      if (!this.$store.getters.loginIn){
+        this.$router.push({path : '/login'})
+      }else {
+        this.$router.push({path : '/carePost'})
+      }
     }
   }
 }
 </script>
 
 <style>
-
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+.demonstration {
+  display: block;
+  color: #8492a6;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
 .el-header {
   position: fixed;
   z-index: 1024;
   min-width: 100%;
   box-shadow: 0 2px 3px hsla(0, 0%, 7%, .1), 0 0 0 1px hsla(0, 0%, 7%, .1);
 }
-
+.me-header{
+  background: rgba(255,255,255,0.7);
+}
 .me-title {
   margin-top: 10px;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .me-header-left {
   margin-top: 10px;
+  white-space: nowrap;
 }
 
 .me-title img {

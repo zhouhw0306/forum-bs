@@ -78,9 +78,15 @@ public class User implements Serializable {
      */
     private Date updateTime;
 
+    /**
+     * 积分
+     */
+    private Integer score;
+
+
     @TableField(exist = false)
     private String token;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2338282716883198667L;
 }

@@ -1,19 +1,19 @@
 package com.example.utils;
 
 
-import cn.hutool.core.bean.BeanUtil;
-import com.example.domain.User;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
+/**
+ * @author 24668
+ */
 @Component
 public class UserUtils {
 
@@ -32,9 +32,9 @@ public class UserUtils {
     public static String getCurrentUser() {
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader("token");
-//        if (StringUtils.isBlank(token)) {
-//            return null;
-//        }
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
 //        Map<Object, Object> userMap = userUtils.stringRedisTemplate.opsForHash().entries(token);
 //        if (userMap.isEmpty()){
 //            return null;

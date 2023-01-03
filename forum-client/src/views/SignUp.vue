@@ -1,6 +1,6 @@
 <template>
 <div class="signUp-page">
-  <img src="../assets/img/bg.jpg" width="1473px" height="710px">
+<!--  <img src="../assets/favicon.ico" width="1px" height="710px">-->
   <div class="signUp">
     <div class="signUp-head">
       <span>用户注册</span>
@@ -76,7 +76,7 @@ export default {
         birth: ''
       },
       rules: {}, //表单验证
-      cities: [] //地区
+      cities: [], //地区
     }
   },
   created () {
