@@ -103,3 +103,6 @@ export const thumb = (params) => post('source/thumb',params)
 
 //收藏
 export const favour = (params) => post('source/favour',params)
+
+//根据id获取资源
+export const getSourceById = (id) => get(`source/${id}`)

@@ -1,5 +1,5 @@
 <template>
-<div class="login-in"">
+<div class="login-in">
 <!--  <img src="../assets/favicon.ico" width="1px" height="710px">-->
   <div class="login" >
     <div class="login-head">

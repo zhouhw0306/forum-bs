@@ -2,7 +2,7 @@
   <div class="sidebar">
     <el-menu
         class="sidebar-el-menu"
-        :default-active="onRoutes"
+        default-active="/tools/1"
         :collapse="collapse"
         background-color="white"
         text-color="black"
@@ -32,31 +32,31 @@ export default {
       items: [
         {
           icon: 'el-icon-suitcase',
-          index: 'tools',
+          index: '/tools/1',
           title: '工具箱'
         },
         {
           icon: 'el-icon-price-tag',
-          index: 'sites',
+          index: '/tools/2',
           title: '实用网站'
         },
         {
           icon: 'el-icon-folder-opened',
-          index: 'projects',
+          index: '/tools/3',
           title: '宝藏项目'
         },
         {
           icon: 'el-icon-video-camera',
-          index: 'courses',
+          index: '/tools/4',
           title: '视频教程'
         }
       ]
     }
   },
   computed: {
-    onRoutes () {
-      return this.$route.path.replace('/', '')
-    }
+    // onRoutes () {
+    //   return this.$route.path.replace('/', '')
+    // }
   },
   created () {
     // 通过 Event Bus 进行组件间通信，来折叠侧边栏
@@ -86,5 +86,9 @@ export default {
 }
 .sidebar > ul {
   height: 100%;
+}
+.el-menu-item:hover{
+  color: #1787FB !important;
+  background-color: #ECF5FF !important;
 }
 </style>

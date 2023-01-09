@@ -77,14 +77,10 @@ public class ArticleController {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         Integer skipTotal = (pageNumber-1)*pageSize;
         //查关注的
-        System.out.println(subscribeService);
         if (isCareMe!=null && isCareMe){
             //获得所有关注者
             String userId = UserUtils.getCurrentUser();
-            System.out.println(userId+"***");
-            QueryWrapper<Subscribe> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("subscribe",userId);
-            List<Subscribe> list = subscribeService.list(queryWrapper1);
+            List<Subscribe> list = subscribeService.query().eq("subscribe",userId).list();
             if (CollectionUtils.isEmpty(list)){
                 return Result.success();
             }
@@ -95,12 +91,7 @@ public class ArticleController {
             queryWrapper.in("user_id",beSubscribe);
         }
         queryWrapper.last("order by create_Time "+sort + " limit " + skipTotal +","+pageSize);
-        //IPage<Article> page = new Page<>(pageNumber,pageSize);
-        //IPage<Article> iPage = articleService.page(page,queryWrapper);
-        //System.out.println("记录数"+iPage.getTotal());
-        //List<Article> articles = iPage.getRecords();
         List<Article> articles = articleService.list(queryWrapper);
-
         return Result.success(articles);
     }
 

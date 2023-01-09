@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <el-row :gutter="5">
       <el-col :span="8" v-for="(item,index) in tableData" :key="index">
@@ -11,7 +10,7 @@
 
           <div style="margin-top: 20px;height: 140px">
             <div style="width: 250px;display: inline-block">
-              <h1 class="hover-title">{{item.title}}</h1>
+              <h1 class="hover-title" @click="view(item.id)">{{item.title}}</h1>
               <span>{{item.description}}</span>
             </div>
             <div style="float: right;">
@@ -27,11 +26,11 @@
           <div style="height: 30px;border-top: antiquewhite solid 1px">
             <el-button class="icon-foot" @click="thumb(item.id)">
               <i v-if="!item.hasThumb" class="fa fa-thumbs-o-up"></i>
-              <i v-else class="fa fa-thumbs-up"></i>{{item.thumbNum}}
+              <i v-else class="fa fa-thumbs-up"></i> {{item.thumbNum}}
             </el-button>
             <el-button class="icon-foot" @click="favour(item.id)">
               <i v-if="!item.hasFavour" class="fa fa-star-o"></i>
-              <i v-else class="fa fa-star"></i>{{item.favourNum}}
+              <i v-else class="fa fa-star"></i> {{item.favourNum}}
             </el-button>
             <el-button class="icon-foot">
               <i class="fa fa-comment-o"></i>
@@ -76,6 +75,13 @@ export default {
   created() {
     this.loadTable();
   },
+  // 该方法会多一次请求
+  watch: {
+    '$route' (to, from) {
+      this.pageNo = 1
+      this.loadTable();
+    }
+  },
   methods:{
     arr(src){
       let arr = []
@@ -92,7 +98,7 @@ export default {
     },
     loadTable(){
       let params = new URLSearchParams();
-      params.append("category", "资源");
+      params.append("type", this.$route.params.type);
       params.append("pageNo", this.pageNo);
       params.append("pageSize", this.pageSize);
       getTableData(params)
@@ -135,6 +141,10 @@ export default {
         }
         this.loadTable();
       }).catch(err => this.$message.error(err.data.msg))
+    },
+    //详情
+    view(id){
+      this.$router.push({path: `/details/${id}`})
     }
   }
 }

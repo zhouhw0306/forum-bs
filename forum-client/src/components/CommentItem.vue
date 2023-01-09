@@ -1,15 +1,15 @@
 <template>
   <div class="me-view-comment-item">
     <div class="me-view-comment-author">
-      <a class="">
-        <img class="me-view-picture" :src="attachImageUrl(comment.user.avatar)"></img>
-      </a>
+
       <div class="me-view-info">
+        <a class="">
+          <el-avatar :src="attachImageUrl(comment.user.avatar)"></el-avatar>
+          <!--        <img class="me-view-picture" :src="attachImageUrl(comment.user.avatar)"></img>-->
+        </a>
         <span class="me-view-nickname">{{comment.user.username}}</span>
-        <div class="me-view-meta">
-          <span>{{rootCommentCounts - index}}楼</span>
-          <span style="margin-left: 20px">{{comment.createTime}}</span>
-        </div>
+        <span class="me-view-meta" style="margin-left: -15px">{{comment.createTime}}</span>
+        <span class="me-view-meta" style="margin-left: 10px">{{rootCommentCounts - index}}楼</span>
       </div>
     </div>
     <div>
@@ -158,15 +158,6 @@
     margin: 0 4px;
   }
 
-  .me-view-comment {
-    margin-top: 60px;
-  }
-
-  .me-view-comment-title {
-    font-weight: 600;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 20px;
-  }
 
   .me-view-comment-write {
     margin-top: 20px;
@@ -198,10 +189,13 @@
 
   .me-view-nickname {
     font-size: 14px;
+    vertical-align: top;
+    margin-left: 10px;
   }
 
   .me-view-comment-content {
     line-height: 1.5;
+    margin-left: 20px;
   }
 
   .me-view-comment-tools {

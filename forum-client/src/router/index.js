@@ -50,8 +50,12 @@ const routes = [
         component: resolve => require(['../views/Source'], resolve),
         children: [
           {
-            path: '/tools',
+            path: '/tools/:type',
             component: resolve => require(['../components/source/Tools'], resolve)
+          },
+          {
+            path: '/details/:id',
+            component: resolve => require(['../components/source/Details'], resolve)
           }
         ]
       },

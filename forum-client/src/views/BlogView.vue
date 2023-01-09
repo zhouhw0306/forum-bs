@@ -367,10 +367,11 @@
     font-size: 34px;
     font-weight: 700;
     line-height: 1.3;
+    margin-top: 10px;
   }
 
   .me-view-author {
-    margin: 30px 0 10px;
+    margin: 20px 0 10px;
     /*margin-top: 30px;*/
     vertical-align: middle;
   }
@@ -447,8 +448,13 @@
     border-style: none;
     border-radius: 3px;
     margin-left: 3px;
+    padding: 2px 5px;
+    border-radius: 15px;
   }
   .btnOf:hover{
     background-color: #dbdada;
+  }
+  .hljs{
+    background: #f6f8fa!important;
   }
 </style>
