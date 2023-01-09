@@ -6,7 +6,17 @@
       <span style="font-size: x-large">积分榜</span><img src="../../assets/img/score.png" style="vertical-align: center;width: 20px;margin-left: 3px" >
     </div>
     <div v-for="u in users" :key="u.id" class="text item">
-        <img class="me-list-picture" :src="attachImageUrl(u.avatar)"/>
+        <el-popover
+            placement="bottom-start"
+            :title="u.username"
+            width="200"
+            trigger="hover">
+          <div>
+            简介: {{u.introduction}}
+          </div>
+          <img slot="reference" class="me-list-picture" :src="attachImageUrl(u.avatar)"/>
+        </el-popover>
+
         <span style="display: inline-block;width: 50%;margin-left: 10px">
           {{u.username}}
         </span>

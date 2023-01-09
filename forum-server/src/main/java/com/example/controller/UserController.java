@@ -23,6 +23,7 @@ import com.example.vo.Personal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -61,6 +62,9 @@ public class UserController {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Value("${me.avatar.path}")
+    private String avatarPath;
 
     //登录
     @RequestMapping(value = "/login/status",method = RequestMethod.POST)
@@ -192,7 +196,7 @@ public class UserController {
     @GetMapping("/getByScore")
     public Result getByScore(){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id","username","avatar","score");
+        queryWrapper.select("id","username","avatar","score","sex","introduction","birth");
         queryWrapper.last("order by score desc limit 6");
         List<User> list = userService.list(queryWrapper);
         return Result.success(list);
@@ -222,12 +226,11 @@ public class UserController {
             return Result.error(ResultCode.UPLOAD_ERROR);
         }
         String fileName = System.currentTimeMillis()+avatarFile.getOriginalFilename();
-        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "forum-server/data/avatarImages" ;
-        File file1 = new File(filePath);
-        if (!file1.exists()){
-            file1.mkdir();
+        File file = new File(avatarPath);
+        if (!file.exists()){
+            file.mkdir();
         }
-        File dest = new File(filePath + System.getProperty("file.separator") + fileName);
+        File dest = new File(avatarPath + fileName);
         String storeAvatarPath = "/avatarImages/"+fileName;
         try {
             avatarFile.transferTo(dest);
