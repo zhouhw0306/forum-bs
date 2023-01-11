@@ -72,15 +72,13 @@ export default {
       params.append('password', this.loginForm.password)
       loginIn(params)
         .then(res => {
-          // console.log('-----------获取登录信息---------------')
           if (res.code === 0) {
             _this.notify('登录成功', 'success')
             _this.setUserMsg(res.data)
             _this.changeIndex('首页')
             _this.$router.push({path: '/'})
-            //_this.$router.go(0)
           } else {
-            _this.notify('用户名或密码错误', 'error')
+            _this.notify(res.msg, 'error')
           }
         })
         .catch(err => {this.notify(err.msg, 'error')})
@@ -90,6 +88,7 @@ export default {
       this.$store.commit('setUserId', item.id)  //用户id
       this.$store.commit('setUsername', item.username)  //用户名
       this.$store.commit('setAvatar', item.avatar)  //头像url
+      this.$store.commit('setRole', item.role)  //身份
       this.$store.commit('setToken',item.token) //存储用户信息到浏览器
     },
     goSignUp () {

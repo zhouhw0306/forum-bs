@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.annotation.Authentication;
+import com.example.constant.AuthConstant;
 import com.example.utils.SensitiveFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +19,8 @@ public class ForumServerApplicationTest {
 
     @Test
     public void sensitiveFilter(){
-        String text = "王者达到王者荣耀de赌博赌";
-        System.out.println(sensitiveFilter.filter(text));
+//        String text = "王者达到王者荣耀de赌博赌";
+//        System.out.println(sensitiveFilter.filter(text));
     }
 
 }

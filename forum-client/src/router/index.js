@@ -48,20 +48,36 @@ const routes = [
       {
         path: '/source',
         component: resolve => require(['../views/Source'], resolve),
-        children: [
-          {
-            path: '/tools/:type',
-            component: resolve => require(['../components/source/Tools'], resolve)
-          },
-          {
-            path: '/details/:id',
-            component: resolve => require(['../components/source/Details'], resolve)
-          }
-        ]
+      },
+      {
+        path: '/details/:id',
+        component: resolve => require(['../components/source/Details'], resolve)
       },
       {
         path: '/world',
         component: resolve => require(['../views/World'], resolve)
+      },
+      {
+        path: '/admin',
+        component: resolve => require(['../views/Admin'], resolve),
+        children: [
+          {
+            path: '/userManage',
+            component: resolve => require(['../components/admin/UserManage'], resolve)
+          },
+          {
+            path: '/articleManage',
+            component: resolve => require(['../components/admin/ArticleManage'], resolve)
+          },
+          {
+            path: '/commentManage',
+            component: resolve => require(['../components/admin/CommentManage'], resolve)
+          },
+          {
+            path: '/sourceManage',
+            component: resolve => require(['../components/admin/SourceManage'], resolve)
+          }
+        ]
       }
     ]
   },

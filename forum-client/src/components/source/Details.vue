@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div style="margin: 80px auto 30px;">
   <el-card class="box-card" :body-style="{ padding: '0px' }">
+    <el-page-header @back="goBack" content="详情页面" style="padding: 15px"></el-page-header>
     <div class="main">
       <div class="head">
         <el-col :span="2">
@@ -70,7 +71,6 @@
            :articleId="source.id"
            :index="index"
            :rootCommentCounts="comments.length"
-           @commentCountsIncrement="commentCountsIncrement"
            :key="c.id">
        </commment-item>
 
@@ -199,6 +199,9 @@ export default {
     },
     share(){
       alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 
@@ -238,11 +241,5 @@ export default {
 .me-view-comment {
   margin-top: 20px;
 }
-/*a{*/
-/*  color: #0969da !important;*/
-/*}*/
-/*a:hover{*/
-/*  text-decoration: underline !important;*/
-/*  color: #409EFF;*/
-/*}*/
+
 </style>

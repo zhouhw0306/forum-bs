@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class Tag implements Serializable {
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;

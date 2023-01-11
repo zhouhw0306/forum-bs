@@ -4,7 +4,9 @@ package com.example.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.annotation.Authentication;
 import com.example.constant.Result;
+import com.example.constant.SourceEnum;
 import com.example.domain.Source;
 import com.example.domain.SourceHasfavour;
 import com.example.domain.SourceHasthumb;
@@ -40,9 +42,10 @@ public class SourceController {
     private SourceHasthumbService sourceHasthumbService;
 
     @PostMapping("vo")
-    public IPage pageVo(String type,Integer pageNo,Integer pageSize){
+    public IPage pageVo(String type,String sort,Integer pageNo,Integer pageSize){
         QueryWrapper<Source> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category",type);
+        queryWrapper.eq("category", SourceEnum.findEnumByName(type));
+        queryWrapper.orderByDesc(sort);
         IPage<Source> page = new Page<>(pageNo,pageSize);
         IPage<Source> iPage = sourceService.page(page, queryWrapper);
         List<Source> records = iPage.getRecords();
@@ -83,5 +86,12 @@ public class SourceController {
             record.setHasFavour(favour != null);
         }
         return Result.success(record);
+    }
+
+    @Authentication
+    @PostMapping("getALl")
+    public Result getALl(){
+        List<Source> list = sourceService.list();
+        return Result.success(list);
     }
 }

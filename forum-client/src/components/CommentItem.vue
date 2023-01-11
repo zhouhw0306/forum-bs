@@ -5,7 +5,6 @@
       <div class="me-view-info">
         <a class="">
           <el-avatar :src="attachImageUrl(comment.user.avatar)"></el-avatar>
-          <!--        <img class="me-view-picture" :src="attachImageUrl(comment.user.avatar)"></img>-->
         </a>
         <span class="me-view-nickname">{{comment.user.username}}</span>
         <span class="me-view-meta" style="margin-left: -15px">{{comment.createTime}}</span>

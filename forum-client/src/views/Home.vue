@@ -23,25 +23,20 @@ export default {
   data (){
     return {
       activeIndex: '/',
-      footerShow:true
-      //bg:'background: whitesmoke',
+      footerShow:false
     }
   },
-  // created() {
-  //   initBg().then(res => {this.bg = `background: url(${res.data}) no-repeat center;background-size: cover;  min-height: 100vh;`})
-  // },
   beforeRouteEnter (to, from, next){
     next(vm => {
       vm.activeIndex = to.path
     })
   },
   beforeRouteUpdate (to, from, next) {
-    if(to.path == '/'){
+    if(to.path === '/'){
       this.footerShow = true
     }else{
       this.footerShow = false
     }
-    this.activeIndex = to.path
     next()
   }
 }

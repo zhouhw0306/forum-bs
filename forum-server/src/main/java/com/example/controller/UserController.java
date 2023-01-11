@@ -7,6 +7,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.annotation.Authentication;
+import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.Article;
@@ -22,7 +24,6 @@ import com.example.utils.UserUtils;
 import com.example.vo.Personal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -39,7 +40,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
+import static com.example.constant.UserLockState.LOCK_DOWN;
+import static com.example.constant.UserLockState.UN_LOCK_DOWN;
 import static com.example.utils.RedisConstants.*;
 
 /**
@@ -79,13 +81,14 @@ public class UserController {
             return result;
         }
         User user = list.get(0);
+        if ("0".equals(user.getLockState())){
+            return Result.error(ResultCode.USER_ACCOUNT_FORBIDDEN);
+        }
         // 生成token
         String token = JWTUtil.sign(String.valueOf(user.getId()),user.getPassword());
         user.setPassword("it's a secret");
         user.setToken(token);
         //缓存到Redis
-
-
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
         /**
          * 使用Jackson2JsonRedisSerialize 替换默认序列化
@@ -263,6 +266,40 @@ public class UserController {
         personal.setFollowers(be_subscribes.size());
         return Result.success(personal);
     }
+
+    //所有用户
+    @Authentication
+    @PostMapping("getAllUser")
+    public Result getAllUser(){
+        QueryWrapper<User> wrapper= new QueryWrapper<>();
+        wrapper.ne("role",AuthConstant.ADMIN.toString())
+                .select(User.class,info -> !"password".equals(info.getColumn()));
+        List<User> users = userService.list(wrapper);
+        return Result.success(users);
+    }
+
+    //lockOrUnlock 用户
+    @Authentication
+    @PostMapping("lockOrUnlock/{id}")
+    public Result lockOrUnlock(@PathVariable String id){
+        User user = userService.getById(id);
+        String lockState = user.getLockState();
+        //解封
+        if (LOCK_DOWN.equals(lockState)){
+            User upUser = new User();
+            upUser.setId(id);
+            upUser.setLockState(UN_LOCK_DOWN);
+            boolean flag = userService.updateById(upUser);
+            return flag ? Result.success(1) : Result.error();
+        }
+        //封禁
+        User upUser = new User();
+        upUser.setId(id);
+        upUser.setLockState(LOCK_DOWN);
+        boolean flag = userService.updateById(upUser);
+        return flag ? Result.success(0) : Result.error();
+    }
+
 
     //获得背景图
     @GetMapping("initBg")

@@ -11,12 +11,12 @@
             <result property="category" column="category" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="cover" column="cover" jdbcType="VARCHAR"/>
-            <result property="thumbnum" column="thumbNum" jdbcType="INTEGER"/>
-            <result property="favournum" column="favourNum" jdbcType="INTEGER"/>
+            <result property="thumbNum" column="thumb_num" jdbcType="INTEGER"/>
+            <result property="favourNum" column="favour_num" jdbcType="INTEGER"/>
             <result property="priority" column="priority" jdbcType="VARCHAR"/>
-            <result property="isdelete" column="isDelete" jdbcType="VARCHAR"/>
-            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="userid" column="userId" jdbcType="CHAR"/>
+            <result property="isDelete" column="is_delete" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="userId" column="user_id" jdbcType="CHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

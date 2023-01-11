@@ -83,6 +83,15 @@ public class User implements Serializable {
      */
     private Integer score;
 
+    /**
+     * 身份
+     */
+    private String role;
+
+    /**
+     * 锁定状态为空时表示启用，为0时表示锁定，为1时表示启用
+     */
+    private String lockState;
 
     @TableField(exist = false)
     private String token;

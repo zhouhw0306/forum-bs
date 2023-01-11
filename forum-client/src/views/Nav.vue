@@ -5,7 +5,7 @@
     <div class="container">
       <i class="fa fa-windows item" aria-hidden="true"></i>
       <div class="search-box">
-        <input type="text" v-model="words" @keyup.enter.native="searchWords" class="search-btn" placeholder="搜索">
+        <input type="text" v-model="words" @keyup.enter="searchWords" class="search-btn" placeholder="搜索">
       </div>
       <a href=""><i class="fa fa-search item" aria-hidden="true" @click="searchWords"></i></a>
 

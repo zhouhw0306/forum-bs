@@ -19,23 +19,23 @@ import lombok.Data;
 public class SourceHasthumb implements Serializable {
 
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 
+     * 点赞人
      */
     private String userId;
 
     /**
-     * 
+     * 资源id
      */
     private Integer sourceId;
 
     /**
-     * 
+     * 创建时间
      */
     private Date createTime;
 

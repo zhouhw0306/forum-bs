@@ -16,35 +16,17 @@ export default {
       type: Number,
       default: 100
     },
-    page: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    query: {
-      type: Object,
-      isCareMe: Boolean,
-      default() {
-        return {}
-      }
+    isCareMe: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
-    'query': {
+    'isCareMe': {
       handler() {
         this.noData = false
         this.articles = []
         this.innerPage.pageNumber = 1
-        this.getArticles()
-      },
-      deep: true
-    },
-    'page': {
-      handler() {
-        this.noData = false
-        this.articles = []
-        this.innerPage = this.page
         this.getArticles()
       },
       deep: true
@@ -76,7 +58,7 @@ export default {
       let that = this
       that.loading = true
 
-      getArticles(that.query, that.innerPage).then(res => {
+      getArticles(that.isCareMe, that.innerPage).then(res => {
         let newArticles = res.data.data
         if (newArticles && newArticles.length > 0) {
           that.innerPage.pageNumber += 1

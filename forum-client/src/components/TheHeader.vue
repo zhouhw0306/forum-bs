@@ -13,12 +13,13 @@
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/carePost" @click="toCarePost">关注</el-menu-item>
-          <el-menu-item index="/tools/1">资源</el-menu-item>
+          <el-menu-item index="/CarePost" @click="toCarePost">关注</el-menu-item>
+          <el-menu-item index="/source">资源</el-menu-item>
           <el-menu-item index="/world">世界</el-menu-item>
           <el-menu-item index="/nav">编程导航</el-menu-item>
-          <div class="el-search">
-            <el-input placeholder="请输入想要搜索的内容" v-model="searchUser">
+          <el-menu-item v-if="role === 'ADMIN'" index="/userManage">管理</el-menu-item>
+          <div>
+            <el-input placeholder="请输入想要搜索的内容" v-model="searchUser" class="el-search">
               <i
                   slot="suffix"
                   style="cursor: pointer"
@@ -36,7 +37,6 @@
 
       <el-col :span="4">
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
-
           <template v-if="!loginIn">
             <el-tooltip class="item" effect="dark" content="登录后可发帖和评论" placement="bottom">
               <el-menu-item index="/login">
@@ -49,12 +49,10 @@
           </template>
 
           <template v-else>
-<!--            <el-submenu index>-->
-<!--              <template slot="title">-->
                 <el-popover
                     :visible-arrow="false"
                     placement="bottom"
-                    width="200"
+                    width="150"
                     trigger="hover">
                   <div>
                     <div style="justify-content: center">
@@ -64,10 +62,6 @@
                   </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
                 </el-popover>
-<!--              </template>-->
-<!--              <el-menu-item index @click="setting"><i class="el-icon-back"></i>个人资料</el-menu-item>-->
-<!--              <el-menu-item index @click="logout"><i class="el-icon-back"></i>退出</el-menu-item>-->
-<!--            </el-submenu>-->
           </template>
         </el-menu>
       </el-col>
@@ -102,6 +96,7 @@ export default {
       'userId',
       'avatar',
       'username',
+      'role',
       'loginIn'
     ]),
   },
@@ -119,6 +114,7 @@ export default {
       localStorage.removeItem('userId')  //用户id
       localStorage.removeItem('username') //用户名
       localStorage.removeItem('avatar') //头像url
+      localStorage.removeItem('role')
       localStorage.removeItem('token')
       this.$router.go(0)
       this.notify("退出成功",'success')
@@ -197,14 +193,12 @@ export default {
 }
 .el-search{
   width: 200px;
-  /*margin-top: 10px;*/
   margin-right: 20px;
   float: right;
   transition: all 0.5s ease 0s;
 }
 .el-search:hover{
   width: 300px;
-  box-shadow: 0 0 5px rgba(109,207,246,.5)
 }
 .el-menu.el-menu--horizontal{
   line-height: 60px;

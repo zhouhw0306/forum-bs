@@ -26,7 +26,7 @@ export const getAllTags = () =>get(`tag/getTagAll`)
 //根据id获得文章
 export const getArticle = (id) => get(`articles/${id}`)
 //获得所有文章
-export function getArticles(query, page) {
+export function getArticles(isCareMe, page) {
     return axios({
         url: 'articles/getAll',
         method: 'get',
@@ -34,11 +34,7 @@ export function getArticles(query, page) {
             pageNumber: page.pageNumber,
             pageSize: page.pageSize,
             sort: page.sort,
-            isCareMe: query.isCareMe
-            // year: query.year,
-            // month: query.month,
-            // tagId: query.tagId,
-            // categoryId: query.categoryId
+            isCareMe: isCareMe
         }
     })
 }
@@ -95,7 +91,7 @@ export const getPersonal = () => get(`api/getPersonal`)
 //获得背景图
 export const initBg = () => get('api/initBg')
 
-//获取资源
+//条件筛选获取资源
 export const getTableData = (params) => post(`source/vo`,params)
 
 //点赞
@@ -106,3 +102,16 @@ export const favour = (params) => post('source/favour',params)
 
 //根据id获取资源
 export const getSourceById = (id) => get(`source/${id}`)
+
+// =======================> 管理员 API
+//获取所有用户
+export const getAllUser = () => post(`api/getAllUser`)
+
+//获取所有资源
+export const getSourceAll = () => post(`source/getALl`)
+
+//获取所有评论
+export const getCommentAll = () => post(`comment/getCommentAll`)
+
+//lockOrUnlock用户
+export const lockOrUnlock = (id) => post(`api/lockOrUnlock/${id}`)

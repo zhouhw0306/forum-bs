@@ -18,7 +18,7 @@ import lombok.Data;
 public class Notification implements Serializable {
 
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;

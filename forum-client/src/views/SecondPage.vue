@@ -4,7 +4,7 @@
 
       <!--我关注的文章-->
       <el-main class="me-articles">
-        <article-page :query={isCareMe:true}></article-page>
+        <article-page :isCareMe=true></article-page>
       </el-main>
 
       <!--侧边栏-->

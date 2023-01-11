@@ -5,7 +5,6 @@
     <div class="me-article-header">
 
       <a @click="view(id)" class="me-article-title">{{title}}</a>
-<!--      <el-button v-if="weight > 0" class="me-article-icon" type="text">置顶</el-button>-->
       <span class="me-pull-right me-article-count">
 	    	<i class="el-icon-chat-dot-round"></i>&nbsp;{{commentCount}}
 	    </span>
@@ -41,14 +40,10 @@ export default {
   props: {
     id: String,
     categoryId : Number,
-    //weight: Number,
     title: String,
     commentCount: Number,
     viewCount: Number,
     content: String,
-    //summary: String,
-    //author: Object,
-    //tags: Array,
     createTime: String,
     userId: String,
     updateTime: String

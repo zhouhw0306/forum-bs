@@ -4,6 +4,7 @@ const user = {
     username: '',
     avatar: '',
     token:'',
+    role:'',
     loginIn: false // 用户是否登录
   },
   getters: {
@@ -35,6 +36,13 @@ const user = {
       }
       return token;
     },
+    role: state => {
+      let role = state.role
+      if (!role){
+        role = JSON.parse(window.localStorage.getItem('role') || null)
+      }
+      return role;
+    },
     loginIn: state => {
       let loginIn = state.loginIn
       if (!loginIn) {
@@ -59,6 +67,10 @@ const user = {
     setToken : (state,token) => {
       state.token = token
       token ==='' ? window.localStorage.removeItem('token') : window.localStorage.setItem('token', JSON.stringify(token));
+    },
+    setRole : (state,role) => {
+      state.role = role
+      role ==='' ? window.localStorage.removeItem('role') : window.localStorage.setItem('role', JSON.stringify(role));
     },
     setLoginIn: (state, loginIn) => {
       state.loginIn = loginIn

@@ -18,7 +18,7 @@ import lombok.Data;
 public class Subscribe implements Serializable {
 
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;

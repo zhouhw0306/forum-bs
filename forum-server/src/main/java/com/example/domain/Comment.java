@@ -19,43 +19,43 @@ import lombok.Data;
 @Data
 public class Comment implements Serializable {
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.ASSIGN_UUID)
     private String id;
 
     /**
-     * 
+     * 内容
      */
     private String content;
 
     /**
-     * 
+     * 创建时间
      */
     private Date createTime;
 
     /**
-     * 
+     * 所属帖子id
      */
     private String articleId;
 
     /**
-     * 
+     * 作者id
      */
     private String authorId;
 
     /**
-     * 
+     * 父级评论id(1,2级评论才有该字段)
      */
     private String parentId;
 
     /**
-     * 
+     * toUid(2级评论才有该字段)
      */
     private String toUid;
 
     /**
-     * 
+     * (0,1,2)[0级为最高级评论]
      */
     private String level;
 

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.annotation.Authentication;
 import com.example.constant.Result;
 import com.example.domain.Comment;
 import com.example.domain.User;
@@ -37,33 +38,42 @@ public class CommentController {
     @GetMapping("/getCommentsByArticle")
     public Result getCommentsByArticle(String articleId){
 
-        QueryWrapper<Comment> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("article_id",articleId);
-        queryWrapper.eq("level","0");
-        queryWrapper.last("order by create_Time desc");
-        List<Comment> list = commentService.list(queryWrapper);
+        List<Comment> list = commentService.query().eq("article_id",articleId).eq("level","0").orderByDesc("create_time").list();
         // 封装评论的user信息
         for (Comment comm : list) {
-            User user = userService.getById(comm.getAuthorId());
-            comm.setUser(user);
-            // 封装子评论
-            QueryWrapper<Comment> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("parent_id",comm.getId());
-            queryWrapper1.last("order by create_Time desc");
-            List<Comment> childrens = commentService.list(queryWrapper1);
-            // 封装子评论的user信息
-            for (Comment children : childrens) {
-                User user1 = userService.getById(children.getAuthorId());
-                children.setUser(user1);
-                if (children.getLevel().equals("2")){
-                    User user2 = userService.getById(children.getToUid());
-                    children.setToUser(user2);
-                }
+            // 封装评论作者信息
+            List<User> list0 = userService.query().select("avatar", "username").eq("id", comm.getAuthorId()).list();
+            if (list0 != null){
+                comm.setUser(list0.get(0));
             }
+            // 封装子评论信息
+            List<Comment> childrens = pushChildrenComment(comm);
             comm.setChildrens(childrens);
         }
 
         return Result.success(list);
+    }
+
+    /**
+     *  封装子评论
+     */
+    public List<Comment> pushChildrenComment(Comment comm){
+        // 封装子评论
+        List<Comment> childrens = commentService.query().eq("parent_id",comm.getId()).orderByDesc("create_time").list();
+        // 封装子评论的user信息
+        for (Comment children : childrens) {
+            List<User> list1 = userService.query().select("avatar", "username").eq("id", children.getAuthorId()).list();
+            if (list1 != null){
+                children.setUser(list1.get(0));
+            }
+            if (children.getLevel().equals("2")){
+                List<User> list2 = userService.query().select("avatar", "username").eq("id", children.getToUid()).list();
+                if (list2 != null){
+                    children.setToUser(list2.get(0));
+                }
+            }
+        }
+        return childrens;
     }
 
     /**
@@ -73,5 +83,26 @@ public class CommentController {
     public Result pushComment(Comment comment){
         comment.setContent(sensitiveFilter.filter(comment.getContent()));
         return commentService.addComm(comment);
+    }
+
+    /**
+     * 获取所有评论
+     */
+    @Authentication
+    @PostMapping("/getCommentAll")
+    public Result getCommentAll(){
+        List<Comment> list = commentService.query().eq("level", 0).orderByDesc("create_time").list();
+        // 封装评论的user信息
+        for (Comment comm : list) {
+            // 封装评论作者信息
+            List<User> list0 = userService.query().select("avatar", "username").eq("id", comm.getAuthorId()).list();
+            if (list0 != null){
+                comm.setUser(list0.get(0));
+            }
+            // 封装子评论信息
+            List<Comment> childrens = pushChildrenComment(comm);
+            comm.setChildrens(childrens);
+        }
+        return Result.success(list);
     }
 }
