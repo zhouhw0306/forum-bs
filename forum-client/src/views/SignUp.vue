@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import { mixin } from '../mixins'
-import { rules, cities } from '../assets/data/form'
+import { mixin } from '@/mixins'
+import { rules, cities } from '@/assets/data/form'
 import { SignUp,ApiSendCode } from '../api/index'
 
 export default {

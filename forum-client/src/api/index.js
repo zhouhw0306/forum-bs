@@ -7,8 +7,8 @@ export const loginIn = (params) => post(`api/login/status`, params)
 export const SignUp = (params) => post(`api/user/add`, params)
 // 发送注册邮箱验证码
 export const ApiSendCode = (params) => post(`api/sigIn/code`, params)
-// 根据id获取User对象
-export const getAuthor = (params) => get(`api/getById`,params)
+// 根据登录User对象
+export const getAuthor = () => get(`api/getUser`)
 // 根据积分排序
 export const getByScore = () => get(`api/getByScore`)
 // 更新用户信息
@@ -103,15 +103,33 @@ export const favour = (params) => post('source/favour',params)
 //根据id获取资源
 export const getSourceById = (id) => get(`source/${id}`)
 
+//添加资源
+export const sourceShare = (source) => post(`source/insert`,source)
+
+//获取收藏资源
+export const getHasFavour = () => get(`source/getHasFavour`)
+
 // =======================> 管理员 API
 //获取所有用户
 export const getAllUser = () => post(`api/getAllUser`)
 
 //获取所有资源
-export const getSourceAll = () => post(`source/getALl`)
+export const getSourceAll = (state) => post(`source/getAll/${state}`)
 
 //获取所有评论
 export const getCommentAll = () => post(`comment/getCommentAll`)
 
 //lockOrUnlock用户
 export const lockOrUnlock = (id) => post(`api/lockOrUnlock/${id}`)
+
+//删除文章
+export const deleteArticle = (id) => post(`articles/deleteById/${id}`)
+
+//删除评论
+export const deleteComment = (params) => post(`comment/delete`,params)
+
+//删除资源
+export const deleteSource = (id) => post(`source/delete/${id}`)
+
+//审核资源
+export const sourcePass = (param) => post(`source/pass`,param)

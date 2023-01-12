@@ -32,11 +32,18 @@
           prop="createTime"
           label="创建时间">
       </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini"
+                     type="danger"
+                     @click="handleDelete(scope.row.id,scope.row.level)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
-import {getCommentAll} from "@/api";
+import {deleteComment, getCommentAll} from "@/api";
 
 export default {
   data() {
@@ -83,6 +90,19 @@ export default {
         return 'row-2';
       }
     },
+    handleDelete(id,level){
+      let params = new URLSearchParams()
+      params.append('id', id)
+      params.append('level', level)
+      deleteComment(params).then(res => {
+        if (res.code === 0){
+          this.init()
+          this.$message.success('删除成功')
+        }else {
+          this.$message.error(res.msg)
+        }
+      }).catch(err => this.$message.error(err))
+    }
   },
 }
 </script>

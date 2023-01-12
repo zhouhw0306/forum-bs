@@ -139,19 +139,9 @@
       getArticleById(id) {
         let that = this
         getArticleById(id).then(data => {
-//console.log(data.data.data)
-          //Object.assign(that.articleForm, data.data.data)
           that.articleForm.editor.value = data.data.data.content
           that.articleForm.id = data.data.data.id
           that.articleForm.title = data.data.data.title
-          // that.articleForm.tags = data.data.data.tags
-          // let tags = that.articleForm.tags.map(function (item) {
-          //   return item.id;
-          // })
-          //
-          // that.articleForm.tags = tags
-
-
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: '文章加载失败', showClose: true})
@@ -205,9 +195,12 @@
 
             publishArticle(article).then((res) => {
               loading.close();
-              that.$message({message: '发布成功啦', type: 'success', showClose: true})
-              that.$router.push({path: `/view/${res.data.data.articleId}`})
-
+              if (res.data.code === 0){
+                that.$message({message: '发布成功啦', type: 'success', showClose: true})
+                that.$router.push({path: `/view/${res.data.data}`})
+              }else {
+                that.$message({message: '发布失败', type: 'error', showClose: true})
+              }
             }).catch((error) => {
               loading.close();
               if (error !== 'error') {

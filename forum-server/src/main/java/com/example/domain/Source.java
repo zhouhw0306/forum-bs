@@ -56,9 +56,9 @@ public class Source implements Serializable {
     private Integer favourNum;
 
     /**
-     * 权重
+     * 状态 默认0审核中 1上线
      */
-    private String priority;
+    private Integer state;
 
     /**
      * 删除标识

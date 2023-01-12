@@ -12,4 +12,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CommentService extends IService<Comment> {
 
     Result addComm(Comment comment);
+
+    Result deleteComment(String id, String level);
 }

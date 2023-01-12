@@ -178,7 +178,7 @@
     },
     methods: {
       back(){
-        this.$router.go(-1)
+        this.$router.push({path: `/`})
       },
       //更新关注关系
       updateFollow(){

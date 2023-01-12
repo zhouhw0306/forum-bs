@@ -42,10 +42,6 @@ const routes = [
         component: resolve => require(['../views/SecondPage'], resolve)
       },
       {
-        path: '/nav',
-        component: resolve => require(['../views/Nav'], resolve)
-      },
-      {
         path: '/source',
         component: resolve => require(['../views/Source'], resolve),
       },
@@ -54,8 +50,8 @@ const routes = [
         component: resolve => require(['../components/source/Details'], resolve)
       },
       {
-        path: '/world',
-        component: resolve => require(['../views/World'], resolve)
+        path: '/center',
+        component: resolve => require(['../views/Center'], resolve)
       },
       {
         path: '/admin',

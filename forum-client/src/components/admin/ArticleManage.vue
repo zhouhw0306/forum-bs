@@ -30,12 +30,23 @@
         prop="createTime"
         label="创建时间">
     </el-table-column>
+    <el-table-column
+        prop="updateTime"
+        label="创建时间">
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button size="mini"
+                   type="danger"
+                   @click="handleDelete(scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
   </el-table>
   </div>
 </template>
 
 <script>
-import {getArticles} from "@/api";
+import {deleteArticle, getArticles} from "@/api";
 
 export default {
 
@@ -86,8 +97,20 @@ export default {
           this.$message.error(res.data.msg)
         }
       }).catch(err => this.$message.error(err.data.msg))
+    },
+    // 删除文章
+    handleDelete(row){
+        deleteArticle(row.id).then(res => {
+          if (res.code === 0){
+            this.$message.success('删除成功')
+            this.init()
+          }else{
+            this.$message.success('删除失败')
+          }
+        }).catch(err => {
+          this.$message.error(err.msg)
+        })
     }
-
   }
 }
 </script>

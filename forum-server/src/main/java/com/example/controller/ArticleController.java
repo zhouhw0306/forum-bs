@@ -3,6 +3,7 @@ package com.example.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.annotation.Authentication;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.Article;
@@ -60,10 +61,7 @@ public class ArticleController {
     public Result saveArticle(@RequestBody Article article) {
         article.setContent(sensitiveFilter.filter(article.getContent()));
         String articleId = articleService.publishArticle(article);
-
-        Result r = Result.success();
-        r.simple().put("articleId", articleId);
-        return r;
+        return Result.success(articleId);
     }
 
     //获得全部根据创建时间排序
@@ -109,5 +107,14 @@ public class ArticleController {
         queryWrapper.last("order by comment_count desc,view_count desc limit 6");
         List<Article> list = articleService.list(queryWrapper);
         return Result.success(list);
+    }
+
+    //deleteById文章
+    @Authentication
+    @CacheEvict(value = "article", allEntries=true)
+    @PostMapping("deleteById/{id}")
+    public Result deleteById(@PathVariable String id){
+        boolean flag = articleService.removeById(id);
+        return flag ? Result.success() : Result.error();
     }
 }

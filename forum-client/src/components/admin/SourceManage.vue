@@ -1,5 +1,7 @@
 <template>
   <div>
+  <el-radio v-model="state" label="1">已上线</el-radio>
+  <el-radio v-model="state" label="0">待审核</el-radio>
   <el-input v-model="select_word" size="mini" placeholder="筛选标题关键词" class="handle-input"></el-input>
   <el-table
       :data="tableData"
@@ -47,19 +49,36 @@
         label="类型"
         prop="category">
     </el-table-column>
+    <el-table-column label="操作">
+<!--      <template slot-scope="props" v-if="props.row.state === 1">-->
+<!--        -->
+<!--      </template>-->
+      <template slot-scope="props" >
+        <el-button size="mini" v-if="props.row.state === 1"
+                   type="danger"
+                   @click="handleDelete(props.row.id)">删除</el-button>
+        <el-button size="mini" v-if="props.row.state === 0"
+                   type="success"
+                   @click="handlePass(props.row.id,1)">通过</el-button>
+        <el-button size="mini" v-if="props.row.state === 0"
+                   type="danger"
+                   @click="handlePass(props.row.id,0)">拒绝</el-button>
+      </template>
+    </el-table-column>
   </el-table>
   </div>
 </template>
 
 <script>
-import {getSourceAll} from "@/api";
+import {deleteSource, getSourceAll, sourcePass} from "@/api";
 
 export default {
   data() {
     return {
       tableData: [],
       tempData: [],
-      select_word:''
+      select_word: '',
+      state: '1'
     }
   },
   watch: {
@@ -74,14 +93,18 @@ export default {
           }
         }
       }
+    },
+    state: function () {
+      this.init()
     }
+
   },
   mounted() {
     this.init()
   },
   methods:{
     init(){
-      getSourceAll().then(res => {
+      getSourceAll(this.state).then(res => {
         if (res.code===0){
           this.tableData = res.data
           this.tempData = res.data
@@ -89,6 +112,37 @@ export default {
           this.$message.error(res.msg)
         }
       }).catch(err => this.$message.error(err.msg))
+    },
+    // 删除操作
+    handleDelete(id){
+      deleteSource(id).then(res => {
+        if (res.code === 0){
+          this.init()
+          this.$message.success('删除成功')
+        }else {
+          this.$message.error(res.msg)
+        }
+      }).catch(err => this.$message.error(err))
+    },
+    // 通过审核
+    handlePass(id,type){
+      let params = new URLSearchParams()
+      params.append('id', id)
+      params.append('type', type)
+      sourcePass(params).then(res => {
+        if (res.code === 0){
+          this.init()
+          if (res.data === 1){
+            this.$message.success('上线成功')
+          }
+          if (res.data === 0){
+            this.$message.warning('拒绝成功')
+          }
+        }else {
+          this.$message.error(res.msg)
+        }
+      }).catch(err => this.$message.error(err))
+
     }
   }
 

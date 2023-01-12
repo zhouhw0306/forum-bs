@@ -2,12 +2,13 @@
   <div style="padding: 0px 20px">
     <el-card style="margin: 30px 20px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
-      <el-radio-group v-model="type" size="medium" style="margin-left: 20px">
+      <el-radio-group v-model="type" size="medium" style="margin: 0 20px">
         <el-radio-button label="工具"></el-radio-button>
         <el-radio-button label="网站"></el-radio-button>
         <el-radio-button label="项目"></el-radio-button>
         <el-radio-button label="教程"></el-radio-button>
       </el-radio-group>
+      <el-button v-if="this.$store.getters.loginIn" type="success" icon="el-icon-upload" size="small" @click="dialogFormVisible = true">分享</el-button>
       <div style="margin-top: 20px">
         <i class="el-icon-finished" style="margin-right: 10px"></i>排序
         <el-radio-group v-model="sort" size="medium" style="margin-left: 20px">
@@ -66,13 +67,42 @@
         background
         layout="prev, pager, next">
     </el-pagination>
+
+    <el-dialog title="分享" :visible.sync="dialogFormVisible" width="40%">
+      <el-form :model="form"  style="padding-right: 70px">
+        <el-form-item label="标题" label-width="100px">
+          <el-input v-model="form.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="信息" label-width="100px">
+          <el-input v-model="form.description" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" label-width="100px">
+          <el-input v-model="form.content" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="封面" label-width="100px">
+          <el-input v-model="form.cover" ></el-input>
+        </el-form-item>
+        <el-form-item label="类型" label-width="100px">
+          <el-select v-model="form.category" placeholder="请选择类型">
+            <el-option label="工具" value="1"></el-option>
+            <el-option label="网站" value="2"></el-option>
+            <el-option label="项目" value="3"></el-option>
+            <el-option label="教程" value="4"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="share()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
 import {mixin} from "@/mixins";
-import {favour, getTableData, thumb} from "@/api";
+import {sourceShare, favour, getTableData, thumb} from "@/api";
 
 export default {
   data() {
@@ -82,7 +112,15 @@ export default {
       pageSize: 9,
       total: 0,
       type: '工具',
-      sort: 'create_time'
+      sort: 'create_time',
+      dialogFormVisible: false,
+      form: {
+        title:'',
+        description:'',
+        content:'',
+        cover:'',
+        category:''
+      }
     };
   },
   mixins: [mixin],
@@ -175,6 +213,26 @@ export default {
     //详情
     view(id){
       this.$router.push({path: `/details/${id}`})
+    },
+    share(){
+      if (this.form.title ==='' || this.form.category ===''){
+        return this.$message.error('表单不能为空')
+      }
+      sourceShare(this.form).then(res => {
+         if (res.code === 0){
+           this.$message.success('分享成功正在审核')
+           this.dialogFormVisible = false
+           this.form = {
+             title:'',
+             description:'',
+             content:'',
+             cover:'',
+             category:''
+           }
+         } else {
+           this.$message.error(res.msg)
+         }
+      }).catch(err => this.$message.error(err))
     }
   }
 }

@@ -49,6 +49,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         articleMapper.updateCommCount(comment.getArticleId());
         return Result.success(comment1);
     }
+
+    @Override
+    @Transactional
+    public Result deleteComment(String id, String level) {
+        if ("0".equals(level)){
+            remove(new QueryWrapper<Comment>().eq("parent_id", id));
+            removeById(id);
+        }
+        if ("1".equals(level) || "2".equals(level)){
+            removeById(id);
+        }
+        return Result.success();
+    }
 }
 
 

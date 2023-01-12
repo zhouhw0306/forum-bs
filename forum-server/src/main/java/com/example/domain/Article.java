@@ -1,9 +1,7 @@
 package com.example.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +69,15 @@ public class Article implements Serializable {
      */
     private Date updateTime;
 
+    /**
+     * 删除标识
+     */
+    @TableLogic(value = "0",delval = "1")
+    private String isDelete;
+
+    /**
+     * 标签
+     */
     @TableField(exist = false)
     private List<Tag> tags;
 

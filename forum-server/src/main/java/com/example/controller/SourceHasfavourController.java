@@ -10,10 +10,13 @@ import com.example.service.SourceHasfavourService;
 import com.example.service.SourceService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("source")
@@ -61,4 +64,21 @@ public class SourceHasfavourController {
         }
     }
 
+    /**
+     * 获得所有收藏
+     */
+    @GetMapping("getHasFavour")
+    public Result getHasFavour(){
+        String userId = UserUtils.getCurrentUser();
+        if (userId == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        List<SourceHasfavour> favourList = sourceHasfavourService.query().eq("user_id", userId).list();
+        List<Source> sourceList = new ArrayList<>();
+        for (SourceHasfavour sourceHasfavour : favourList) {
+            Source s = sourceService.getById(sourceHasfavour.getSourceId());
+            sourceList.add(s);
+        }
+        return Result.success(sourceList);
+    }
 }

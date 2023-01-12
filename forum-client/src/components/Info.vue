@@ -38,7 +38,7 @@
 
       </el-form>
     <div class="btn">
-      <div @click="saveMsg()">保存</div>
+      <div @click="saveMsg">保存</div>
       <div @click="goBack">取消</div>
     </div>
     </div>
@@ -76,13 +76,11 @@ export default {
     this.cities = cities
   },
   mounted () {
-    this.getMsg(this.userId)
+    this.getUser()
   },
   methods: {
-    getMsg (id) {
-      let params = new URLSearchParams()
-      params.append("id",id)
-      getAuthor(params)
+    getUser () {
+      getAuthor()
         .then(res => {
           this.registerForm = res.data
         })

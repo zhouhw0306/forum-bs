@@ -35,11 +35,6 @@ public class UserUtils {
         if (StringUtils.isBlank(token)) {
             return null;
         }
-//        Map<Object, Object> userMap = userUtils.stringRedisTemplate.opsForHash().entries(token);
-//        if (userMap.isEmpty()){
-//            return null;
-//        }
-//        User user = BeanUtil.fillBeanWithMap(userMap,new User(),false);
         String userId = JWTUtil.getUserId(token);
         return userId;
     }

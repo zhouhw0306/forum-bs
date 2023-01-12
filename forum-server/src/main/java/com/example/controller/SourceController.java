@@ -41,10 +41,14 @@ public class SourceController {
     @Resource
     private SourceHasthumbService sourceHasthumbService;
 
+    /**
+     *  条件查
+      */
     @PostMapping("vo")
     public IPage pageVo(String type,String sort,Integer pageNo,Integer pageSize){
         QueryWrapper<Source> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("category", SourceEnum.findEnumByName(type));
+        queryWrapper.eq("state", 1);
         queryWrapper.orderByDesc(sort);
         IPage<Source> page = new Page<>(pageNo,pageSize);
         IPage<Source> iPage = sourceService.page(page, queryWrapper);
@@ -69,6 +73,9 @@ public class SourceController {
         return iPage;
     }
 
+    /**
+     * 根据id查
+     */
     @GetMapping("/{id}")
     public Result getById(@PathVariable Integer id){
         Source record = sourceService.getById(id);
@@ -88,10 +95,59 @@ public class SourceController {
         return Result.success(record);
     }
 
+    /**
+     * 查全部
+     */
     @Authentication
-    @PostMapping("getALl")
-    public Result getALl(){
-        List<Source> list = sourceService.list();
+    @PostMapping("getAll/{state}")
+    public Result getALl(@PathVariable Integer state){
+        List<Source> list = sourceService.query().eq("state",state).list();
         return Result.success(list);
+    }
+
+    /**
+     * 根据id删除
+     */
+    @Authentication
+    @PostMapping("/delete/{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        boolean flag = sourceService.removeById(id);
+        return flag ? Result.success() : Result.error();
+    }
+
+    /**
+     * 审核资源
+     */
+    @Authentication
+    @PostMapping("pass")
+    public Result pass(Integer id,Integer type) {
+        if (type == null){
+            return Result.error();
+        }
+        // 拒绝
+        if (type == 0){
+            sourceService.removeById(id);
+            return Result.success(0);
+        }
+        // 通过
+        if (type == 1){
+            Source source = new Source();
+            source.setId(id);
+            source.setState(1);
+            sourceService.updateById(source);
+            return Result.success(1);
+        }
+        return Result.error();
+    }
+
+    @PostMapping("insert")
+    public Result insert(@RequestBody Source source){
+        String currentUser = UserUtils.getCurrentUser();
+        if (currentUser == null){
+            Result.error();
+        }
+        source.setUserId(currentUser);
+        boolean flag = sourceService.save(source);
+        return flag ? Result.success() : Result.error();
     }
 }

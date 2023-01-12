@@ -105,4 +105,13 @@ public class CommentController {
         }
         return Result.success(list);
     }
+
+    /**
+     * 删除评论
+     */
+    @Authentication
+    @PostMapping("/delete")
+    public Result getCommentAll(String id,String level){
+        return commentService.deleteComment(id,level);
+    }
 }

@@ -13,10 +13,9 @@
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/CarePost" @click="toCarePost">关注</el-menu-item>
           <el-menu-item index="/source">资源</el-menu-item>
-          <el-menu-item index="/world">世界</el-menu-item>
-          <el-menu-item index="/nav">编程导航</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/CarePost">关注</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
           <el-menu-item v-if="role === 'ADMIN'" index="/userManage">管理</el-menu-item>
           <div>
             <el-input placeholder="请输入想要搜索的内容" v-model="searchUser" class="el-search">
@@ -38,7 +37,7 @@
       <el-col :span="4">
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
           <template v-if="!loginIn">
-            <el-tooltip class="item" effect="dark" content="登录后可发帖和评论" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="登录查看更多内容" placement="bottom">
               <el-menu-item index="/login">
                 <el-button type="text">登录</el-button>
               </el-menu-item>
@@ -122,13 +121,6 @@ export default {
     setting() {
       if(this.loginIn){
         this.$router.push({path:'/setting'})
-      }
-    },
-    toCarePost(){
-      if (!this.$store.getters.loginIn){
-        this.$router.push({path : '/login'})
-      }else {
-        this.$router.push({path : '/carePost'})
       }
     }
   }

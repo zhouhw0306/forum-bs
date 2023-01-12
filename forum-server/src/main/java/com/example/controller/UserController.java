@@ -85,7 +85,7 @@ public class UserController {
             return Result.error(ResultCode.USER_ACCOUNT_FORBIDDEN);
         }
         // 生成token
-        String token = JWTUtil.sign(String.valueOf(user.getId()),user.getPassword());
+        String token = JWTUtil.sign(user.getId(),user.getPassword());
         user.setPassword("it's a secret");
         user.setToken(token);
         //缓存到Redis
@@ -187,10 +187,14 @@ public class UserController {
         return Result.success();
     }
 
-    //根据id获得user对象
-    @GetMapping("/getById")
-    public Result getById(String id){
-        User user = userService.getById(id);
+    //获得所登录用户的信息
+    @GetMapping("/getUser")
+    public Result getById(){
+        String currentUser = UserUtils.getCurrentUser();
+        if (currentUser == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        User user = userService.getById(currentUser);
         user.setPassword("it's a secret");
         return Result.success(user);
     }

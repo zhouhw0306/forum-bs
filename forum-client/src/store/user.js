@@ -2,9 +2,9 @@ const user = {
   state: {
     userId: '',
     username: '',
-    avatar: '',
-    token:'',
-    role:'',
+    avatar: '', // 头像
+    token:'', // token
+    role:'', // 身份
     loginIn: false // 用户是否登录
   },
   getters: {
