@@ -199,6 +199,13 @@ public class UserController {
         return Result.success(user);
     }
 
+    //获得指定id用户部分信息
+    @GetMapping("/getUserById/{id}")
+    public Result getUserById(@PathVariable String id){
+        User user = userService.query().select("id","username","avatar","score","sex","introduction","birth").eq("id",id).one();
+        return Result.success(user);
+    }
+
     //根据积分排行
     @GetMapping("/getByScore")
     public Result getByScore(){

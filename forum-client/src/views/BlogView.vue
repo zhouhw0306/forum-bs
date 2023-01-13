@@ -111,7 +111,7 @@
     getCommentsByArticle,
     pushComment,
     getArticle,
-    getAuthor,
+    getAuthorById,
     getTags,
     addViewCount,
     isFollow,
@@ -268,9 +268,7 @@
       },
       //获得文章作者
       getAuthor(){
-        let params = new URLSearchParams()
-        params.append("id",this.article.userId)
-        getAuthor(params).then(res => {
+        getAuthorById(this.article.userId).then(res => {
           if (res.code === 0){
             this.$set(this.article,'author',res.data)
           }

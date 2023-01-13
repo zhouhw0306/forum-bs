@@ -7,8 +7,10 @@ export const loginIn = (params) => post(`api/login/status`, params)
 export const SignUp = (params) => post(`api/user/add`, params)
 // 发送注册邮箱验证码
 export const ApiSendCode = (params) => post(`api/sigIn/code`, params)
-// 根据登录User对象
+// 获取登录User对象
 export const getAuthor = () => get(`api/getUser`)
+// 获取指定id用户的部分信息
+export const getAuthorById =(id) => get(`api/getUserById/${id}`)
 // 根据积分排序
 export const getByScore = () => get(`api/getByScore`)
 // 更新用户信息

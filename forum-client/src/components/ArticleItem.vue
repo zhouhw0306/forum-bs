@@ -33,7 +33,7 @@
 
 <script>
 
-import {getAuthor,getTags} from "@/api";
+import {getAuthorById, getTags} from "@/api";
 
 export default {
   name: 'ArticleItem',
@@ -84,9 +84,7 @@ export default {
     },
     //获得文章作者
     InitAuthor(id){
-      let params = new URLSearchParams()
-      params.append("id",id)
-      getAuthor(params).then(res => {
+      getAuthorById(id).then(res => {
         if (res.code === 0){
           this.author=res.data
         }
