@@ -9,7 +9,14 @@
     </div>
     <el-divider></el-divider>
     <div>
-      <i class="el-icon-medal-1"></i> 积分 : {{user.score}}
+      <el-row>
+        <el-col :span="3">
+          <i class="el-icon-medal-1"></i> 积分 : {{user.score}}
+        </el-col>
+        <el-col :span="12">
+          id : {{user.id}}
+        </el-col>
+      </el-row>
     </div>
   </el-card>
   <el-card style="width: calc(100vw - 40px);margin: 19px">

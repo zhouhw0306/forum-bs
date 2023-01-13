@@ -15,13 +15,14 @@
             <result property="viewCount" column="view_count" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="CHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         article_id,user_id,title,category_id,
         content_html,content,
         comment_count,view_count,
-        create_time,update_time
+        create_time,update_time,is_delete
     </sql>
 
     <insert id="addViewCount">

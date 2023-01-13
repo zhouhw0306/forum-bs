@@ -1,5 +1,5 @@
 <template>
-  <div v-title data-title="鸭鸭论坛" style="margin:10px auto">
+  <div v-title data-title="鸭鸭论坛" style="margin:60px auto 10px">
     <el-container>
 
       <!--文章-->
@@ -34,9 +34,8 @@ export default {
 
 /*主窗口*/
 .el-container {
-  padding-top: 100px;
-  paddingn-left: 500px;
-  width: 1000px;
+  padding-top: 60px;
+  width: 65vw;
   padding-bottom: 80px;
 }
 
@@ -51,12 +50,14 @@ export default {
 }
 
 .el-card {
-  /*background-color: white;*/
-  /*height: 300px;*/
   border-radius: 5px;
 }
 
 .el-card:not(:first-child) {
   margin-top: 20px;
+}
+
+.me-articles{
+  min-width: 500px;
 }
 </style>

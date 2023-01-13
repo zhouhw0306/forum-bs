@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.constant.Result;
 import com.example.domain.Source;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SourceService extends IService<Source> {
 
+    Result pass(Integer id, Integer type);
 }

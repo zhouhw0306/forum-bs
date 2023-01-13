@@ -1,6 +1,6 @@
 <template>
-  <div style="padding: 0px 20px">
-    <el-card style="margin: 30px 20px 20px 0px;" shadow="never">
+  <div style="padding: 20px">
+    <el-card style="margin: 0px 0px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
       <el-radio-group v-model="type" size="medium" style="margin: 0 20px">
         <el-radio-button label="工具"></el-radio-button>
@@ -17,9 +17,9 @@
         </el-radio-group>
       </div>
     </el-card>
-    <el-row>
-      <el-col :span="8" v-for="(item,index) in tableData" :key="index">
-        <el-card shadow="hover" style="width:450px;height: 270px;">
+    <el-row :gutter="20">
+      <el-col :xs="13" :sm="13" :md="12" :lg="8" :xl="8" v-for="(item,index) in tableData" :key="index" style="margin-bottom: 20px;">
+        <el-card shadow="hover" style="height: 270px;">
           <div>
             <el-avatar style="vertical-align: top" :size="50" :src="attachImageUrl(item.user.avatar)"></el-avatar>
             <span class="hover-title" style="margin-left: 20px;font-size: 20px;">{{item.user.username}}</span>
@@ -41,17 +41,23 @@
           </div>
 
           <div style="height: 30px;border-top: antiquewhite solid 1px">
-            <el-button class="icon-foot" @click="thumb(item)">
-              <i v-if="!item.hasThumb" class="fa fa-thumbs-o-up"></i>
-              <i v-else class="fa fa-thumbs-up"></i> {{item.thumbNum}}
-            </el-button>
-            <el-button class="icon-foot" @click="favour(item)">
-              <i v-if="!item.hasFavour" class="fa fa-star-o"></i>
-              <i v-else class="fa fa-star"></i> {{item.favourNum}}
-            </el-button>
-            <el-button class="icon-foot">
-              <i class="fa fa-comment-o"></i>
-            </el-button>
+            <el-col :span="8">
+              <el-button class="icon-foot" @click="thumb(item)">
+                <i v-if="!item.hasThumb" class="fa fa-thumbs-o-up"></i>
+                <i v-else class="fa fa-thumbs-up"></i> {{item.thumbNum}}
+              </el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button class="icon-foot" @click="favour(item)">
+                <i v-if="!item.hasFavour" class="fa fa-star-o"></i>
+                <i v-else class="fa fa-star"></i> {{item.favourNum}}
+              </el-button>
+            </el-col>
+            <el-col :span="8">
+              <el-button class="icon-foot">
+                <i class="fa fa-comment-o"></i>
+              </el-button>
+            </el-col>
           </div>
 
         </el-card>
@@ -239,19 +245,8 @@ export default {
 </script>
 
 <style scoped>
-.el-col {
-  margin-bottom: 20px;
-}
-.el-row{
-  margin-right: 0px!important;
-}
 .icon-foot{
-  width: 60px;
-  display: inline-block;
-  margin-left: 30px;
-  margin-right: 30px;
-  text-align:center;
-  padding: 5px 0px;
+  width: 100%;
   cursor: pointer;
   background-color: white;
   border:none

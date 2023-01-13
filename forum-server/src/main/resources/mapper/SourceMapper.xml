@@ -13,8 +13,8 @@
             <result property="cover" column="cover" jdbcType="VARCHAR"/>
             <result property="thumbNum" column="thumb_num" jdbcType="INTEGER"/>
             <result property="favourNum" column="favour_num" jdbcType="INTEGER"/>
-            <result property="priority" column="priority" jdbcType="VARCHAR"/>
-            <result property="isDelete" column="is_delete" jdbcType="VARCHAR"/>
+            <result property="state" column="state" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="CHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="userId" column="user_id" jdbcType="CHAR"/>
     </resultMap>

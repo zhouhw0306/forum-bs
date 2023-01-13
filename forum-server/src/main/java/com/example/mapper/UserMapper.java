@@ -11,6 +11,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     * 添加积分
+     */
+    int addScore(String id,int score);
+
 }
 
 

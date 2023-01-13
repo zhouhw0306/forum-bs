@@ -8,6 +8,7 @@ import com.example.domain.ArticleTagRelation;
 import com.example.domain.Tag;
 import com.example.mapper.ArticleTagRelationMapper;
 import com.example.mapper.TagMapper;
+import com.example.mapper.UserMapper;
 import com.example.service.ArticleService;
 import com.example.mapper.ArticleMapper;
 import com.example.utils.UserUtils;
@@ -30,6 +31,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Resource
     ArticleMapper articleMapper;
+
+    @Resource
+    UserMapper userMapper;
 
     @Resource
     ArticleTagRelationMapper articleTagRelationMapper;
@@ -61,6 +65,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 ArticleTagRelation atr = new ArticleTagRelation(artId,tag.getId());
                 articleTagRelationMapper.insert(atr);
             }
+            userMapper.addScore(UserUtils.getCurrentUser(),2);
             return artId;
         }
     }

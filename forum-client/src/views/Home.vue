@@ -4,7 +4,7 @@
 
       <the-header :activeIndex="activeIndex"></the-header>
 
-      <router-view class="me-container" />
+      <router-view class="me-container"/>
 
       <the-footer v-show="footerShow"></the-footer>
 
@@ -47,7 +47,6 @@ body{
   background-color: whitesmoke;
 }
 .me-container{
-  /*margin: 100px auto 140px;*/
   margin-top: 60px;
   min-height: calc(100vh - 60px);
 }

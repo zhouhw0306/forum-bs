@@ -11,6 +11,7 @@ import com.example.domain.Source;
 import com.example.domain.SourceHasfavour;
 import com.example.domain.SourceHasthumb;
 import com.example.domain.User;
+import com.example.mapper.UserMapper;
 import com.example.service.SourceHasfavourService;
 import com.example.service.SourceHasthumbService;
 import com.example.service.SourceService;
@@ -121,23 +122,7 @@ public class SourceController {
     @Authentication
     @PostMapping("pass")
     public Result pass(Integer id,Integer type) {
-        if (type == null){
-            return Result.error();
-        }
-        // 拒绝
-        if (type == 0){
-            sourceService.removeById(id);
-            return Result.success(0);
-        }
-        // 通过
-        if (type == 1){
-            Source source = new Source();
-            source.setId(id);
-            source.setState(1);
-            sourceService.updateById(source);
-            return Result.success(1);
-        }
-        return Result.error();
+        return sourceService.pass(id,type);
     }
 
     @PostMapping("insert")

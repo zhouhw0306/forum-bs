@@ -17,12 +17,20 @@
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="score" column="score" jdbcType="INTEGER"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
+            <result property="lockState" column="lock_state" jdbcType="CHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,username,password,
         sex,phone_num,email,
         birth,introduction,location,
-        avatar,create_time,update_time
+        avatar,create_time,update_time,score,role,lockState
     </sql>
+
+    <insert id="addScore">
+        update tb_user set score = score + #{score} where id = #{id}
+    </insert>
+
 </mapper>
