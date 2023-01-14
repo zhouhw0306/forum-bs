@@ -9,24 +9,8 @@ const rules = {
   sex: [
     { required: true, message: '请选择性别', trigger: 'change' }
   ],
-  phoneNum: [
-    { message: '请选择日期', trigger: 'blur' }
-  ],
   email: [
-    { message: '请输入邮箱地址', trigger: 'blur' },
     { required: true,type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-  ],
-  birth: [
-    { type: 'date', message: '请选择日期', trigger: 'change' }
-  ],
-  introduction: [
-    { message: '请输入介绍', trigger: 'blur' }
-  ],
-  location: [
-    { message: '请输入地区', trigger: 'change' }
-  ],
-  dept: [
-    { required: true, message: '请输入系部', trigger: 'change' }
   ],
   checkCode: [
     { required: true, message: '请输入验证码', trigger: 'blur' }

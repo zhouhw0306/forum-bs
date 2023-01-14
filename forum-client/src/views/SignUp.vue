@@ -1,16 +1,15 @@
 <template>
 <div class="signUp-page">
-<!--  <img src="../assets/favicon.ico" width="1px" height="710px">-->
   <div class="signUp">
     <div class="signUp-head">
       <span>用户注册</span>
     </div>
     <el-form :model="registerForm" status-icon :rules="rules" ref="registerForm" label-width="70px" class="demo-ruleForm">
       <el-form-item prop="username" label="用户名">
-        <el-input v-model="registerForm.username" placeholder="用户名"></el-input>
+        <el-input v-model="registerForm.username" @focus="clearValida('username')" placeholder="用户名"></el-input>
       </el-form-item>
       <el-form-item prop="password" label="密码">
-        <el-input type="password" placeholder="密码" v-model="registerForm.password" show-password></el-input>
+        <el-input type="password" placeholder="密码" @focus="clearValida('password')" v-model="registerForm.password" show-password></el-input>
       </el-form-item>
       <el-form-item prop="sex" label="性别">
         <el-radio-group v-model="registerForm.sex">
@@ -28,13 +27,13 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="email" label="邮箱">
-        <el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
+        <el-input v-model="registerForm.email" @focus="clearValida('email')" placeholder="邮箱"></el-input>
       </el-form-item>
 
       <el-row >
         <el-col :span="15">
           <el-form-item prop="checkCode" label="验证码">
-            <el-input v-model="registerForm.checkCode" placeholder="验证码" :style="{width: '90%'} "></el-input>
+            <el-input v-model="registerForm.checkCode" @focus="clearValida('checkCode')" placeholder="验证码" :style="{width: '90%'} "></el-input>
           </el-form-item>
         </el-col>
 
@@ -46,7 +45,7 @@
       </el-row>
 
       <div class="login-btn">
-        <el-button @click="goback(-1)">取消</el-button>
+        <el-button @click="goBack">取消</el-button>
         <el-button type="primary" @click="SignUp">确定</el-button>
       </div>
     </el-form>
@@ -84,22 +83,17 @@ export default {
     this.cities = cities
   },
   methods: {
+    // 发送验证码
     sendCode(){
       this.btnCode=true
-      if (this.registerForm.email=='' || this.registerForm.email==null){
-        this.$message({
-          message: '邮箱不能为空',
-          type: 'warning'
-        });
+      if (this.registerForm.email==='' || this.registerForm.email==null){
+        this.$message.warning('邮箱不能为空');
         this.btnCode=false
         return
       }
       const reg = /^([a-zA-Z0-9]+[-_\.]?)+@[a-zA-Z0-9]+\.[a-z]+$/;
       if (!reg.test(this.registerForm.email)){
-        this.$message({
-          message: '请输入正确的邮箱格式',
-          type: 'warning'
-        });
+        this.$message.warning('请输入正确的邮箱格式');
         this.btnCode=false
         return
       }
@@ -131,59 +125,42 @@ export default {
         }
       }, 1000);
     },
-
+    // 注册
     SignUp () {
-      if (this.registerForm.username===''){
-        this.$message.error("用户名不能为空");
-        return
-      }
-      if (this.registerForm.password===''){
-        this.$message.error("密码不能为空");
-        return
-      }
-      if (this.registerForm.sex===''){
-        this.$message.error("性别不能为空");
-        return
-      }
-      if (this.registerForm.email===''){
-        this.$message.error("邮箱不能为空");
-        return
-      }
-      if (this.registerForm.checkCode===''){
-        this.$message.error("验证码不能为空");
-        return
-      }
       let _this = this
-      let datetime = '';
-      if (this.registerForm.birth != ''){
-        let d = this.registerForm.birth
-        datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      }
-
-      let params = new URLSearchParams()
-      params.append('username', this.registerForm.username)
-      params.append('password', this.registerForm.password)
-      params.append('sex', this.registerForm.sex)
-      params.append('email', this.registerForm.email)
-      params.append('checkCode', this.registerForm.checkCode)
-      params.append('birth', datetime)
-      params.append('location', this.registerForm.location)
-      params.append('avatar', '/avatarImages/user.jpg')
-      SignUp(params)
-        .then(res => {
-          if (res.code === 0) {
-            _this.notify('注册成功', 'success')
-            _this.$router.push({path: '/login'})
-          } else {
-            _this.notify(res.msg, 'error')
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      _this.$refs.registerForm.validate(validate=>{
+        if (!validate) return;
+        let datetime = '';
+        if (this.registerForm.birth !== ''){
+          let d = this.registerForm.birth
+          datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+        }
+        let params = new URLSearchParams()
+        params.append('username', this.registerForm.username)
+        params.append('password', this.registerForm.password)
+        params.append('sex', this.registerForm.sex)
+        params.append('email', this.registerForm.email)
+        params.append('checkCode', this.registerForm.checkCode)
+        params.append('birth', datetime)
+        params.append('location', this.registerForm.location)
+        params.append('avatar', '/avatarImages/user.jpg')
+        SignUp(params)
+            .then(res => {
+              if (res.code === 0) {
+                _this.notify('注册成功', 'success')
+                _this.$router.push({path: '/login'})
+              } else {
+                _this.notify(res.msg, 'error')
+              }
+            }).catch(err => this.$message.error(err))
+      })
     },
-    goback (index) {
-      this.$router.go(index)
+    clearValida(data){
+      this.$refs.registerForm.clearValidate([data])
+    },
+    //取消
+    goBack () {
+      this.$router.go(-1)
     }
   }
 }

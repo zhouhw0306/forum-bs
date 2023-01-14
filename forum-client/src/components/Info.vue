@@ -38,7 +38,7 @@
 
       </el-form>
     <div class="btn">
-      <div @click="saveMsg">保存</div>
+      <div @click="saveMsg">更新</div>
       <div @click="goBack">取消</div>
     </div>
     </div>
@@ -49,9 +49,11 @@
 import { mapGetters } from 'vuex'
 import { cities} from '../assets/data/form'
 import { updateUser, getAuthor } from '../api/index'
+import {mixin} from "@/mixins";
 
 export default {
   name: 'info',
+  mixins: [mixin],
   data: function () {
     return {
       registerForm: { // 表单
@@ -92,40 +94,31 @@ export default {
       this.$router.go(-1)
     },
     saveMsg () {
+      let that = this
       this.$confirm('是否更新个人信息?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        if (typeof this.registerForm.birth === 'object'){
+          let d = that.registerForm.birth
+          that.registerForm.birth = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' 00:00:00'
+        }
         updateUser(this.registerForm)
             .then(res => {
               if (res.code === 0) {
                 this.$store.commit('setUsername', this.registerForm.username)
-                this.$notify.success({
-                  title: '更新成功',
-                  showClose: true
-                })
+                this.notify('更新成功', 'success')
                 setTimeout(function () {
                   this.$router.go(-1)
                 }, 2000)
               } else {
-                this.$notify.error({
-                  title: '更新失败',
-                  showClose: true
-                })
+                this.notify('更新失败', 'error')
               }
-            })
-            .catch(err => {
-              console.log(err)
-            })
+            }).catch(err => this.$message.error(err.data.msg))
       }).catch(() => {
-        this.getMsg(this.userId)
-        this.$message({
-          type: 'info',
-          message: '已取消更新'
-        });
+        this.$message.info('已取消更新');
       });
-
     }
   }
 }
