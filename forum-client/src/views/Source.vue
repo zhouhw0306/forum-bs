@@ -25,8 +25,8 @@
             <span class="hover-title" style="margin-left: 20px;font-size: 20px;">{{item.user.username}}</span>
           </div>
 
-          <div style="margin-top: 20px;height: 140px">
-            <div style="width: 250px;display: inline-block">
+          <div style="margin-top: 20px;height: 140px;overflow: hidden">
+            <div style="max-width: calc(100% - 100px);display: inline-block">
               <h1 class="hover-title" @click="view(item.id)">{{item.title}}</h1>
               <span>{{item.description}}</span>
             </div>
@@ -256,5 +256,6 @@ export default {
 }
 .hover-title:hover{
   color: #1890ff;
+  cursor: pointer;
 }
 </style>
