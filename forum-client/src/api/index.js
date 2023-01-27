@@ -17,6 +17,8 @@ export const getByScore = () => get(`api/getByScore`)
 export const updateUser = (params) => post(`api/updateUser`,params)
 
 // =======================> 文章 API
+//模糊查询
+export const searchData = (word) => get(`articles/by/${word}`)
 //获得热帖
 export const getHot = () => get(`articles/getHot`)
 //根据文章id获取标签

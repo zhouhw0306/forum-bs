@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -53,6 +54,16 @@ public class ArticleController {
         r.setResultCode(ResultCode.SUCCESS);
         r.setData(article);
         return r;
+    }
+
+    //模糊查询
+    @GetMapping("/by/{word}")
+    public Result byWord(@PathVariable("word") String word) {
+        if (ObjectUtil.isEmpty(word)){
+            return Result.success();
+        }
+        List<Article> list = articleService.query().like("title",word).list();
+        return Result.success(list);
     }
 
     //添加或更新

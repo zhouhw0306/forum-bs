@@ -2,9 +2,7 @@
   <el-footer class="me-area">
     <div class="me-footer">
       <p>编程社区 2023
-<!--        <strong>-->
           <b to="/" class="me-login-design-color"><a href="https://github.com/zhouhw0306">ZhouHw</a></b>
-<!--        </strong>-->
       </p>
     </div>
   </el-footer>

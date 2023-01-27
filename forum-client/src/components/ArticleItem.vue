@@ -104,7 +104,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 .me-article-header {
   padding: 10px 1px;

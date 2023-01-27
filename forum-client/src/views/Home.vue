@@ -15,7 +15,6 @@
 <script>
 import TheHeader from "../components/TheHeader";
 import TheFooter from "../components/TheFooter";
-import {initBg} from "@/api";
 
 export default {
   name:'Home',
@@ -32,11 +31,7 @@ export default {
     })
   },
   beforeRouteUpdate (to, from, next) {
-    if(to.path === '/'){
-      this.footerShow = true
-    }else{
-      this.footerShow = false
-    }
+    this.footerShow = to.path === '/';
     next()
   }
 }

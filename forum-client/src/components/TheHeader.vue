@@ -1,4 +1,5 @@
 <template>
+  <div>
   <el-header class="me-area">
 
     <el-row class="me-header">
@@ -14,16 +15,15 @@
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/source">资源</el-menu-item>
-          <el-menu-item v-if="loginIn" index="/CarePost">关注</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
           <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
           <el-menu-item v-if="role === 'ADMIN'" index="/userManage">管理</el-menu-item>
-          <div>
-            <el-input placeholder="请输入想要搜索的内容" v-model="searchUser" class="el-search">
+          <div @click="centerDialogVisible = true">
+            <el-input placeholder="请输入想要搜索的内容" class="el-search">
               <i
                   slot="suffix"
                   style="cursor: pointer"
                   class="el-input__icon el-icon-search"
-                  @click="selUser"
               ></i>
             </el-input>
           </div>
@@ -68,12 +68,47 @@
     </el-row>
 
   </el-header>
-
+  <el-dialog
+      :show-close="false"
+      :visible.sync="centerDialogVisible"
+      width="40%"
+      center>
+    <div slot="title">
+      <el-input placeholder="请输入想要搜索的内容" v-model="searchUser">
+        <i
+            slot="prefix"
+            style="cursor: pointer"
+            class="el-input__icon el-icon-search"
+        ></i>
+      </el-input>
+    </div>
+    <el-empty v-if="searchData.length===0" :image-size="100" description="暂无搜索内容"></el-empty>
+    <div v-else>
+      <el-scrollbar style="height:300px">
+        <el-card v-for="(item,index) in searchData" :key="index" style="margin-bottom: 5px">
+          <div>
+            <a @click="view(item.id)">{{item.title}}</a>
+            <span class="me-pull-right me-article-count">
+              <i class="el-icon-chat-dot-round"></i>&nbsp;{{item.commentCount}}
+            </span>
+            <span class="me-pull-right me-article-count">
+              <i class="el-icon-view"></i>&nbsp; {{item.viewCount}}
+            </span>
+            <span class="me-pull-right me-article-count">
+              <i class="el-icon-time"></i>&nbsp;{{item.createTime}}
+            </span>
+          </div>
+        </el-card>
+      </el-scrollbar>
+    </div>
+  </el-dialog>
+  </div>
 </template>
 
 <script>
 import {mixin} from "@/mixins";
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import {searchData} from '@/api';
 
 export default {
   name: 'TheHeader',
@@ -87,7 +122,14 @@ export default {
   },
   data() {
     return {
-      searchUser: "" //搜索框输入
+      searchUser: "", //搜索框输入
+      centerDialogVisible: false,
+      searchData:[]
+    }
+  },
+  watch: {
+    searchUser : function (){
+      this.selectByWord()
     }
   },
   computed: {
@@ -100,7 +142,19 @@ export default {
     ]),
   },
   methods: {
-    selUser() {},//搜索触发事件
+    selectByWord(){
+      if (this.searchUser===""){
+        this.searchData = []
+      }else {
+        searchData(this.searchUser).then(res => {
+          this.searchData = res.data
+        })
+      }
+    },
+    view(id) {
+      this.centerDialogVisible = false
+      this.$router.push({path: `/view/${id}`})
+    },
     toWrite(){
       if (!this.$store.getters.loginIn){
         this.$message({type: 'error', message: '请先登录', showClose: true})
@@ -120,14 +174,14 @@ export default {
     },
     setting() {
       if(this.loginIn){
-        this.$router.push({path:'/setting'})
+        this.$router.push({path:'/center'})
       }
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .el-dropdown-link {
   cursor: pointer;
   color: #409EFF;
@@ -189,9 +243,6 @@ export default {
   float: right;
   transition: all 0.5s ease 0s;
 }
-.el-search:hover{
-  width: 300px;
-}
 .el-menu.el-menu--horizontal{
   line-height: 60px;
   border: none;
@@ -203,5 +254,19 @@ export default {
 }
 .icon{
   float: left;
+}
+.me-pull-right {
+  float: right;
+}
+.me-article-count {
+  color: #a6a6a6;
+  padding-left: 14px;
+  font-size: 13px;
+}
+.el-scrollbar__wrap{
+  overflow-x: hidden;
+}
+.el-scrollbar__bar.is-horizontal {
+  display: none;
 }
 </style>
