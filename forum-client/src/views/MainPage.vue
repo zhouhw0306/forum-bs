@@ -1,5 +1,5 @@
 <template>
-  <div v-title data-title="鸭鸭论坛" style="margin:60px auto 10px">
+  <div data-title="鸭鸭论坛" style="margin:60px auto 10px">
     <el-container>
 
       <!--文章-->

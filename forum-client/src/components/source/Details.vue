@@ -91,7 +91,21 @@ export default {
   data () {
     return {
       id : '',
-      source : {},
+      source : {
+        id:'',
+        createTime:'',
+        title:'',
+        description:'',
+        content:'',
+        hasThumb:'',
+        thumbNum:'',
+        hasFavour:'',
+        favourNum:'',
+        user:{
+          avatar:'',
+          username:''
+        },
+      },
       comments: [],
       comment: {
         content: ''

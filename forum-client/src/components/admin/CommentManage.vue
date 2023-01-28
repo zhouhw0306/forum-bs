@@ -9,7 +9,7 @@
         border
         lazy
         :row-class-name="tableRowClassName"
-        :tree-props="{children: 'childrens', hasChildren: children!=null}">
+        :tree-props="{children: 'childrens'}">
       <el-table-column
           prop="id"
           label="id"

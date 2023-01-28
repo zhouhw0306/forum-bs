@@ -1,5 +1,5 @@
 <template>
-  <div class="me-view-body" v-title :data-title="title">
+  <div class="me-view-body" :data-title="title">
     <el-container class="me-view-container">
       <el-main>
         <div @click="back">
@@ -43,14 +43,11 @@
 
           <div class="me-view-tag">
             标签：
-            <!--<el-tag v-for="t in article.tags" :key="t.id" class="me-view-tag-item" size="mini" type="success">{{t.tagname}}</el-tag>-->
-<!--            <el-button @click="tagOrCategory('tag', t.id)" size="mini" type="primary" v-for="t in article.tags" :key="t.id" round plain>{{t.tagName}}</el-button>-->
             <el-tag v-for="t in article.tags" :key="t.id" :type="type[t.id%5]" style="margin-right: 10px">{{t.tagName}}</el-tag>
           </div>
 
           <div class="me-view-tag">
             文章分类：
-            <!--<span style="font-weight: 600">{{article.category.categoryname}}</span>-->
             <el-button @click="tagOrCategory('category', article.category.id)" size="mini" type="primary" round plain>{{article.categoryName}}</el-button>
           </div>
           <el-divider content-position="center">评论区</el-divider>

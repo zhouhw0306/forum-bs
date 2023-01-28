@@ -1,5 +1,5 @@
 <template>
-  <div id="write" v-title :data-title="title">
+  <div id="write" :data-title="title">
     <el-container>
       <the-header :simple=true>
         <el-col :span="4" :offset="2">
