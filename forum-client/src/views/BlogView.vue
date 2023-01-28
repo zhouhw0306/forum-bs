@@ -155,7 +155,7 @@
     },
     mounted() {
       this.getArticle()
-      if (this.$route.query.article.id){
+      if (this.$route.query.article && this.$route.query.article.id){
         this.getTypeById()
         this.getCommentsByArticle()
       }

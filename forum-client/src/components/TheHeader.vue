@@ -180,7 +180,11 @@ export default {
   }
 }
 </script>
-
+<style scoped>
+.el-menu-item:hover{
+  border-bottom: #2aa3ef solid 2px !important;
+}
+</style>
 <style>
 .el-dropdown-link {
   cursor: pointer;
@@ -235,7 +239,6 @@ export default {
 }
 .el-menu-item:hover{
   color: #1787FB !important;
-  border-bottom: #2aa3ef solid 2px !important;
 }
 .el-search{
   width: 200px;
