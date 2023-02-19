@@ -20,38 +20,38 @@
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
-  import {mixin} from "@/mixins";
-  import {getPersonal} from "@/api";
+import {mapGetters} from "vuex";
+import {mixin} from "@/mixins";
+import {getPersonal} from "@/api";
 
-  export default {
-    name: 'CardMe',
-    mixins: [mixin],
-    data() {
-      return {
-        personal:{}
-      }
+export default {
+  name: 'CardMe',
+  mixins: [mixin],
+  data() {
+    return {
+      personal:{}
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'avatar',
+      'username',
+      'loginIn'
+    ]),
+  },
+  mounted() {
+    this.init()
+  },
+  methods: {
+    init(){
+      getPersonal().then(res => {this.personal = res.data})
     },
-    computed: {
-      ...mapGetters([
-        'userId',
-        'avatar',
-        'username',
-        'loginIn'
-      ]),
-    },
-    mounted() {
-      this.init()
-    },
-    methods: {
-      init(){
-        getPersonal().then(res => {this.personal = res.data})
-      },
-      toWrite(){
-        this.$router.push({path: '/write'})
-      }
+    toWrite(){
+      this.$router.push({path: '/write'})
     }
   }
+}
 </script>
 
 <style scoped>

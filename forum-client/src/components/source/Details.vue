@@ -212,7 +212,15 @@ export default {
       })
     },
     share(){
-      alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+      if (navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(`http://localhost:8080${this.$route.fullPath}`).then(()=>{
+          this.$message({type: 'success', message: '复制成功', showClose: true})
+        }).catch(()=>{
+          this.$message({type: 'error', message: '复制失败', showClose: true})
+        })
+      }else {
+        alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+      }
     },
     goBack() {
       this.$router.go(-1)

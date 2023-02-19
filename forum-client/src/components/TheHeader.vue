@@ -54,10 +54,8 @@
                     width="150"
                     trigger="hover">
                   <div>
-                    <div style="justify-content: center">
                       <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                      <el-button class="btt" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
-                    </div>
+                      <el-button class="btt" style="margin-left: 0" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
                   </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
                 </el-popover>
@@ -163,13 +161,13 @@ export default {
       this.$router.push({path: '/write'})
     },
     logout() {
-      localStorage.removeItem('loginIn') //登录状态
-      localStorage.removeItem('userId')  //用户id
-      localStorage.removeItem('username') //用户名
-      localStorage.removeItem('avatar') //头像url
-      localStorage.removeItem('role')
-      localStorage.removeItem('token')
-      this.$router.go(0)
+      this.$store.commit('setLoginIn', false) //是否登录
+      this.$store.commit('setUserId', '')  //用户id
+      this.$store.commit('setUsername', '')  //用户名
+      this.$store.commit('setAvatar', '')  //头像url
+      this.$store.commit('setRole', '')  //身份
+      this.$store.commit('setToken','') //存储用户信息到浏览器
+      this.$router.push('/')
       this.notify("退出成功",'success')
     },
     setting() {
@@ -251,7 +249,6 @@ export default {
   border: none;
 }
 .btt{
-  margin-left: 0px;
   width: 100%;
   border:none;
 }

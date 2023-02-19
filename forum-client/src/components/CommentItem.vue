@@ -59,97 +59,97 @@
 </template>
 
 <script>
-  import {pushComment} from '@/api/index'
-  import {mixin} from "@/mixins";
+import {pushComment} from '@/api/index'
+import {mixin} from "@/mixins";
 
-  export default {
-    name: "CommentItem",
-    mixins: [mixin],
-    props: {
-      articleId: String,
-      comment: Object,
-      index: Number,
-      rootCommentCounts: Number
-    },
-    data() {
-      return {
-        placeholder: '你的评论...',
-        commentShow: false,
-        commentShowIndex: '',
-        reply: this.getEmptyReply()
+export default {
+  name: "CommentItem",
+  mixins: [mixin],
+  props: {
+    articleId: String,
+    comment: Object,
+    index: Number,
+    rootCommentCounts: Number
+  },
+  data() {
+    return {
+      placeholder: '你的评论...',
+      commentShow: false,
+      commentShowIndex: '',
+      reply: this.getEmptyReply()
+    }
+  },
+  methods: {
+    showComment(commentShowIndex, toUser) {
+      this.reply = this.getEmptyReply()
+
+      if (this.commentShowIndex !== commentShowIndex) {
+
+        if (toUser) {
+          this.placeholder = `@${toUser.username} `
+          this.reply.toUser = toUser
+        } else {
+          this.placeholder = '你的评论...'
+        }
+
+        this.commentShow = true
+        this.commentShowIndex = commentShowIndex
+      } else {
+        this.commentShow = false
+        this.commentShowIndex = ''
       }
     },
-    methods: {
-      showComment(commentShowIndex, toUser) {
-        this.reply = this.getEmptyReply()
+    pushComment() {
+      if (!this.$store.getters.loginIn){
+        this.$message({type: 'error', message: '请先登录', showClose: true})
+        return;
+      }
+      if (!this.reply.content) {
+        this.$message({type: 'error', message: '内容不能为空', showClose: true})
+        return;
+      }
 
-        if (this.commentShowIndex !== commentShowIndex) {
+      let params = new URLSearchParams();
+      params.append("content",this.reply.content)
+      params.append("articleId",this.reply.article.id)
+      params.append("authorId",this.$store.getters.userId)
+      params.append("parentId",this.reply.parent.id)
+      if (this.reply.toUser){
+        params.append("toUid",this.reply.toUser.id)
+        params.append("level","2")
+      }else {
+        params.append("level","1")
+      }
+      pushComment(params).then(data => {
+        this.$message({type: 'success', message: '评论成功', showClose: true})
+        //this.$router.go(0)
+        if(!this.comment.childrens){
+          this.comment.childrens = []
+        }
+        this.comment.childrens.unshift(data.data)
+        this.$emit('commentCountsIncrement')
+        this.showComment(this.commentShowIndex)
+      }).catch(error => {
+        if (error !== 'error') {
+          this.$message({type: 'error', message: '评论失败', showClose: true})
+        }
+      })
 
-          if (toUser) {
-            this.placeholder = `@${toUser.username} `
-            this.reply.toUser = toUser
-          } else {
-            this.placeholder = '你的评论...'
-          }
-
-          this.commentShow = true
-          this.commentShowIndex = commentShowIndex
-        } else {
-          this.commentShow = false
-          this.commentShowIndex = ''
-        }
-      },
-      pushComment() {
-        if (!this.$store.getters.loginIn){
-          this.$message({type: 'error', message: '请先登录', showClose: true})
-          return;
-        }
-        if (!this.reply.content) {
-          this.$message({type: 'error', message: '内容不能为空', showClose: true})
-          return;
-        }
-
-        let params = new URLSearchParams();
-        params.append("content",this.reply.content)
-        params.append("articleId",this.reply.article.id)
-        params.append("authorId",this.$store.getters.userId)
-        params.append("parentId",this.reply.parent.id)
-        if (this.reply.toUser){
-          params.append("toUid",this.reply.toUser.id)
-          params.append("level","2")
-        }else {
-          params.append("level","1")
-        }
-        pushComment(params).then(data => {
-          this.$message({type: 'success', message: '评论成功', showClose: true})
-          //this.$router.go(0)
-          if(!this.comment.childrens){
-            this.comment.childrens = []
-          }
-          this.comment.childrens.unshift(data.data)
-          this.$emit('commentCountsIncrement')
-          this.showComment(this.commentShowIndex)
-        }).catch(error => {
-          if (error !== 'error') {
-            this.$message({type: 'error', message: '评论失败', showClose: true})
-          }
-        })
-
-      },
-      getEmptyReply() {
-        return {
-          article: {
-            id: this.articleId
-          },
-          parent: {
-            id: this.comment.id
-          },
-          toUser: '',
-          content: ''
-        }
+    },
+    getEmptyReply() {
+      return {
+        article: {
+          id: this.articleId
+        },
+        parent: {
+          id: this.comment.id
+        },
+        toUser: '',
+        content: ''
       }
     }
   }
+}
 </script>
 
 <style>

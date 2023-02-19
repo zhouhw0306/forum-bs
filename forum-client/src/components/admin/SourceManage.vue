@@ -50,9 +50,6 @@
         prop="category">
     </el-table-column>
     <el-table-column label="操作">
-<!--      <template slot-scope="props" v-if="props.row.state === 1">-->
-<!--        -->
-<!--      </template>-->
       <template slot-scope="props" >
         <el-button size="mini" v-if="props.row.state === 1"
                    type="danger"
