@@ -4,7 +4,6 @@ import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.logging.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
-import java.util.logging.Logger;
-
 
 /**
  *

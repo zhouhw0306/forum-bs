@@ -105,7 +105,7 @@ export default {
             this.$message.success('删除成功')
             this.init()
           }else{
-            this.$message.success('删除失败')
+            this.$message.error('删除失败')
           }
         }).catch(err => {
           this.$message.error(err.msg)

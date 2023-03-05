@@ -214,7 +214,7 @@ export default {
 
   .me-reply-list {
     padding-left: 16px;
-    border-left: 4px solid #87bd71;
+    border-left: 4px solid #6fcbc3;
   }
 
   .me-reply-item {

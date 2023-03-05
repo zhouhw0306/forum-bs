@@ -1,4 +1,5 @@
 <template>
+  <div style="margin: 100px auto 140px;min-width: 1000px">
   <div class="me-view-body" :data-title="title">
     <el-container class="me-view-container">
       <el-main>
@@ -23,7 +24,7 @@
             <el-button
               v-if="this.article.author.id == this.$store.getters.userId"
               @click="editArticle()"
-              style="position: absolute;left: 60%;"
+              style="position: relative;left: 30%;"
               size="mini"
               round
               icon="el-icon-edit">编辑</el-button>
@@ -41,15 +42,7 @@
             </el-alert>
           </div>
 
-          <div class="me-view-tag">
-            标签：
-            <el-tag v-for="t in article.tags" :key="t.id" :type="type[t.id%5]" style="margin-right: 10px">{{t.tagName}}</el-tag>
-          </div>
 
-          <div class="me-view-tag">
-            文章分类：
-            <el-button @click="tagOrCategory('category', article.category.id)" size="mini" type="primary" round plain>{{article.categoryName}}</el-button>
-          </div>
           <el-divider content-position="center">评论区</el-divider>
           <div class="me-view-comment">
             <div class="me-view-comment-write">
@@ -96,6 +89,23 @@
         </div>
       </el-main>
     </el-container>
+  </div>
+  <div class="infoCard">
+    <span>帖子信息</span>
+    <el-divider></el-divider>
+    <div class="me-view-tag">
+      作者：
+      {{article.author.username}}
+    </div>
+    <div class="me-view-tag">
+      标签：
+      <el-tag size="small" v-for="t in article.tags" :key="t.id" :type="type[t.id%5]" style="margin-right: 10px">{{t.tagName}}</el-tag>
+    </div>
+    <div class="me-view-tag">
+      文章分类：
+      <el-tag size="small" @click="tagOrCategory('category', article.category.id)">{{article.categoryName}}</el-tag>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -151,15 +161,22 @@
       }
     },
     mounted() {
-      this.getArticle()
+      window.scrollTo(0,0);
+      //前端点进来的
       if (this.$route.query.article && this.$route.query.article.id){
+        this.article = this.$route.query.article
+        this.editor.value = this.article.content
+        //获取帖子类型和评论
         this.getTypeById()
         this.getCommentsByArticle()
+        //判断是否关注作者
+        this.InitIsFollow()
+        //添加阅读量
+        addViewCount(this.$route.params.id)
+      }else {
+        //获得帖子及作者和标签
+        this.getArticle()
       }
-      //判断是否关注作者
-      this.InitIsFollow()
-      //添加阅读量
-      addViewCount(this.$route.params.id)
     },
     computed: {
       avatar() {
@@ -234,24 +251,28 @@
         this.$router.push({path: `/write/${this.article.id}`})
       },
       //获得文章
-      getArticle() {
-        if (this.$route.query.article && this.$route.query.article.categoryId) {
-          this.article = this.$route.query.article
-          this.editor.value = this.article.content
-          return
-        }
-        // 绕过首页
-        getArticle(this.$route.params.id).then(res => {
+      async getArticle() {
+        // 绕过首页获取帖子
+        await getArticle(this.$route.params.id).then(res => {
           this.article = res.data
           this.editor.value = this.article.content
-          //获得文章作者
-          this.getAuthor()
-          this.getTypeById()
-          this.getCommentsByArticle()
-          this.InitTags()
         }).catch(err => {
           this.$message({type: 'error', message: `文章加载失败${err.msg}`, showClose: true})
         })
+        // 获取作者
+        await getAuthorById(this.article.userId).then(res => {
+          if (res.code === 0){
+            this.$set(this.article,'author',res.data)
+          }
+        }).catch(err => {this.$message({type: 'error', message: `作者加载失败!${err.msg}`, showClose: true})})
+        //获取帖子标签、类型和评论
+        this.InitTags()
+        this.getTypeById()
+        this.getCommentsByArticle()
+        //判断是否关注作者
+        this.InitIsFollow()
+        //添加阅读量
+        addViewCount(this.$route.params.id)
       },
       //获得文章标签
       InitTags(){
@@ -262,14 +283,6 @@
             this.$set(this.article,'tags',res.data)
           }
         }).catch(err => {this.$message({type: 'error', message: '标签加载失败!', showClose: true})})
-      },
-      //获得文章作者
-      getAuthor(){
-        getAuthorById(this.article.userId).then(res => {
-          if (res.code === 0){
-            this.$set(this.article,'author',res.data)
-          }
-        }).catch(err => {this.$message({type: 'error', message: `作者加载失败!${err.msg}`, showClose: true})})
       },
       //转换文章分类
       getTypeById() {
@@ -329,28 +342,18 @@
       'markdown-editor': MarkdownEditor,
       CommmentItem
     },
-    //组件内的守卫 调整body的背景色
-    beforeRouteEnter(to, from, next) {
-      window.document.body.style.backgroundColor = '#fff';
-      next();
-    },
-    beforeRouteLeave(to, from, next) {
-      window.document.body.style.backgroundColor = '#f5f5f5';
-      next();
-    }
   }
 </script>
 
 <style>
   .me-view-body {
-    margin: 100px auto 140px;
     background-color: white;
     border-radius: 10px;
+    display: inline-block;
   }
 
   .me-view-container {
     width: 700px;
-
   }
 
   .el-main {
@@ -398,7 +401,7 @@
   .me-view-tag {
     margin-top: 20px;
     padding-left: 6px;
-    border-left: 4px solid #89cb6f;
+    border-left: 4px solid #6fcbc3;
   }
 
   .me-view-tag-item {
@@ -451,5 +454,14 @@
   }
   .hljs{
     background: #f6f8fa!important;
+  }
+  .infoCard{
+    float: right;
+    margin-left: 20px;
+    width: 240px;
+    background-color: white;
+    padding: 15px;
+    position: sticky;
+    top: 100px
   }
 </style>

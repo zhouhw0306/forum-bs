@@ -53,10 +53,11 @@
                     placement="bottom"
                     width="150"
                     trigger="hover">
-                  <div>
+                    <div>
                       <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                      <el-button class="btt" style="margin-left: 0" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
-                  </div>
+                      <el-button class="btt" style="margin-left: 0"><i class="el-icon-user icon"></i>内容管理</el-button>
+                      <el-button class="btt" style="margin-left: 0;color: #e86f6f" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
+                    </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
                 </el-popover>
           </template>
@@ -83,9 +84,9 @@
     <el-empty v-if="searchData.length===0" :image-size="100" description="暂无搜索内容"></el-empty>
     <div v-else>
       <el-scrollbar style="height:300px">
-        <el-card v-for="(item,index) in searchData" :key="index" style="margin-bottom: 5px">
-          <div>
-            <a @click="view(item.id)">{{item.title}}</a>
+        <el-card shadow="hover" v-for="(item,index) in searchData" :key="index" style="margin-bottom: 10px">
+          <div @click="view(item.id)">
+            <a>{{item.title}}</a>
             <span class="me-pull-right me-article-count">
               <i class="el-icon-chat-dot-round"></i>&nbsp;{{item.commentCount}}
             </span>
@@ -168,7 +169,7 @@ export default {
       this.$store.commit('setRole', '')  //身份
       this.$store.commit('setToken','') //存储用户信息到浏览器
       this.$router.push('/')
-      this.notify("退出成功",'success')
+      this.$router.go(0)
     },
     setting() {
       if(this.loginIn){

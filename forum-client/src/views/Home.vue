@@ -1,6 +1,6 @@
 <template>
-  <div id="home" style="height: 100%;background: url(https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png)">
-    <el-container style="min-height: calc(100vh);">
+  <div id="home">
+    <el-container>
 
       <the-header :activeIndex="activeIndex"></the-header>
 

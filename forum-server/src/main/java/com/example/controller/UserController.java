@@ -6,6 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.jwt.JWTException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
 import com.example.constant.AuthConstant;
@@ -90,9 +91,7 @@ public class UserController {
         user.setToken(token);
         //缓存到Redis
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
-        /**
-         * 使用Jackson2JsonRedisSerialize 替换默认序列化
-         */
+        //使用Jackson2JsonRedisSerialize 替换默认序列化
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);

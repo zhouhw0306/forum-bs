@@ -65,22 +65,25 @@ export default {
       this.$store.commit('setActiveName', value)
     },
     handleLoginIn () {
-      let _this = this
-      let params = new URLSearchParams()
-      params.append('username', this.loginForm.username)
-      params.append('password', this.loginForm.password)
-      loginIn(params)
-        .then(res => {
-          if (res.code === 0) {
-            _this.notify('登录成功', 'success')
-            _this.setUserMsg(res.data)
-            _this.changeIndex('首页')
-            _this.$router.push({path: '/'})
-          } else {
-            _this.notify(res.msg, 'error')
-          }
-        })
-        .catch(err => {this.notify(err.msg, 'error')})
+      this.$refs.loginForm.validate(validate=>{
+        if (!validate) return;
+        let _this = this
+        let params = new URLSearchParams()
+        params.append('username', this.loginForm.username)
+        params.append('password', this.loginForm.password)
+        loginIn(params)
+            .then(res => {
+              if (res.code === 0) {
+                _this.notify('登录成功', 'success')
+                _this.setUserMsg(res.data)
+                _this.changeIndex('首页')
+                _this.$router.push({path: '/'})
+              } else {
+                _this.notify(res.msg, 'error')
+              }
+            })
+            .catch(err => {this.notify(err.msg, 'error')})
+      })
     },
     setUserMsg (item) {
       this.$store.commit('setLoginIn', true) //是否登录

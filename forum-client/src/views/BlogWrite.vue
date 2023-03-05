@@ -3,7 +3,7 @@
     <el-container>
       <the-header :simple=true>
         <el-col :span="4" :offset="2">
-          <div class="me-write-info">写文章</div>
+          <div class="me-write-info">发帖</div>
         </el-col>
         <el-col :span="4" :offset="6">
           <div class="me-write-btn">
@@ -25,7 +25,6 @@
             </el-input>
 
           </div>
-          <div id="placeholder" style="visibility: hidden;height: 89px;display: none;"></div>
           <markdown-editor :editor="articleForm.editor" class="me-write-editor"></markdown-editor>
         </el-main>
       </el-container>
@@ -132,7 +131,7 @@
     },
     computed: {
       title (){
-        return '写文章 - For Fun'
+        return '写帖子'
       }
     },
     methods: {
@@ -290,11 +289,13 @@
   }
 
   .me-write-box {
-    max-width: 700px;
+    max-width: 850px;
     margin: 80px auto 0;
+    box-shadow: 0 0 3px 3px #eceaea;
   }
 
   .me-write-main {
+    /*border: #f4f4f5 solid 2px;*/
     padding: 0;
   }
 
@@ -309,7 +310,7 @@
   }
 
   .me-write-editor {
-    min-height: 650px !important;
+    min-height: 550px !important;
   }
 
 
@@ -324,8 +325,16 @@
     top: 60px;
   }
 
-  .v-note-op {
+  .v-note-wrapper{
     box-shadow: none !important;
+
+  }
+  .v-note-show{
+    padding-left: 15px !important;
+  }
+  .v-note-op {
+    border-bottom: 1px solid #dedfe0 !important;
+    background-color: white !important;
   }
 
   .auto-textarea-input, .auto-textarea-block {
