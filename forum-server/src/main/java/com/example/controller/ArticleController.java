@@ -8,10 +8,13 @@ import com.example.annotation.Authentication;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.Article;
+import com.example.domain.Source;
 import com.example.domain.Subscribe;
 import com.example.domain.User;
 import com.example.service.ArticleService;
+import com.example.service.SourceService;
 import com.example.service.SubscribeService;
+import com.example.service.UserService;
 import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -35,6 +39,12 @@ public class ArticleController {
 
     @Resource
     private SubscribeService subscribeService;
+
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private SourceService sourceService;
 
     @Resource
     private SensitiveFilter sensitiveFilter;
@@ -56,14 +66,21 @@ public class ArticleController {
         return r;
     }
 
-    //模糊查询
+    //微搜
     @GetMapping("/by/{word}")
     public Result byWord(@PathVariable("word") String word) {
         if (ObjectUtil.isEmpty(word)){
             return Result.success();
         }
-        List<Article> list = articleService.query().like("title",word).list();
-        return Result.success(list);
+        List<Article> list1 = articleService.query().select("id","title","comment_count","view_count","create_time").like("title",word).list();
+        List<User> list2 = userService.query().select("id","username","avatar","introduction").like("username",word).list();
+        List<Source> list3 = sourceService.query().like("title",word).list();
+        Result result = new Result();
+        Map<String, Object> simple = result.simple();
+        simple.put("articleData",list1);
+        simple.put("userData",list2);
+        simple.put("sourceData",list3);
+        return result;
     }
 
     //添加或更新

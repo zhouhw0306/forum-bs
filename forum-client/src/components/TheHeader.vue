@@ -1,5 +1,4 @@
 <template>
-  <div>
   <el-header class="me-area">
 
     <el-row class="me-header">
@@ -17,13 +16,15 @@
           <el-menu-item index="/source">资源</el-menu-item>
           <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
           <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
+          <el-menu-item index="/searchPage">微搜</el-menu-item>
           <el-menu-item v-if="role === 'ADMIN'" index="/userManage">管理</el-menu-item>
-          <div @click="centerDialogVisible = true">
-            <el-input placeholder="请输入想要搜索的内容" class="el-search">
+          <div>
+            <el-input @keyup.enter.native="toSearch" v-model="inputValue" placeholder="请输入想要搜索的内容" class="el-search">
               <i
                   slot="suffix"
                   style="cursor: pointer"
                   class="el-input__icon el-icon-search"
+                  @click="toSearch"
               ></i>
             </el-input>
           </div>
@@ -67,41 +68,6 @@
     </el-row>
 
   </el-header>
-  <el-dialog
-      :show-close="false"
-      :visible.sync="centerDialogVisible"
-      width="40%"
-      center>
-    <div slot="title">
-      <el-input placeholder="请输入想要搜索的内容" v-model="searchUser">
-        <i
-            slot="prefix"
-            style="cursor: pointer"
-            class="el-input__icon el-icon-search"
-        ></i>
-      </el-input>
-    </div>
-    <el-empty v-if="searchData.length===0" :image-size="100" description="暂无搜索内容"></el-empty>
-    <div v-else>
-      <el-scrollbar style="height:300px">
-        <el-card shadow="hover" v-for="(item,index) in searchData" :key="index" style="margin-bottom: 10px">
-          <div @click="view(item.id)">
-            <a>{{item.title}}</a>
-            <span class="me-pull-right me-article-count">
-              <i class="el-icon-chat-dot-round"></i>&nbsp;{{item.commentCount}}
-            </span>
-            <span class="me-pull-right me-article-count">
-              <i class="el-icon-view"></i>&nbsp; {{item.viewCount}}
-            </span>
-            <span class="me-pull-right me-article-count">
-              <i class="el-icon-time"></i>&nbsp;{{item.createTime}}
-            </span>
-          </div>
-        </el-card>
-      </el-scrollbar>
-    </div>
-  </el-dialog>
-  </div>
 </template>
 
 <script>
@@ -121,14 +87,7 @@ export default {
   },
   data() {
     return {
-      searchUser: "", //搜索框输入
-      centerDialogVisible: false,
-      searchData:[]
-    }
-  },
-  watch: {
-    searchUser : function (){
-      this.selectByWord()
+      inputValue: "", //搜索框输入
     }
   },
   computed: {
@@ -141,18 +100,8 @@ export default {
     ]),
   },
   methods: {
-    selectByWord(){
-      if (this.searchUser===""){
-        this.searchData = []
-      }else {
-        searchData(this.searchUser).then(res => {
-          this.searchData = res.data
-        })
-      }
-    },
-    view(id) {
-      this.centerDialogVisible = false
-      this.$router.push({path: `/view/${id}`})
+    toSearch(){
+      this.$router.push({path: `/searchPage`,query : {inputValue : this.inputValue}})
     },
     toWrite(){
       if (!this.$store.getters.loginIn){

@@ -30,7 +30,7 @@
               icon="el-icon-edit">编辑</el-button>
           </div>
           <div class="me-view-content">
-            <markdown-editor :editor=editor></markdown-editor>
+            <markdown-editor style="box-shadow: none" :editor=editor></markdown-editor>
           </div>
 
           <div class="me-view-end">
@@ -192,7 +192,7 @@
     },
     methods: {
       back(){
-        this.$router.push({path: `/`})
+        this.$router.go(-1)
       },
       //更新关注关系
       updateFollow(){

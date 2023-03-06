@@ -54,6 +54,10 @@ const routes = [
         component: resolve => require(['../views/Center'], resolve)
       },
       {
+        path: '/searchPage',
+        component: resolve => require(['../views/SearchPage'], resolve)
+      },
+      {
         path: '/admin',
         component: resolve => require(['../views/Admin'], resolve),
         children: [
