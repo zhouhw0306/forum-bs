@@ -1,14 +1,17 @@
 <template>
-  <div style="margin: 150px auto;width: 60vw;min-width: 900px">
+  <div style="margin: 120px auto;width: 60vw;min-width: 900px">
+    <div class="title_search">
+      搜索
+    </div>
     <div>
       <el-input placeholder="请输入内容" v-model="inputValue" class="input-with-select" @keyup.enter.native="searchByWord">
         <el-button @click="searchByWord" slot="append" icon="el-icon-search"></el-button>
       </el-input>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="帖子" name="articleTable"><ArticleTable :tableData="articleData"></ArticleTable></el-tab-pane>
-      <el-tab-pane label="资源" name="sourceTable"><SourceTable :tableData="sourceData"></SourceTable></el-tab-pane>
-      <el-tab-pane label="用户" name="userTable"><UserTable :tableData="userData"></UserTable></el-tab-pane>
+      <el-tab-pane label="帖子" name="articleTable"><article-table :tableData="articleData"></article-table></el-tab-pane>
+      <el-tab-pane label="资源" name="sourceTable"><source-table :tableData="sourceData"></source-table></el-tab-pane>
+      <el-tab-pane label="用户" name="userTable"><user-table :tableData="userData"></user-table></el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -43,6 +46,7 @@ export default {
     },
     searchByWord(){
       this.$router.push({query:{activeName:this.activeName,inputValue:this.inputValue}})
+      if (!this.inputValue) return
       searchData(this.inputValue).then(res => {
         this.articleData = res.data.articleData
         this.sourceData = res.data.sourceData
@@ -62,5 +66,14 @@ export default {
 .el-tabs__nav-wrap{
   padding: 0px 20px 0px 20px;
 
+}
+.title_search{
+  letter-spacing:15px;
+  justify-content: center;
+  display: flex;
+  font-weight: 520;
+  margin-bottom: 30px;
+  font-size: xx-large;
+  color: #67C23A;
 }
 </style>

@@ -10,9 +10,9 @@
             {{item.username}}
           </span>
           </div>
-          <h style="margin-top: 200px">
+          <span style="margin-top: 200px">
             简介： {{item.introduction}}
-          </h>
+          </span>
         </el-card>
       </el-col>
     </el-row>

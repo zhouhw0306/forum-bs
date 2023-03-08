@@ -14,7 +14,7 @@
     </div>
 
     <div class="me-artile-description">
-      {{smallContent}}
+      {{filterHtml(contentHtml)}}
     </div>
     <div class="me-article-footer">
 	  	<span class="me-article-author">
@@ -44,6 +44,7 @@ export default {
     commentCount: Number,
     viewCount: Number,
     content: String,
+    contentHtml: String,
     createTime: String,
     userId: String,
     updateTime: String
@@ -52,20 +53,21 @@ export default {
     return {
       type:['','success','warning','danger'],
       author:{},
-      tags: {},
-      smallContent:''
+      tags: {}
     }
   },
   mounted() {
     this.InitAuthor(this.userId)
     this.InitTags(this.id)
-    if (this.content.length>100){
-      this.smallContent = this.content.substring(0,99)+'......'
-    }else {
-      this.smallContent = this.content
-    }
   },
   methods: {
+    //过滤html标签
+    filterHtml(strHTML){
+      let re = new RegExp('<[^<>]+>','g');
+      strHTML = strHTML.replace(re ,"");
+      strHTML = strHTML.replace(/<[^<>]+>/g,"");
+      return strHTML
+    },
     view(id) {
       let article={
         id : this.id,
@@ -112,6 +114,10 @@ export default {
 
 .me-article-title {
   font-weight: 600;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 .me-article-icon {
@@ -132,9 +138,10 @@ export default {
   font-size: 13px;
   line-height: 24px;
   margin-bottom: 10px;
-  /*white-space: nowrap;*/
-  /*text-overflow: ellipsis;*/
-  /*overflow: hidden;*/
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .me-article-author {

@@ -4,7 +4,7 @@
     class="me-editor"
     ref="md"
     :ishljs="true"
-    toolbarsBackground="#cfdffc"
+    toolbarsBackground="#ffffff"
     v-model="editor.value"
     @imgAdd="imgAdd"
     v-bind="editor">

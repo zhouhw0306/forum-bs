@@ -37,7 +37,7 @@
 
         </div>
         <!--回复框-->
-        <div class="me-view-comment-write" v-show="commentShow">
+        <div class="comment-write" v-show="commentShow">
 
           <el-input
             v-model="reply.content"
@@ -158,9 +158,10 @@ export default {
   }
 
 
-  .me-view-comment-write {
+  .comment-write {
     margin-top: 20px;
-
+    padding-left: 8px;
+    border-left: 4px solid #6fcbc3;
   }
 
   .me-view-comment-text {
@@ -214,11 +215,13 @@ export default {
 
   .me-reply-list {
     padding-left: 16px;
-    border-left: 4px solid #6fcbc3;
+
   }
 
   .me-reply-item {
     margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 4px solid #6fcbc3;
     border-bottom: 1px solid #f0f0f0;
   }
 

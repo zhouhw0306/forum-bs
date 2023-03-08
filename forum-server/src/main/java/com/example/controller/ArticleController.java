@@ -72,7 +72,7 @@ public class ArticleController {
         if (ObjectUtil.isEmpty(word)){
             return Result.success();
         }
-        List<Article> list1 = articleService.query().select("id","title","comment_count","view_count","create_time").like("title",word).list();
+        List<Article> list1 = articleService.query().select("id","title","content_html","comment_count","view_count","create_time").like("title",word).list();
         List<User> list2 = userService.query().select("id","username","avatar","introduction").like("username",word).list();
         List<Source> list3 = sourceService.query().like("title",word).list();
         Result result = new Result();
