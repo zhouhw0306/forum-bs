@@ -98,7 +98,8 @@ public class ArticleController {
     public Result listArticles(@RequestParam Integer pageNumber,
                                @RequestParam Integer pageSize,
                                @RequestParam(defaultValue = "false") Boolean isCareMe,
-                               @RequestParam String sort) {
+                               @RequestParam String sort,
+                               @RequestParam(defaultValue = "-1") String index) {
 
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         Integer skipTotal = (pageNumber-1)*pageSize;
@@ -114,7 +115,10 @@ public class ArticleController {
             for (int i = 0; i < list.size(); i++) {
                 beSubscribe[i] = list.get(i).getBeSubscribe();
             }
-            queryWrapper.in("user_id",beSubscribe);
+            queryWrapper.in("user_id", beSubscribe);
+        }
+        if (!"-1".equals(index)){
+            queryWrapper.eq("category_id",index);
         }
         queryWrapper.last("order by create_Time "+sort + " limit " + skipTotal +","+pageSize);
         List<Article> articles = articleService.list(queryWrapper);

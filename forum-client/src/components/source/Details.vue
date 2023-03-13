@@ -35,7 +35,7 @@
 
    <el-card style="margin: 20px 0px;" class="box-card">
      <div class="me-view-comment-title">
-       <span>{{comments.length}} 条评论</span>
+       <span>{{commentCount}} 条评论</span>
      </div>
 
      <div class="me-view-comment">
@@ -128,6 +128,15 @@ export default {
       }
       return '/avatarImages/default_user.jpg'
     },
+    commentCount(){
+      let sum = this.comments.length
+      for(let i = 0; i < this.comments.length; i++){
+        if (this.comments[i].childrens){
+          sum += this.comments[i].childrens.length
+        }
+      }
+      return sum
+    }
   },
   methods : {
     init (){
@@ -199,7 +208,7 @@ export default {
         this.$message({type: 'error', message: `评论失败${err.msg}`, showClose: true})
       })
     },
-    //得到文章评论
+    //得到资源评论
     getCommentsByArticle() {
       let params = new URLSearchParams();
       params.append('articleId',this.source.id)

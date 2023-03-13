@@ -30,7 +30,7 @@ export const getAllTags = () =>get(`tag/getTagAll`)
 //根据id获得文章
 export const getArticle = (id) => get(`articles/${id}`)
 //获得所有文章
-export function getArticles(isCareMe, page) {
+export function getArticles(isCareMe, index, page) {
     return axios({
         url: 'articles/getAll',
         method: 'get',
@@ -38,6 +38,7 @@ export function getArticles(isCareMe, page) {
             pageNumber: page.pageNumber,
             pageSize: page.pageSize,
             sort: page.sort,
+            index: index,
             isCareMe: isCareMe
         }
     })

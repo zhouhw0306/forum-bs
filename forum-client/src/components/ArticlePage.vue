@@ -8,6 +8,7 @@
 import ArticleItem from '@/components/ArticleItem'
 import ScrollPage from '@/components/ScrollPage'
 import {getArticles} from '@/api/index'
+import bus from '../assets/js/bus'
 
 export default {
   name: "ArticleScrollPage",
@@ -21,29 +22,46 @@ export default {
       default: false
     }
   },
-  watch: {
-    'isCareMe': {
-      handler() {
-        this.noData = false
-        this.articles = []
-        this.innerPage.pageNumber = 1
-        this.getArticles()
-      },
-      deep: true
+  mounted() {
+    if (this.$route.query.sw === 'care'){
+      this.isCare = true
+    }else {
+      this.typeIndex = this.$route.query.sw
     }
-  },
-  created() {
     this.getArticles()
+    bus.$emit('activeNav',this.$route.query.sw)
+    bus.$on('switchType',index=>{
+      this.noData=false
+      this.articles=[]
+      this.innerPage={
+        pageSize: 6,
+        pageNumber: 1,
+        sort: 'desc'
+      }
+      if (index === 'care'){
+        this.isCare = true
+        this.typeIndex = ''
+      }else if (index === 'all'){
+        this.isCare = false
+        this.typeIndex = ''
+      }else {
+        this.isCare = false
+        this.typeIndex = index
+      }
+      this.getArticles()
+    })
   },
   data() {
     return {
       loading: false,
-      noData: false,
+      noData: false, //是否还有后续数据
       innerPage: {
         pageSize: 6,
         pageNumber: 1,
         sort: 'desc'
       },
+      isCare: this.isCareMe,
+      typeIndex:'',
       articles: []
     }
   },
@@ -58,7 +76,7 @@ export default {
       let that = this
       that.loading = true
 
-      getArticles(that.isCareMe, that.innerPage).then(res => {
+      getArticles(that.isCare, that.typeIndex,that.innerPage).then(res => {
         let newArticles = res.data.data
         if (newArticles && newArticles.length > 0) {
           that.innerPage.pageNumber += 1
@@ -66,7 +84,6 @@ export default {
         } else {
           that.noData = true
         }
-
       }).catch(error => {
         if (error !== 'error') {
           that.$message({type: 'error', message: '文章加载失败!', showClose: true})
@@ -80,6 +97,9 @@ export default {
   components: {
     'article-item': ArticleItem,
     'scroll-page': ScrollPage
+  },
+  beforeDestroy() {
+    bus.$off('switchType')
   }
 
 }
