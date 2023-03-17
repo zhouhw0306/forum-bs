@@ -19,3 +19,4 @@ yarn-error.log*
 
 .project
 /forum-server/target/
+/forum-server/src/test/

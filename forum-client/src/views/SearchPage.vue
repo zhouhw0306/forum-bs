@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 120px auto;width: 60vw;min-width: 900px">
+  <div style="margin: 120px auto 20px;width: 60vw;min-width: 900px">
     <div class="title_search">
       搜索
     </div>

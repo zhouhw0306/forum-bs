@@ -80,12 +80,12 @@ export default {
 .el-menu-item{
   width: 150px;
   height: 50px;
-  /*border-radius: 5px;*/
 }
 .el-menu-item:hover{
   background-color: rgb(247,248,250);
 }
 .is-active{
   border-left: #30a4fc solid 3px;
+  background-color: rgb(236,245,255);
 }
 </style>

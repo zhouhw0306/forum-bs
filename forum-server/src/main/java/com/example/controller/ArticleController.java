@@ -92,7 +92,7 @@ public class ArticleController {
         return Result.success(articleId);
     }
 
-    //获得全部根据创建时间排序
+    //分页分类获取帖子
     @GetMapping("/getAll")
     @Cacheable(value = "article",keyGenerator = "keyGenerator")
     public Result listArticles(@RequestParam Integer pageNumber,

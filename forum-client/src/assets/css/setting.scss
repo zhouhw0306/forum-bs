@@ -35,23 +35,21 @@
     font-size: 18px;
     padding: 0 10px;
     box-sizing: border-box;
-    border-radius: 5px;
+    //border-radius: 5px;
     margin-right: 2px;
     cursor: pointer;
 
     &:hover {
-      background-color: $color-blue-active;
-      color: $color-white;
-    }
-    &:active {
-      background-color: $color-blue-shallow;
+      background-color: rgb(247, 248, 250);
+      color: rgb(96, 162, 250);
     }
   }
 }
 
 .activeColor {
-  background-color: $color-blue-shallow !important;
-  color: $color-white;
+  background-color: rgb(240, 246, 255) !important;
+  border-left: rgb(88, 158, 248) solid 3px;
+  color: rgb(104, 167, 248);
 }
 
 /* 右边内容 */

@@ -1,9 +1,7 @@
 <template>
-
   <el-card class="me-area" :body-style="{ padding: '16px' }">
 
     <div class="me-article-header">
-
       <a @click="view(id)" class="me-article-title">{{title}}</a>
       <span class="me-pull-right me-article-count">
 	    	<i class="el-icon-chat-dot-round"></i>&nbsp;{{commentCount}}
@@ -136,6 +134,7 @@ export default {
 
 .me-artile-description {
   font-size: 13px;
+  color: #8a919f;
   line-height: 24px;
   margin-bottom: 10px;
   overflow: hidden;
