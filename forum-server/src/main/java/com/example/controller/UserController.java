@@ -6,7 +6,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.jwt.JWTException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.annotation.Authentication;
+import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.Article;
@@ -22,7 +25,6 @@ import com.example.utils.UserUtils;
 import com.example.vo.Personal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -39,7 +41,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
+import static com.example.constant.UserLockState.LOCK_DOWN;
+import static com.example.constant.UserLockState.UN_LOCK_DOWN;
 import static com.example.utils.RedisConstants.*;
 
 /**
@@ -69,97 +72,14 @@ public class UserController {
     //登录
     @RequestMapping(value = "/login/status",method = RequestMethod.POST)
     public Result login(String username, String password){
-        Result result = new Result();
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username);
-        queryWrapper.eq("password",MD5Util.MD5Lower(password));
-        List<User> list = userService.list(queryWrapper);
-        if (list.size()==0){
-            result.setResultCode(ResultCode.USER_LOGIN_ERROR);
-            return result;
-        }
-        User user = list.get(0);
-        // 生成token
-        String token = JWTUtil.sign(String.valueOf(user.getId()),user.getPassword());
-        user.setPassword("it's a secret");
-        user.setToken(token);
-        //缓存到Redis
-
-
-        Map<String,Object> userMap = BeanUtil.beanToMap(user);
-        /**
-         * 使用Jackson2JsonRedisSerialize 替换默认序列化
-         */
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
-        stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL,TimeUnit.MINUTES);
-
-        result.setResultCode(ResultCode.SUCCESS);
-        result.setData(user);
-        return result;
+        return userService.login(username,password);
     }
 
 
     //注册用户
     @RequestMapping(value = "/user/add", method = RequestMethod.POST)
     public Result addUser(HttpServletRequest req){
-
-        String username = req.getParameter("username").trim();
-        String password = req.getParameter("password").trim();
-        String sex = req.getParameter("sex").trim();
-        String email = req.getParameter("email").trim();
-        String userCode = req.getParameter("checkCode").trim();
-        String birth = req.getParameter("birth").trim();
-        String location = req.getParameter("location").trim();
-        String avatar = req.getParameter("avatar").trim();
-        // 验证是否为空
-        if ("".equals(username)){
-            return Result.error(ResultCode.USER_Register_ERROR);
-        }
-        if ("".equals(password)){
-            return Result.error(ResultCode.USER_Register_ERROR);
-        }
-        // 验证码
-        String checkCode = stringRedisTemplate.opsForValue().get(LOGIN_CODE_KEY +email);
-        log.info("正确的验证码:{}",checkCode);
-        if (!StringUtils.equalsIgnoreCase(userCode,checkCode)){
-            return Result.error(ResultCode.USER_CHECK_CODE_ERROR);
-        }
-
-        // 验证用户是否已存在
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("username", username);
-        User one = userService.getOne(queryWrapper);
-        if (one != null){
-            return Result.error(ResultCode.USER_HAS_EXISTED);
-        }
-
-        User user = new User();
-        if (birth!=""){
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date myBirth = new Date();
-            try {
-                myBirth = dateFormat.parse(birth);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            user.setBirth(myBirth);
-        }
-
-        user.setUsername(username);
-        user.setPassword(MD5Util.MD5Lower(password));
-        user.setSex(Integer.parseInt(sex));
-        user.setEmail(email);
-        user.setIntroduction("这个家伙很懒,什么都没有写...");
-        user.setAvatar(avatar);
-        user.setLocation(location);
-        boolean res = userService.save(user);
-        if (res) {
-            return Result.success();
-        } else {
-            return Result.error(ResultCode.ERROR);
-        }
+        return userService.signUp(req);
     }
 
     @Resource
@@ -184,11 +104,22 @@ public class UserController {
         return Result.success();
     }
 
-    //根据id获得user对象
-    @GetMapping("/getById")
-    public Result getById(String id){
-        User user = userService.getById(id);
+    //获得所登录用户的信息
+    @GetMapping("/getUser")
+    public Result getById(){
+        String currentUser = UserUtils.getCurrentUser();
+        if (currentUser == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        User user = userService.getById(currentUser);
         user.setPassword("it's a secret");
+        return Result.success(user);
+    }
+
+    //获得指定id用户部分信息
+    @GetMapping("/getUserById/{id}")
+    public Result getUserById(@PathVariable String id){
+        User user = userService.query().select("id","username","avatar","score","sex","introduction","birth").eq("id",id).one();
         return Result.success(user);
     }
 
@@ -264,12 +195,37 @@ public class UserController {
         return Result.success(personal);
     }
 
-    //获得背景图
-    @GetMapping("initBg")
-    public Result initBg(){
-        String JsonSrc = HttpUtil.get("https://api.btstu.cn/sjbz/?lx=dongman&format=json");
-        JSONObject jsonObject = JSONUtil.parseObj(JsonSrc);
-        String imgurl = jsonObject.getStr("imgurl");
-        return Result.success(imgurl);
+    //所有用户
+    @Authentication
+    @PostMapping("getAllUser")
+    public Result getAllUser(){
+        QueryWrapper<User> wrapper= new QueryWrapper<>();
+        wrapper.ne("role",AuthConstant.ADMIN.toString())
+                .select(User.class,info -> !"password".equals(info.getColumn()));
+        List<User> users = userService.list(wrapper);
+        return Result.success(users);
     }
+
+    //lockOrUnlock 用户
+    @Authentication
+    @PostMapping("lockOrUnlock/{id}")
+    public Result lockOrUnlock(@PathVariable String id){
+        User user = userService.getById(id);
+        String lockState = user.getLockState();
+        //解封
+        if (LOCK_DOWN.equals(lockState)){
+            User upUser = new User();
+            upUser.setId(id);
+            upUser.setLockState(UN_LOCK_DOWN);
+            boolean flag = userService.updateById(upUser);
+            return flag ? Result.success(1) : Result.error();
+        }
+        //封禁
+        User upUser = new User();
+        upUser.setId(id);
+        upUser.setLockState(LOCK_DOWN);
+        boolean flag = userService.updateById(upUser);
+        return flag ? Result.success(0) : Result.error();
+    }
+
 }

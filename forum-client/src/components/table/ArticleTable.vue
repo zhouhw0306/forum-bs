@@ -2,9 +2,9 @@
   <div>
     <el-empty v-if="tableData.length===0" :image-size="100" description="暂无搜索内容"></el-empty>
     <el-col v-else :span="24" v-for="(item,index) in tableData" :key="index" style="margin-bottom: 10px;">
-      <el-card shadow="hover" style="height: 120px;">
+      <el-card  shadow="hover" style="height: 120px;">
         <div @click="view(item.id)">
-          <a class="me-article-title" v-html="item.title"/>
+          <a class="me-article-title">{{item.title}}</a>
           <span class="me-pull-right me-article-count">
             <i class="el-icon-chat-dot-round"></i>&nbsp;{{item.commentCount}}
           </span>
@@ -15,8 +15,9 @@
             <i class="el-icon-time"></i>&nbsp;{{item.createTime}}
           </span>
         </div>
-        <div class="me-artile-description" v-html="filterHtml(item.contentHtml)"/>
-
+        <div class="me-artile-description">
+          {{filterHtml(item.contentHtml)}}
+        </div>
       </el-card>
     </el-col>
   </div>
@@ -35,9 +36,9 @@ export default {
       this.$router.push({path:`/view/${id}`})
     },
     filterHtml(strHTML){
-      // let re = new RegExp('<(?!em).*?>','g');
-      // strHTML = strHTML.replace(re ,"");
-      strHTML = strHTML.replace(/<(?!em|\/em).*?>/g, "");
+      let re = new RegExp('<[^<>]+>','g');
+      strHTML = strHTML.replace(re ,"");
+      strHTML = strHTML.replace(/<[^<>]+>/g,"");
       return strHTML
     }
   }

@@ -1,7 +1,10 @@
 package com.example.service;
 
+import com.example.constant.Result;
 import com.example.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author 24668
@@ -10,4 +13,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    /**
+     * 登录
+     */
+    Result login(String username, String password);
+
+    /**
+     * 注册
+     */
+    Result signUp(HttpServletRequest req);
 }
