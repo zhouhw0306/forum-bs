@@ -10,7 +10,7 @@
           <h1 class="me-view-title">{{article.title}}</h1>
           <div class="me-view-author">
             <a class="">
-              <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"></img>
+              <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"/>
             </a>
             <div class="me-view-info">
               <span>{{article.author.username}}</span><button v-if="this.article.author.id !== this.$store.getters.userId" @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
@@ -22,7 +22,7 @@
 
             </div>
             <el-button
-              v-if="this.article.author.id == this.$store.getters.userId"
+              v-if="this.article.author.id === this.$store.getters.userId"
               @click="editArticle()"
               style="position: relative;left: 30%;"
               size="mini"
@@ -49,7 +49,7 @@
               <el-row :gutter="20">
                 <el-col :span="2">
                   <a class="">
-                    <img class="me-view-picture" :src="attachImageUrl(avatar)"></img>
+                    <img class="me-view-picture" :src="attachImageUrl(avatar)"/>
                   </a>
                 </el-col>
                 <el-col :span="22">

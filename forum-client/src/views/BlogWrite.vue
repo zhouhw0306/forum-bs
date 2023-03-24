@@ -29,7 +29,7 @@
         </el-main>
       </el-container>
 
-      <el-dialog title="摘要 分类 标签"
+      <el-dialog title=" 分类 / 标签"
                  :visible.sync="publishVisible"
                  :close-on-click-modal=false
                  custom-class="me-dialog">
@@ -72,12 +72,8 @@
       }
 
       this.getCategorysAndTags()
-      this.editorToolBarToFixedWrapper = this.$_.throttle(this.editorToolBarToFixed, 200)
-
-      window.addEventListener('scroll', this.editorToolBarToFixedWrapper, false);
-    },
-    beforeDestroy() {
-      window.removeEventListener('scroll', this.editorToolBarToFixedWrapper, false)
+      let but = document.getElementsByClassName("op-icon fa fa-mavon-eye-slash selected")
+      but[0].click();
     },
     data() {
       return {
@@ -196,7 +192,7 @@
               loading.close();
               if (res.data.code === 0){
                 that.$message({message: '发布成功啦', type: 'success', showClose: true})
-                that.$router.push({path: `/view/${res.data.data}`})
+                that.$router.replace({path: `/view/${res.data.data}`})
               }else {
                 that.$message({message: '发布失败', type: 'error', showClose: true})
               }
@@ -310,7 +306,7 @@
   }
 
   .me-write-editor {
-    min-height: 550px !important;
+    height: 580px !important;
   }
 
 
