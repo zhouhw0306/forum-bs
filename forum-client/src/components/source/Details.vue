@@ -194,7 +194,6 @@ export default {
       let params = new URLSearchParams();
       params.append("content",this.comment.content)
       params.append("articleId",this.source.id)
-      params.append("authorId",this.$store.getters.userId)
       params.append("level","0")
       pushComment(params).then(res => {
         if (res.code===0){

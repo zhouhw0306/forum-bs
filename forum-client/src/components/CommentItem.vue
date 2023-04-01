@@ -112,7 +112,6 @@ export default {
       let params = new URLSearchParams();
       params.append("content",this.reply.content)
       params.append("articleId",this.reply.article.id)
-      params.append("authorId",this.$store.getters.userId)
       params.append("parentId",this.reply.parent.id)
       if (this.reply.toUser){
         params.append("toUid",this.reply.toUser.id)

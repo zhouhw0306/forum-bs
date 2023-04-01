@@ -3,6 +3,7 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
+import com.example.constant.ResultCode;
 import com.example.domain.Comment;
 import com.example.domain.User;
 import com.example.mapper.ArticleMapper;
@@ -10,6 +11,7 @@ import com.example.mapper.UserMapper;
 import com.example.service.CommentService;
 import com.example.mapper.CommentMapper;
 import com.example.service.UserService;
+import com.example.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +38,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Override
     @Transactional
     public Result addComm(Comment comment) {
+        String authorId = UserUtils.getCurrentUser();
+        if(authorId==null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        comment.setAuthorId(authorId);
         commentMapper.insert(comment);
         //封装author对象
         Comment comment1 = commentMapper.selectById(comment.getId());
-        User author = userMapper.selectById(comment1.getAuthorId());
+        User author = userMapper.selectById(authorId);
         comment1.setUser(author);
         //封装toUser对象
         if ("2".equals(comment1.getLevel())){

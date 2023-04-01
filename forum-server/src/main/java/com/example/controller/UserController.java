@@ -175,6 +175,8 @@ public class UserController {
                 return Result.error(ResultCode.UPLOAD_ERROR);
             }
         }catch (IOException e){
+            log.info("修改失败{}",avatarPath+fileName);
+            log.info(String.valueOf(e));
             return Result.error(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
     }

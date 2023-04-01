@@ -89,7 +89,7 @@ export default {
       return '';
     },
     init(){
-      getArticles(false,this.innerPage).then(res => {
+      getArticles(false,-1,this.innerPage).then(res => {
         if (res.data.code===0){
           this.tableData = res.data.data
           this.tempData = res.data.data
