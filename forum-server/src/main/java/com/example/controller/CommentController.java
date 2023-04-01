@@ -63,12 +63,12 @@ public class CommentController {
         // 封装子评论的user信息
         for (Comment children : childrens) {
             List<User> list1 = userService.query().select("avatar", "username").eq("id", children.getAuthorId()).list();
-            if (list1 != null){
+            if (list1 != null && list1.size()>0){
                 children.setUser(list1.get(0));
             }
             if (children.getLevel().equals("2")){
                 List<User> list2 = userService.query().select("avatar", "username").eq("id", children.getToUid()).list();
-                if (list2 != null){
+                if (list2 != null && list2.size()>0){
                     children.setToUser(list2.get(0));
                 }
             }
@@ -96,7 +96,7 @@ public class CommentController {
         for (Comment comm : list) {
             // 封装评论作者信息
             List<User> list0 = userService.query().select("avatar", "username").eq("id", comm.getAuthorId()).list();
-            if (list0 != null){
+            if (list0 != null && list0.size()>0){
                 comm.setUser(list0.get(0));
             }
             // 封装子评论信息
