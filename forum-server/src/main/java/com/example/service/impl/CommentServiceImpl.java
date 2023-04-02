@@ -12,6 +12,7 @@ import com.example.service.CommentService;
 import com.example.mapper.CommentMapper;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Transactional
     public Result addComm(Comment comment) {
         String authorId = UserUtils.getCurrentUser();
-        if(authorId==null){
+        if(StringUtils.isBlank(authorId)){
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         comment.setAuthorId(authorId);

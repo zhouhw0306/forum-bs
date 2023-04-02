@@ -56,7 +56,7 @@
                     trigger="hover">
                     <div>
                       <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                      <el-button class="btt" style="margin-left: 0"><i class="el-icon-user icon"></i>内容管理</el-button>
+<!--                      <el-button class="btt" style="margin-left: 0"><i class="el-icon-user icon"></i>内容管理</el-button>-->
                       <el-button class="btt" style="margin-left: 0;color: #e86f6f" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
                     </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
