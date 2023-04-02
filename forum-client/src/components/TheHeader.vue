@@ -5,8 +5,8 @@
 
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
-          <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span style="color: black"> 编程社区</span>
+          <img src="../assets/logo.png"/>
+          <span> codebase</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">
@@ -157,8 +157,8 @@ export default {
   background: rgba(255,255,255,0.7);
 }
 .me-title {
-  margin-top: 10px;
   font-size: 22px;
+  color: #409EFF;
 }
 
 .me-header-left {
@@ -169,6 +169,7 @@ export default {
 .me-title img {
   max-height: 2.4rem;
   max-width: 100%;
+  vertical-align: bottom
 }
 
 .me-header-picture {
