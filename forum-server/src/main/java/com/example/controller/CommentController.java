@@ -43,7 +43,7 @@ public class CommentController {
         for (Comment comm : list) {
             // 封装评论作者信息
             List<User> list0 = userService.query().select("avatar", "username").eq("id", comm.getAuthorId()).list();
-            if (list0 != null){
+            if (list0 != null && list0.size()>0){
                 comm.setUser(list0.get(0));
             }
             // 封装子评论信息
