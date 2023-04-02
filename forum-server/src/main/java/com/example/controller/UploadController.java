@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import java.util.UUID;
  * 上传接口
  * @author 24668
  */
+@Slf4j
 @RestController
 public class UploadController {
 
@@ -44,7 +46,6 @@ public class UploadController {
                 .append(request.getServerName())
                 .append(":")
                 .append(request.getServerPort())
-                .append(request.getContextPath())
                 .append("/articleFile/")
                 .append(filePath);
 
