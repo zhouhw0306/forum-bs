@@ -32,6 +32,11 @@ export default {
       collapse: false,
       items: [
         {
+          icon: 'el-icon-menu',
+          index: 'info',
+          title: '系统首页'
+        },
+        {
           icon: 'el-icon-user',
           index: 'userManage',
           title: '用户管理'

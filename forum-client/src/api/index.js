@@ -17,6 +17,8 @@ export const getByScore = () => get(`api/getByScore`)
 export const updateUser = (params) => post(`api/updateUser`,params)
 
 // =======================> 文章 API
+//获取帖子数量
+export const getAllNoPage = () => get(`articles/getAllNOPage`)
 //模糊查询
 export const searchData = (word) => get(`articles/by/${word}`)
 //获得热帖

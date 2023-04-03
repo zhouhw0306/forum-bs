@@ -16,8 +16,8 @@
           <el-menu-item index="/source">资源</el-menu-item>
           <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
           <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
-          <el-menu-item index="/searchPage">微搜</el-menu-item>
-          <el-menu-item v-if="role === 'ADMIN'" index="/userManage">管理</el-menu-item>
+          <el-menu-item index="/searchPage">搜索</el-menu-item>
+          <el-menu-item v-if="role === 'ADMIN'" index="/info">管理</el-menu-item>
           <div>
             <el-input @keyup.enter.native="toSearch" v-model="inputValue" placeholder="请输入想要搜索的内容" class="el-search">
               <i

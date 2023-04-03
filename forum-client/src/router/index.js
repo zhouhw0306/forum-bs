@@ -66,6 +66,10 @@ const routes = [
         component: resolve => require(['../views/Admin'], resolve),
         children: [
           {
+            path: '/info',
+            component: resolve => require(['../components/admin/Info'], resolve)
+          },
+          {
             path: '/userManage',
             component: resolve => require(['../components/admin/UserManage'], resolve)
           },

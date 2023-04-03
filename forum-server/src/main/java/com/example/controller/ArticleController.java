@@ -125,6 +125,12 @@ public class ArticleController {
         return Result.success(articles);
     }
 
+    //获取帖子数量
+    @GetMapping("/getAllNOPage")
+    public Result AllArticles() {
+        return Result.success(articleService.count());
+    }
+
     //添加文章阅读量
     @GetMapping("/addViewCount/{id}")
     public Result addViewCount(@PathVariable("id") String id){
