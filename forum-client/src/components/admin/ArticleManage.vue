@@ -56,8 +56,8 @@ export default {
       tempData: [],
       select_word: '',
       innerPage: {
-        pageSize: 1000,
-        pageNumber: 1,
+        pageSize: 0,
+        pageNumber: 0,
         sort: 'desc'
       },
     }

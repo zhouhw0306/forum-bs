@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -102,7 +103,7 @@ public class ArticleController {
                                @RequestParam(defaultValue = "-1") String index) {
 
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
-        Integer skipTotal = (pageNumber-1)*pageSize;
+
         //查关注的
         if (isCareMe!=null && isCareMe){
             //获得所有关注者
@@ -120,7 +121,12 @@ public class ArticleController {
         if (!"-1".equals(index)){
             queryWrapper.eq("category_id",index);
         }
-        queryWrapper.last("order by create_Time "+sort + " limit " + skipTotal +","+pageSize);
+        if (0==pageNumber){
+            queryWrapper.last("order by create_Time " + sort);
+        }else {
+            Integer skipTotal = (pageNumber-1)*pageSize;
+            queryWrapper.last("order by create_Time " + sort + " limit " + skipTotal +","+pageSize);
+        }
         List<Article> articles = articleService.list(queryWrapper);
         return Result.success(articles);
     }
