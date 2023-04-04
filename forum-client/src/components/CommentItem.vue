@@ -3,12 +3,15 @@
     <div class="me-view-comment-author">
 
       <div class="me-view-info">
-        <a class="">
+        <div style="display: inline-block">
           <el-avatar :src="attachImageUrl(comment.user.avatar)"></el-avatar>
-        </a>
-        <span class="me-view-nickname">{{comment.user.username}}</span>
-        <span class="me-view-meta" style="margin-left: -15px">{{comment.createTime}}</span>
-        <span class="me-view-meta" style="margin-left: 10px">{{rootCommentCounts - index}}楼</span>
+        </div>
+        <div style="display: inline-block">
+          <span class="me-view-nickname">{{comment.user.username}}</span><br>
+          <span class="me-view-meta" style="margin-left: 10px">{{comment.createTime}}</span>
+          <span class="me-view-meta" style="margin-left: 10px">{{rootCommentCounts - index}}楼</span>
+        </div>
+
       </div>
     </div>
     <div>
@@ -217,9 +220,14 @@ export default {
 
   }
 
+  .me-view-meta {
+    font-size: 12px;
+    color: #525151;
+  }
+
   .me-reply-item {
     margin-bottom: 8px;
-    padding-left: 8px;
+    padding: 0 8px 0;
     border-left: 4px solid #6fcbc3;
     border-bottom: 1px solid #f0f0f0;
   }
