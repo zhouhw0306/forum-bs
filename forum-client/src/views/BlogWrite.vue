@@ -306,7 +306,7 @@
   }
 
   .me-write-editor {
-    height: 580px !important;
+    height: 550px !important;
   }
 
 
