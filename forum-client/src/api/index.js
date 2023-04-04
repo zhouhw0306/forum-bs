@@ -80,6 +80,12 @@ export const pushComment = (params) => post(`comment/pushComment`,params)
 //添加文章阅览量
 export const addViewCount = (id) => get(`articles/addViewCount/${id}`)
 
+// 判断是否收藏文章
+export const isFavour = (id) => get(`hasArticle/isFavour/${id}`)
+
+// 更新(用户&文章)收藏关系
+export const articleFavour = (params) => post(`hasArticle/favour`,params)
+
 // =======================> 公告 API
 //获得所有公告
 export const getAllNotify = () => get(`notify/getAll`)

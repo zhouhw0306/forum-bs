@@ -92,7 +92,9 @@
   </div>
   <div class="infoCard">
     <span>帖子信息</span>
-    <el-divider></el-divider>
+    <el-button v-if="!hasFavour" @click="updateFavour" style="float: right" size="mini" icon="el-icon-star-off" circle></el-button>
+    <el-button v-else @click="updateFavour" style="float: right" type="danger" size="mini" icon="el-icon-star-off" circle></el-button>
+    <el-divider style="margin: 15px 0"></el-divider>
     <div class="me-view-tag">
       作者：
       {{article.author.username}}
@@ -121,8 +123,8 @@
     getAuthorById,
     getTags,
     addViewCount,
-    isFollow,
-    addFollow, removeFollow
+    isFollow, isFavour,
+    addFollow, removeFollow, articleFavour
   } from '@/api/index'
 
   export default {
@@ -157,7 +159,8 @@
           content: ''
         },
         follow: '',
-        isFollow: false //是否关注作者
+        isFollow: false, //是否关注作者
+        hasFavour: false
       }
     },
     mounted() {
@@ -227,6 +230,22 @@
           })
         }
       },
+      //更新收藏关系
+      updateFavour(){
+        let params = new URLSearchParams();
+        params.append("targetId", this.article.id);
+        articleFavour(params).then(res => {
+          if (res.data === 1){
+            this.hasFavour = true
+            this.$message.success('收藏成功')
+          }else if(res.data === -1){
+            this.hasFavour = false
+            this.$message.success('取消收藏成功')
+          }else{
+            this.$message.error(res.msg)
+          }
+        }).catch(err => this.$message.error(err.data.msg))
+      },
       //判断是否关注文章作者
       InitIsFollow(){
         let userId = this.$store.getters.userId
@@ -239,10 +258,15 @@
         let params = new URLSearchParams()
         params.append('userId',userId)
         params.append('authorId',this.article.author.id)
+        // 是否关注作者
         isFollow(params).then(res => {
           this.isFollow = res.data
           res.data ? this.follow='已关注' : this.follow='+关注'
         }).catch( err => {this.$message.error(err.msg)})
+        // 判断是否收藏
+        isFavour(this.article.id).then(res => {
+          this.hasFavour = res.data
+        }).catch( err => {this.$message.error(err)})
       },
       tagOrCategory(type, id) {
         this.$router.push({path: `/${type}/${id}`})
