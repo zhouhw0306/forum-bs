@@ -8,7 +8,7 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import 'font-awesome/css/font-awesome.min.css';
 import VCharts from 'v-charts'
-
+Vue._watchers = Vue.prototype._watchers = [] //消除v-charts引入任意图表的时候报错 ：map undefined #935
 Vue.use(mavonEditor)
 Vue.use(ElementUI)
 Vue.use(VCharts)
