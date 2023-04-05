@@ -7,7 +7,7 @@
     </div>
     <ul class="me-category-list">
       <li v-for="a in articles" :key="a.id" class="me-category-item">
-        <a @click="view(a.id)">{{a.title}}</a>
+        <a @click="view(a.id)" class="title-hot">{{a.title}}</a>
         <span style="float: right">
            {{a.createTime.substring(0,10)}}
         </span>
@@ -75,5 +75,13 @@ export default {
 
 .clearfix:after {
   clear: both
+}
+
+.title-hot{
+  white-space: nowrap;
+  width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
 }
 </style>
