@@ -1,5 +1,5 @@
 <template>
-  <div data-title="鸭鸭论坛" style="margin:60px auto 10px">
+  <div data-title="codebase" style="margin:60px auto 10px">
     <el-container>
 
       <!--导航栏-->

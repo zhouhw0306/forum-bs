@@ -162,7 +162,10 @@
         this.publishVisible = true;
       },
       publish(articleForm) {
-
+        if (!this.$store.getters.loginIn){
+          this.$message({type: 'error', message: '请先登录', showClose: true})
+          return;
+        }
         let that = this
 
         this.$refs[articleForm].validate((valid) => {
