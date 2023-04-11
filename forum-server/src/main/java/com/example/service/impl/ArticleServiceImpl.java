@@ -7,7 +7,6 @@ import com.example.domain.Article;
 import com.example.domain.ArticleTagRelation;
 import com.example.domain.Tag;
 import com.example.mapper.ArticleTagRelationMapper;
-import com.example.mapper.TagMapper;
 import com.example.mapper.UserMapper;
 import com.example.service.ArticleService;
 import com.example.mapper.ArticleMapper;
@@ -15,9 +14,7 @@ import com.example.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

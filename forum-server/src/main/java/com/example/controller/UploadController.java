@@ -2,15 +2,14 @@ package com.example.controller;
 
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
+import com.example.utils.ImgAddWatermarkUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -53,8 +52,10 @@ public class UploadController {
 
         try {
 
-            File dest = new File(baseFolder, imgName);
-            image.transferTo(dest);
+            //File dest = new File(baseFolder, imgName);
+            //image.transferTo(dest);
+            File file = ImgAddWatermarkUtil.multipartFileToFile(image);
+            ImgAddWatermarkUtil.addWatermark(file,baseFolderPath+filePath+"/"+imgName);
 
             url.append("/").append(imgName);
 
@@ -62,7 +63,7 @@ public class UploadController {
 
             r.simple().put("url", url);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             r.setResultCode(ResultCode.UPLOAD_ERROR);
         }
 

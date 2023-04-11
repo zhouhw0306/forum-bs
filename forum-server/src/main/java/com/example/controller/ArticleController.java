@@ -88,6 +88,14 @@ public class ArticleController {
     @PostMapping("/publish")
     @CacheEvict(value = "article", allEntries=true)
     public Result saveArticle(@RequestBody Article article) {
+        if (ObjectUtil.isEmpty(UserUtils.getCurrentUser())){
+            Result.error(ResultCode.INTERFACE_FORBID_VISIT);
+        }
+        if (!ObjectUtil.isEmpty(article.getUserId())){
+            if (!ObjectUtil.equal(article.getUserId(),UserUtils.getCurrentUser())){
+                Result.error(ResultCode.USER_NOT_LOGGED_IN);
+            }
+        }
         article.setContent(sensitiveFilter.filter(article.getContent()));
         String articleId = articleService.publishArticle(article);
         return Result.success(articleId);
