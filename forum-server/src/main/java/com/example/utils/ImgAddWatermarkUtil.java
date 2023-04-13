@@ -72,7 +72,7 @@ public class ImgAddWatermarkUtil {
         String extension = toPath.substring(toPath.lastIndexOf(".")+1);
         // 输出图片
         FileOutputStream outImgStream = new FileOutputStream(toPath);
-        ImageIO.write(bufImg, "jpg", outImgStream);
+        ImageIO.write(bufImg, extension, outImgStream);
         outImgStream.flush();
         outImgStream.close();
     }

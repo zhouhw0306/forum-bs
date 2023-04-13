@@ -202,7 +202,7 @@
             }).catch((error) => {
               loading.close();
               if (error !== 'error') {
-                that.$message({message: error, type: 'error', showClose: true});
+                that.$message({message: '发布失败', type: 'error', showClose: true});
               }
             })
 
