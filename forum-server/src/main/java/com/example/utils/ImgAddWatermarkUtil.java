@@ -61,7 +61,7 @@ public class ImgAddWatermarkUtil {
         int imgSize = srcImgHeight / 15;
         g.setFont(new Font("微软雅黑", Font.ITALIC, imgSize));
         //水印内容
-        String waterMarkContent="来源:codebase";
+        String waterMarkContent="origin:codebase";
         //设置水印的坐标(为原图片中间位置)
         int x = srcImgWidth - getWatermarkLength(waterMarkContent, g) - 10;
         int y = srcImgHeight - imgSize;

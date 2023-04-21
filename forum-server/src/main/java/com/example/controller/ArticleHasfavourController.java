@@ -6,9 +6,13 @@ import com.example.constant.ResultCode;
 import com.example.domain.*;
 import com.example.service.*;
 import com.example.utils.UserUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
+
+import static com.example.utils.RedisConstants.*;
 
 /**
  * @author zhw
@@ -23,6 +27,8 @@ public class ArticleHasfavourController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     /**
      * 收藏操作
      */
@@ -43,10 +49,12 @@ public class ArticleHasfavourController {
         if (one == null){
             //添加收藏关系
             articleHasfavourService.save(new ArticleHasfavour(currentUser,targetId));
+            stringRedisTemplate.opsForSet().add(FAVOUR_ART_KEY + currentUser, targetId);
             return Result.success(1);
         }else {
             //删除收藏关系
             articleHasfavourService.remove(queryWrapper);
+            stringRedisTemplate.opsForSet().remove(FAVOUR_ART_KEY + currentUser, targetId);
             return Result.success(-1);
         }
     }

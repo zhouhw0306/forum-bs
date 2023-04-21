@@ -15,6 +15,7 @@
         <card-list/>
         <card-msg/>
         <card-hot/>
+        <push-art/>
       </el-aside>
 
     </el-container>
@@ -26,11 +27,12 @@ import ArticlePage from '@/components/ArticlePage'
 import CardMsg from '@/components/card/CardMsg'
 import CardHot from "@/components/card/CardHot";
 import CardList from "@/components/card/CardList";
+import PushArt from "@/components/card/PushArt";
 import NavType from "@/components/card/NavType";
 
 export default {
   name: 'MainPage',
-  components: {ArticlePage,CardMsg,CardHot,CardList,NavType}
+  components: {ArticlePage,CardMsg,CardHot,CardList,NavType,PushArt}
 }
 </script>
 

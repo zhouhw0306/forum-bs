@@ -23,6 +23,8 @@ export const getAllNoPage = () => get(`articles/getAllNOPage`)
 export const searchData = (word) => get(`articles/by/${word}`)
 //获得热帖
 export const getHot = () => get(`articles/getHot`)
+//获推荐
+export const pushArt = () => get(`articles/getRecommend`)
 //根据文章id获取标签
 export const getTags = (params) => get(`tag/getByArticleId`,params)
 //获得所有分类

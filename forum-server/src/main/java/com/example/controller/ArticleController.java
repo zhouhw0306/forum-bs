@@ -20,11 +20,17 @@ import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
+import static com.example.utils.RedisConstants.VIEW_ART_KEY;
 
 
 /**
@@ -49,6 +55,9 @@ public class ArticleController {
 
     @Resource
     private SensitiveFilter sensitiveFilter;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     //id查询
     @GetMapping("/{id}")
@@ -165,5 +174,39 @@ public class ArticleController {
     public Result deleteById(@PathVariable String id){
         boolean flag = articleService.removeById(id);
         return flag ? Result.success() : Result.error();
+    }
+
+    /**
+     * 基于用户的协同过滤算法
+     */
+    @GetMapping("getRecommend")
+    public Result getRecommend(){
+        String id = UserUtils.getCurrentUser();
+        // 未登录推默认
+        if (ObjectUtil.isEmpty(id)) {
+            List<Article> list = articleService.query().list().subList(0,5);
+            return Result.success(list);
+        }
+        Set<String> set = new HashSet<>();
+        // 查询所有关注者article集合
+        List<Subscribe> subscribes = subscribeService.list(new QueryWrapper<Subscribe>().eq("subscribe", id));
+        for (Subscribe subscribe : subscribes) {
+            String beSubscribe = subscribe.getBeSubscribe();
+            Set<String> members = stringRedisTemplate.opsForSet().members(FAVOUR_ART_KEY + beSubscribe);
+            if (members != null){
+                set.addAll(members);
+            }
+        }
+        // 过滤掉自己所浏览过的
+        Set<String> me = stringRedisTemplate.opsForSet().members(VIEW_ART_KEY + id);
+        for (String artId : me) {
+            set.remove(artId);
+        }
+        if (CollectionUtils.isEmpty(set)){
+            List<Article> list = articleService.query().notIn("id",me).list().subList(0,5);
+            return Result.success(list);
+        }
+        List<Article> list = articleService.query().in("id", set).list().subList(0, Math.min(set.size(), 5));
+        return Result.success(list);
     }
 }

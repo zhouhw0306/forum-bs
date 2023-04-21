@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
@@ -12,10 +13,14 @@ import com.example.service.ArticleService;
 import com.example.mapper.ArticleMapper;
 import com.example.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
+import static com.example.utils.RedisConstants.VIEW_ART_KEY;
 
 /**
 * @author 24668
@@ -34,6 +39,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Resource
     ArticleTagRelationMapper articleTagRelationMapper;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional
@@ -70,6 +78,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Override
     public Result addViewCount(String id) {
         articleMapper.addViewCount(id);
+        // 如登录加入到该用户的浏览历史表
+        if (StringUtils.isNotBlank(UserUtils.getCurrentUser())){
+            stringRedisTemplate.opsForSet().add(VIEW_ART_KEY + UserUtils.getCurrentUser(), id);
+        }
         return Result.success();
     }
 }
