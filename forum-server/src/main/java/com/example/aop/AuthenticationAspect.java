@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 使用aop完成API请求时的认证和权限
  * made by Jason. Completed by mrruan
- * @author 24668
+ * @author zhw
  */
 @Slf4j
 @Aspect
