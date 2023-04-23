@@ -13,7 +13,7 @@ import static com.example.utils.RedisConstants.LOGIN_TOKEN_KEY;
 import static com.example.utils.RedisConstants.LOGIN_TOKEN_TTL;
 
 /**
- * @author 24668
+ * @author zhw
  */
 @Slf4j
 public class RefreshTokenInterceptor implements HandlerInterceptor {
