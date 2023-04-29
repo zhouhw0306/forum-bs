@@ -1,7 +1,5 @@
 package com.example.utils;
 
-
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -14,29 +12,32 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author 24668
  */
-@Component
+//@Component
 public class UserUtils {
 
 
-    @Resource
-    StringRedisTemplate stringRedisTemplate;
+//    @Resource
+//    StringRedisTemplate stringRedisTemplate;
+//
+//    static UserUtils userUtils;
+//
+//    @PostConstruct
+//    public void init(){
+//        userUtils=this;
+//        userUtils.stringRedisTemplate = this.stringRedisTemplate;
+//    }
 
-    static UserUtils userUtils;
-
-    @PostConstruct
-    public void init(){
-        userUtils=this;
-        userUtils.stringRedisTemplate = this.stringRedisTemplate;
-    }
-    //获得当前用户
+    /**
+     * 获得当前用户
+     * @return 用户id
+     */
     public static String getCurrentUser() {
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         String token = request.getHeader("token");
         if (StringUtils.isBlank(token)) {
             return null;
         }
-        String userId = JWTUtil.getUserId(token);
-        return userId;
+        return JWTUtil.getUserId(token);
     }
 
 }
