@@ -117,6 +117,7 @@ export default {
     CommmentItem
   },
   mounted () {
+    window.scrollTo({top:0,left:0})
     this.id = this.$route.params.id
     this.init()
   },

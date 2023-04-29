@@ -57,13 +57,7 @@ export default {
       }
     }
   },
-  mounted () {
-    this.changeIndex('登录')
-  },
   methods: {
-    changeIndex (value) {
-      this.$store.commit('setActiveName', value)
-    },
     handleLoginIn () {
       this.$refs.loginForm.validate(validate=>{
         if (!validate) return;
@@ -76,8 +70,11 @@ export default {
               if (res.code === 0) {
                 _this.notify('登录成功', 'success')
                 _this.setUserMsg(res.data)
-                _this.changeIndex('首页')
-                _this.$router.push({path: '/'})
+                if(this.$route.query.redirect){
+                  _this.$router.push({path: this.$route.query.redirect})
+                }else{
+                  _this.$router.push({path: '/'})
+                }
               } else {
                 _this.notify(res.msg, 'error')
               }

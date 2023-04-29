@@ -52,7 +52,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 用户id + 密码 + token 验证
         boolean flag = JWTUtil.verify(token, userId, user.getPassword());
         if (!flag){
-            response.setStatus(403);
+            response.setStatus(401);
         }
         log.info(Boolean.toString(flag));
         return flag;
