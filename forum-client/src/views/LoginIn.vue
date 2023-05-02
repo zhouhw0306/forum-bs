@@ -78,8 +78,7 @@ export default {
               } else {
                 _this.notify(res.msg, 'error')
               }
-            })
-            .catch(err => {this.notify(err.msg, 'error')})
+            }).catch(err => {this.notify(err.data.msg, 'error')})
       })
     },
     setUserMsg (item) {

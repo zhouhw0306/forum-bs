@@ -205,7 +205,12 @@ export default {
           this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
         }
       }).catch(err => {
-        this.$message({type: 'error', message: `评论失败${err.msg}`, showClose: true})
+        if(err.status === 401){
+          this.$message({type: 'error', message: `请重新登录`, showClose: true})
+          this.$store.commit('setLoginIn',false)
+        }else{
+          this.$message({type: 'error', message: `评论失败`, showClose: true})
+        }
       })
     },
     //得到资源评论

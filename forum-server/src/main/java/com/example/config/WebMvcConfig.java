@@ -43,13 +43,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
+    /**
+     * 拦截器配置
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //使用拦截器注册表进行添加 自定义拦截器
         registry.addInterceptor(jwtInterceptor())
                 //添加拦截路径
-                .addPathPatterns("/comment/pushComment","/upload","/articles/publish")
-                .order(1);
+                .addPathPatterns(
+                        "/comment/pushComment",
+                        "/upload",
+                        "/articles/publish"
+                ).order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())
                 .addPathPatterns("/**").order(0);

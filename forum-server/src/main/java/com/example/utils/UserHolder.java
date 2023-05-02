@@ -9,7 +9,7 @@ public class UserHolder {
 
     private static final ThreadLocal<User> tl = new ThreadLocal<>();
 
-    private static void saveUser(User user){
+    public static void saveUser(User user){
         tl.set(user);
     }
 

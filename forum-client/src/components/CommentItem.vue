@@ -124,16 +124,18 @@ export default {
       }
       pushComment(params).then(data => {
         this.$message({type: 'success', message: '评论成功', showClose: true})
-        //this.$router.go(0)
         if(!this.comment.childrens){
           this.comment.childrens = []
         }
         this.comment.childrens.unshift(data.data)
         this.$emit('commentCountsIncrement')
         this.showComment(this.commentShowIndex)
-      }).catch(error => {
-        if (error !== 'error') {
-          this.$message({type: 'error', message: '评论失败', showClose: true})
+      }).catch(err => {
+        if(err.status === 401){
+          this.$message({type: 'error', message: `请重新登录`, showClose: true})
+          this.$store.commit('setLoginIn',false)
+        }else{
+          this.$message({type: 'error', message: `评论失败`, showClose: true})
         }
       })
 
@@ -158,7 +160,6 @@ export default {
   .me-view-tag-item {
     margin: 0 4px;
   }
-
 
   .comment-write {
     margin-top: 20px;
