@@ -204,7 +204,6 @@
           return
         }
         let params = new URLSearchParams()
-        params.append('userId',this.$store.getters.userId)
         params.append('authorId',this.article.author.id)
         //取消关注
         if(this.isFollow){
@@ -256,7 +255,6 @@
           return
         }
         let params = new URLSearchParams()
-        params.append('userId',userId)
         params.append('authorId',this.article.author.id)
         // 是否关注作者
         isFollow(params).then(res => {

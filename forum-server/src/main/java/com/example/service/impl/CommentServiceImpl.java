@@ -48,6 +48,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         //封装author对象
         Comment comment1 = commentMapper.selectById(comment.getId());
         User author = userMapper.selectById(authorId);
+        author.setPassword("it's a secret");
         comment1.setUser(author);
         //封装toUser对象
         if ("2".equals(comment1.getLevel())){

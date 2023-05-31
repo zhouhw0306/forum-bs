@@ -40,8 +40,9 @@ axios.interceptors.response.use(
       switch (error.response.status) {
         // 401: 未登录
         case 401:
+          window.localStorage.clear()
           router.replace({
-            path: '/',
+            path: '/login',
             query: {
               redirect: router.currentRoute.fullPath
             }

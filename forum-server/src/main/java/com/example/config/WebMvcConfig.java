@@ -54,7 +54,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/comment/pushComment",
                         "/upload",
-                        "/articles/publish"
+                        "/articles/publish",
+                        "/subScribe/**"
                 ).order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())

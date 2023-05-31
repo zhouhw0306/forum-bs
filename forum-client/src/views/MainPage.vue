@@ -3,10 +3,10 @@
     <el-container>
 
       <!--导航栏-->
-      <nav-type/>
+      <nav-type style="position: fixed"/>
 
       <!--文章-->
-      <el-main>
+      <el-main style="margin-left: 220px">
         <article-page></article-page>
       </el-main>
 

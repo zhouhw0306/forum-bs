@@ -24,39 +24,12 @@ public class ArticleHasfavourController {
     @Resource
     private ArticleHasfavourService articleHasfavourService;
 
-    @Resource
-    private UserService userService;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
     /**
      * 收藏操作
      */
     @PostMapping("favour")
     public Result favour(String targetId){
-        QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
-        String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        User user = userService.getById(currentUser);
-        if (user == null){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",targetId);
-        ArticleHasfavour one = articleHasfavourService.getOne(queryWrapper);;
-        if (one == null){
-            //添加收藏关系
-            articleHasfavourService.save(new ArticleHasfavour(currentUser,targetId));
-            stringRedisTemplate.opsForSet().add(FAVOUR_ART_KEY + currentUser, targetId);
-            return Result.success(1);
-        }else {
-            //删除收藏关系
-            articleHasfavourService.remove(queryWrapper);
-            stringRedisTemplate.opsForSet().remove(FAVOUR_ART_KEY + currentUser, targetId);
-            return Result.success(-1);
-        }
+        return articleHasfavourService.favour(targetId);
     }
 
     /**
@@ -64,14 +37,6 @@ public class ArticleHasfavourController {
      */
     @GetMapping("isFavour/{id}")
     public Result isFavour(@PathVariable String id){
-        QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
-        String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",id);
-        ArticleHasfavour one = articleHasfavourService.getOne(queryWrapper);;
-        return Result.success(one != null);
+        return articleHasfavourService.isFavour(id);
     }
 }

@@ -4,6 +4,8 @@ import com.example.constant.Result;
 import com.example.domain.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 
 /**
 * @author 24668
@@ -15,4 +17,12 @@ public interface ArticleService extends IService<Article> {
     String publishArticle(Article article);
 
     Result addViewCount(String id);
+
+    Result findById(String id);
+
+    Result searchByKey(String word);
+
+    List<Article> getRecommend();
+
+    List<Article> listArticles(Integer pageNumber, Integer pageSize, Boolean isCareMe, String sort, String index);
 }

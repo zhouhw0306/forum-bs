@@ -27,7 +27,6 @@ public class CategoryController {
     @GetMapping("/getCatAll")
     public Result listCategorys() {
         List<Category> categorys = categoryService.list();
-
         return Result.success(categorys);
     }
 

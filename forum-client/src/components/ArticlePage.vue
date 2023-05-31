@@ -49,6 +49,7 @@ export default {
         this.typeIndex = index
       }
       this.getArticles()
+      window.scrollTo({top:0,left:0})
     })
   },
   data() {

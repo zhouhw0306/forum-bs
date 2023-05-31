@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.constant.Result;
 import com.example.domain.ArticleHasfavour;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ArticleHasfavourService extends IService<ArticleHasfavour> {
 
+    Result favour(String targetId);
+
+    Result isFavour(String id);
 }
