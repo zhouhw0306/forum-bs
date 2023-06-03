@@ -12,7 +12,7 @@ export const mixin = {
       },
       // 获取图片信息
       attachImageUrl (srcUrl) {
-        return srcUrl ? this.$store.state.configure.HOST + srcUrl  : ''
+        return srcUrl ? (srcUrl.startsWith('http') ? srcUrl : this.$store.state.configure.HOST + srcUrl)  : ''
       },
       urlToLink (content){
         if (!content) {

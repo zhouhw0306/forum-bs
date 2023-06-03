@@ -14,6 +14,7 @@
       <div class="login-btn">
         <el-button @click="goSignUp()">注册</el-button>
         <el-button type="primary" @click="handleLoginIn">登录</el-button>
+        <el-button type="primary" @click="githubLoginIn">GitHub</el-button>
       </div>
     </el-form>
   </div>
@@ -22,12 +23,12 @@
 
 <script>
 import { mixin } from '../mixins'
-import { loginIn } from '../api/index'
+import {githubCallback, githubLoginIn, loginIn} from '../api/index'
 
 export default {
   name: 'LoginIn',
   mixins: [mixin],
-  data: function () {
+  data () {
     let validateName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('用户名不能为空'))
@@ -55,6 +56,31 @@ export default {
           { validator: validatePassword, message: '请输入密码', trigger: 'blur' }
         ]
       }
+    }
+  },
+  mounted() {
+    let {type}= this.$route.query
+    if (type === 'github'){
+      const loading = this.$loading({
+        lock: true,
+        text: '正在登录',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      githubCallback(this.$route.query).then(res=>{
+        loading.close();
+        if (res.code === 0) {
+          this.notify('登录成功', 'success')
+          this.setUserMsg(res.data)
+          if(this.$route.query.redirect){
+            this.$router.push({path: this.$route.query.redirect})
+          }else{
+            this.$router.push({path: '/'})
+          }
+        } else {
+          this.notify(res.msg, 'error')
+        }
+      })
     }
   },
   methods: {
@@ -91,6 +117,11 @@ export default {
     },
     goSignUp () {
       this.$router.push({path: '/register'})
+    },
+    githubLoginIn (){
+      githubLoginIn().then(res => {
+        location.href = res.data
+      })
     }
   }
 }

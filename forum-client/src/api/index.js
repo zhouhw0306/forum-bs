@@ -3,6 +3,9 @@ import { get, post } from './http'
 // =======================> 用户 API
 // 登录
 export const loginIn = (params) => post(`api/login/status`, params)
+// gitHub登录
+export const githubLoginIn = () => get(`api/githubLogin`)
+export const githubCallback = (params) => get(`api/githubCallback`, params)
 // 注册
 export const SignUp = (params) => post(`api/user/add`, params)
 // 发送注册邮箱验证码
