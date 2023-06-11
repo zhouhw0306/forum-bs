@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.article;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

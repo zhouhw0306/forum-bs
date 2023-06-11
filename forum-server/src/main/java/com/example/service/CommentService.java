@@ -14,4 +14,8 @@ public interface CommentService extends IService<Comment> {
     Result addComm(Comment comment);
 
     Result deleteComment(String id, String level);
+
+    Result getCommentsByAid(String articleId);
+
+    Result getCommentAll();
 }

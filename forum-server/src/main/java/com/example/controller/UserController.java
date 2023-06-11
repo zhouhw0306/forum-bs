@@ -89,7 +89,7 @@ public class UserController {
         // 生成并保存state，忽略该参数有可能导致CSRF攻击
         String state = RandomUtil.randomString(4);
         log.info("**{}",request.getRemoteAddr());
-        stringRedisTemplate.opsForValue().set(request.getRemoteAddr(),state,30, TimeUnit.MINUTES);
+        //stringRedisTemplate.opsForValue().set(request.getRemoteAddr(),state,30, TimeUnit.MINUTES);
         // 传递参数response_type、client_id、state、redirect_uri
         String param = "response_type=code&" + "client_id=" + GITHUB_CLIENT_ID + "&state=" + state
                 + "&redirect_uri=" + GITHUB_REDIRECT_URL;
@@ -140,7 +140,7 @@ public class UserController {
         // 得到token和token_type
         String accessToken = resultMap.get("access_token");
         String tokenType = resultMap.get("token_type");
-log.info("accessToken={},tokenType={}",accessToken,tokenType);
+        log.info("accessToken={},tokenType={}",accessToken,tokenType);
         // 3、向资源服务器请求用户信息，携带access_token和tokenType
         String userUrl = "https://api.github.com/user";
         //String userParam = "?access_token=" + accessToken + "&token_type=" + tokenType;
@@ -152,7 +152,7 @@ log.info("accessToken={},tokenType={}",accessToken,tokenType);
         String id = jsonObject.getStr("id");
         String avatar_url = jsonObject.getStr("avatar_url");
         User user = userService.getById(id);
-log.info("user{}",user);
+        log.info("user{}",user);
         if (ObjectUtil.isEmpty(user)){
             user.setId(id);
             user.setUsername(login);
@@ -169,9 +169,6 @@ log.info("user{}",user);
         stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
         stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL, TimeUnit.MINUTES);
-        // 4、输出用户信息
-//        response.setContentType("text/html;charset=utf-8");
-//        response.getWriter().write(userResult);
         return Result.success(user);
     }
 
