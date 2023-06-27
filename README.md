@@ -4,6 +4,7 @@
 springboot+mybatisPlus+vue2+elementUi
 
 运行
+所需环境：jdk1.8、Mysql、Maven、Node.js、Git
 下载代码
 ```
 git clone https://github.com/zhouhw0306/forum-bs
