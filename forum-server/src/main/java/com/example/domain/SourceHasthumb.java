@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -15,7 +15,7 @@ import lombok.Data;
  */
 @TableName(value ="tb_source_hasthumb")
 @Data
-@AllArgsConstructor
+@Builder
 public class SourceHasthumb implements Serializable {
 
     /**
@@ -42,9 +42,5 @@ public class SourceHasthumb implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    public SourceHasthumb(String currentUser, Integer targetId) {
-        this.userId = currentUser;
-        this.sourceId = targetId;
-    }
 
 }

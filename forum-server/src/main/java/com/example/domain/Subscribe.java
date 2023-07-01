@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -14,6 +15,7 @@ import lombok.Data;
  * @TableName tb_subscribe
  */
 @TableName(value ="tb_subscribe")
+@Builder
 @Data
 public class Subscribe implements Serializable {
 
@@ -41,8 +43,4 @@ public class Subscribe implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = -5259840089586023608L;
 
-    public Subscribe(String beSubscribe, String subscribe) {
-        this.beSubscribe = beSubscribe;
-        this.subscribe = subscribe;
-    }
 }

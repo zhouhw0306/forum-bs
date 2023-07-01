@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import cn.hutool.core.lang.Assert;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.utils.ImgAddWatermarkUtil;
@@ -54,9 +55,9 @@ public class UploadController {
 
             //File dest = new File(baseFolder, imgName);
             //image.transferTo(dest);
-            File file = ImgAddWatermarkUtil.multipartFileToFile(image);
-            ImgAddWatermarkUtil.addWatermark(file,baseFolderPath+filePath+"/"+imgName);
-
+            File tempFile = ImgAddWatermarkUtil.multipartFileToFile(image);
+            ImgAddWatermarkUtil.addWatermark(tempFile,baseFolderPath+filePath+"/"+imgName);
+            Assert.isTrue(tempFile.delete());
             url.append("/").append(imgName);
 
             r.setResultCode(ResultCode.SUCCESS);

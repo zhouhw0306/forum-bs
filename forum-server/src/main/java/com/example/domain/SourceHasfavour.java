@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -14,8 +14,8 @@ import lombok.Data;
  * @TableName 收藏关系表
  */
 @TableName(value ="tb_source_hasfavour")
+@Builder
 @Data
-@AllArgsConstructor
 public class SourceHasfavour implements Serializable {
 
     /**
@@ -42,8 +42,4 @@ public class SourceHasfavour implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    public SourceHasfavour(String currentUser, Integer targetId) {
-        this.userId = currentUser;
-        this.sourceId = targetId;
-    }
 }

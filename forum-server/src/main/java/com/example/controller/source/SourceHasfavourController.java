@@ -51,7 +51,7 @@ public class SourceHasfavourController {
         Source source = sourceService.getById(targetId);
         if (one == null){
             //添加收藏关系
-            sourceHasfavourService.save(new SourceHasfavour(currentUser,targetId));
+            sourceHasfavourService.save(SourceHasfavour.builder().userId(currentUser).sourceId(targetId).build());
             source.setFavourNum(source.getFavourNum()+1);
             sourceService.updateById(source);
             return Result.success(1);

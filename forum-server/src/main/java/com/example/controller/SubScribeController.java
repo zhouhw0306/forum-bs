@@ -46,7 +46,7 @@ public class SubScribeController {
     @PostMapping("/addFollow")
     @CacheEvict(value = "article", allEntries=true)
     public Result addFollow(String authorId) {
-        boolean flag = subscribeService.save(new Subscribe(authorId, UserUtils.getCurrentUser()));
+        boolean flag = subscribeService.save(Subscribe.builder().beSubscribe(authorId).subscribe(UserUtils.getCurrentUser()).build());
         return flag ? Result.success() : Result.error();
     }
 

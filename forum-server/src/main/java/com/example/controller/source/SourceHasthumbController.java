@@ -53,7 +53,7 @@ public class SourceHasthumbController {
         Source source = sourceService.getById(targetId);
         if (one == null){
             //添加点赞关系
-            sourceHasthumbService.save(new SourceHasthumb(currentUser,targetId));
+            sourceHasthumbService.save(SourceHasthumb.builder().userId(currentUser).sourceId(targetId).build());
             source.setThumbNum(source.getThumbNum()+1);
             sourceService.updateById(source);
             return Result.success(1);

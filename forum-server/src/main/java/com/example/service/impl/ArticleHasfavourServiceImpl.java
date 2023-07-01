@@ -49,7 +49,7 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
         ArticleHasfavour one = getOne(queryWrapper);;
         if (one == null){
             //添加收藏关系
-            save(new ArticleHasfavour(currentUser,targetId));
+            save(ArticleHasfavour.builder().userId(currentUser).articleId(targetId).build());
             stringRedisTemplate.opsForSet().add(FAVOUR_ART_KEY + currentUser, targetId);
             return Result.success(1);
         }else {

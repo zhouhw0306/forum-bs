@@ -70,7 +70,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             articleTagRelationMapper.delete(wrapper);
             // 添加的文章-标签对应关系
             for (Tag tag : tags) {
-                ArticleTagRelation atr = new ArticleTagRelation(article.getId(),tag.getId());
+                ArticleTagRelation atr = ArticleTagRelation.builder().articleId(article.getId()).tagId(tag.getId()).build();
                 articleTagRelationMapper.insert(atr);
             }
             return article.getId();
@@ -81,7 +81,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             String artId = article.getId();
             List<Tag> tags = article.getTags();
             for (Tag tag : tags) {
-                ArticleTagRelation atr = new ArticleTagRelation(artId,tag.getId());
+                ArticleTagRelation atr = ArticleTagRelation.builder().articleId(artId).tagId(tag.getId()).build();
                 articleTagRelationMapper.insert(atr);
             }
             userMapper.addScore(UserUtils.getCurrentUser(),2);
