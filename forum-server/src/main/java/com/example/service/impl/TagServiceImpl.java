@@ -1,7 +1,7 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.domain.Tag;
+import com.example.domain.dao.Tag;
 import com.example.service.TagService;
 import com.example.mapper.TagMapper;
 import org.springframework.stereotype.Service;

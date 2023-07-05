@@ -2,8 +2,8 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
-import com.example.domain.ArticleTagRelation;
-import com.example.domain.Tag;
+import com.example.domain.dao.ArticleTagRelation;
+import com.example.domain.dao.Tag;
 import com.example.service.ArticleTagRelationService;
 import com.example.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;

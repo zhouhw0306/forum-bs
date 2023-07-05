@@ -1,7 +1,6 @@
 package com.example.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -39,18 +38,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
+    /**
+     * 拦截器配置
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //使用拦截器注册表进行添加 自定义拦截器
         registry.addInterceptor(jwtInterceptor())
                 //添加拦截路径
-                .addPathPatterns("/**")
-                //设置放行路径
-                .excludePathPatterns("/**").order(1);
+                .addPathPatterns(
+                        "/comment/pushComment",
+                        "/upload",
+                        "/articles/publish",
+                        "/subScribe/**"
+                ).order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/**").order(0);
+                .addPathPatterns("/**").order(0);
     }
 
     @Bean
@@ -62,4 +66,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public RefreshTokenInterceptor refreshTokenInterceptor(){
         return new RefreshTokenInterceptor();
     }
+
 }

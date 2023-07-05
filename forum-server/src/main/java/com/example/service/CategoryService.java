@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.domain.Category;
+import com.example.domain.dao.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

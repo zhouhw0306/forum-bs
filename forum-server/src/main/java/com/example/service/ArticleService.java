@@ -1,9 +1,11 @@
 package com.example.service;
 
-import com.example.domain.Article;
+import com.example.constant.Result;
+import com.example.domain.dao.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 
 /**
 * @author 24668
@@ -13,4 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 public interface ArticleService extends IService<Article> {
 
     String publishArticle(Article article);
+
+    Result addViewCount(String id);
+
+    Result findById(String id);
+
+    Result searchByKey(String word);
+
+    List<Article> getRecommend();
+
+    List<Article> listArticles(Integer pageNumber, Integer pageSize, Boolean isCareMe, String sort, String index);
 }

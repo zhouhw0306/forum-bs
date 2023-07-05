@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.constant.Result;
-import com.example.domain.User;
+import com.example.domain.dao.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;

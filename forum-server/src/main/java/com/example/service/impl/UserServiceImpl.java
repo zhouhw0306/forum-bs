@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.User;
+import com.example.domain.dao.User;
 import com.example.service.UserService;
 import com.example.mapper.UserMapper;
 import com.example.utils.JWTUtil;
