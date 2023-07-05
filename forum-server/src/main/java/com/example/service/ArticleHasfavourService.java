@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.constant.Result;
-import com.example.domain.ArticleHasfavour;
+import com.example.domain.dao.ArticleHasfavour;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

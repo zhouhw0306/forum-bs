@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.constant.Result;
-import com.example.domain.Notification;
+import com.example.domain.dao.Notification;
 import com.example.service.NotificationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

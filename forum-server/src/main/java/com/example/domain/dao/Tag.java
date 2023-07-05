@@ -1,23 +1,20 @@
-package com.example.domain;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Builder;
 import lombok.Data;
 
 /**
+ * 
  * @author 24668
- * @TableName 收藏关系表
+ * @TableName tb_tag
  */
-@TableName(value ="tb_source_hasfavour")
-@Builder
+@TableName(value ="tb_tag")
 @Data
-public class SourceHasfavour implements Serializable {
-
+public class Tag implements Serializable {
     /**
      * id
      */
@@ -25,21 +22,15 @@ public class SourceHasfavour implements Serializable {
     private Integer id;
 
     /**
-     * 收藏人
+     * 头像
      */
-    private String userId;
+    private String avatar;
 
     /**
-     * 资源id
+     * 分类名
      */
-    private Integer sourceId;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
+    private String tagName;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -66078278895318126L;
 }

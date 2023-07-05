@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.Article;
+import com.example.domain.dao.Article;
 import com.example.service.ArticleService;
 import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;

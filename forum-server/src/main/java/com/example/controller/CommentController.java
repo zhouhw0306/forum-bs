@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.annotation.Authentication;
 import com.example.constant.Result;
-import com.example.domain.Comment;
+import com.example.domain.dao.Comment;
 import com.example.service.CommentService;
 import com.example.utils.SensitiveFilter;
 import org.springframework.web.bind.annotation.GetMapping;

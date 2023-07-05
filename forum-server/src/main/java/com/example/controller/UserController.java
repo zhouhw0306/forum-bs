@@ -12,14 +12,15 @@ import com.example.annotation.Authentication;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.Article;
-import com.example.domain.Subscribe;
-import com.example.domain.User;
+import com.example.domain.bo.QiNiuImage;
+import com.example.domain.dao.Article;
+import com.example.domain.dao.Subscribe;
+import com.example.domain.dao.User;
 import com.example.service.ArticleService;
 import com.example.service.SubscribeService;
 import com.example.service.UserService;
 import com.example.utils.*;
-import com.example.vo.Personal;
+import com.example.domain.vo.Personal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,8 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -59,11 +58,6 @@ public class UserController {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 头像存放路径
-     */
-    @Value("${me.avatar.path}")
-    private String avatarPath;
 
     /**
      * 接入github登录所需参数
@@ -88,8 +82,8 @@ public class UserController {
         String url = "https://github.com/login/oauth/authorize";
         // 生成并保存state，忽略该参数有可能导致CSRF攻击
         String state = RandomUtil.randomString(4);
-        log.info("**{}",request.getRemoteAddr());
-        //stringRedisTemplate.opsForValue().set(request.getRemoteAddr(),state,30, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(IPUtils.getIpRequest(request),state,30, TimeUnit.MINUTES);
+        log.info("ip={}",IPUtils.getIpRequest(request));
         // 传递参数response_type、client_id、state、redirect_uri
         String param = "response_type=code&" + "client_id=" + GITHUB_CLIENT_ID + "&state=" + state
                 + "&redirect_uri=" + GITHUB_REDIRECT_URL;
@@ -104,12 +98,12 @@ public class UserController {
      * @since 2018/5/21 15:24
     */
     @GetMapping("/githubCallback")
-    public Result githubCallback(String code, String state) throws Exception {
+    public Result githubCallback(String code, String state, HttpServletRequest request) throws Exception {
         // 验证state，如果不一致，可能被CSRF攻击
-//        String s = stringRedisTemplate.opsForValue().get(request.getRemoteAddr());
-//        if(!state.equals(s)) {
-//            throw new Exception("State验证失败");
-//        }
+        String s = stringRedisTemplate.opsForValue().get(IPUtils.getIpRequest(request));
+        if(!state.equals(s)) {
+            throw new Exception("GitHub授权登录State验证失败");
+        }
         // 2、向GitHub认证服务器申请令牌
         String url = "https://github.com/login/oauth/access_token";
         // 传递参数grant_type、code、redirect_uri、client_id
@@ -246,33 +240,29 @@ public class UserController {
         return b?Result.success():Result.error(ResultCode.ERROR);
     }
 
+    @Resource
+    QiniuServiceImpl qiniuService;
+
     //更新头像
     @PostMapping("/avatar/update")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatarFile, @RequestParam("id") String id){
         if (avatarFile.isEmpty()) {
             return Result.error(ResultCode.UPLOAD_ERROR);
         }
-        String fileName = System.currentTimeMillis()+avatarFile.getOriginalFilename();
-        File file = new File(avatarPath);
-        if (!file.exists()){
-            file.mkdir();
-        }
-        File dest = new File(avatarPath + fileName);
-        String storeAvatarPath = "/avatarImages/"+fileName;
         try {
-            avatarFile.transferTo(dest);
+            QiNiuImage avatarImages = qiniuService.saveToQiNiu(avatarFile, "avatarImages");
+            log.info(avatarImages.toString());
             User user = new User();
             user.setId(id);
-            user.setAvatar(storeAvatarPath);
+            user.setAvatar(avatarImages.getFileName());
             boolean res = userService.updateById(user);
             if (res){
-                return Result.success(storeAvatarPath);
+                return Result.success(avatarImages.getFileName());
             }else {
                 return Result.error(ResultCode.UPLOAD_ERROR);
             }
-        }catch (IOException e){
-            log.info("修改失败{}",avatarPath+fileName);
-            log.info(String.valueOf(e));
+        }catch (Exception e){
+            log.info("更新头像失败{}",String.valueOf(e));
             return Result.error(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
     }

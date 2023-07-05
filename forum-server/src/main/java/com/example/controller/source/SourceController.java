@@ -7,11 +7,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.annotation.Authentication;
 import com.example.constant.Result;
 import com.example.constant.SourceEnum;
-import com.example.domain.Source;
-import com.example.domain.SourceHasfavour;
-import com.example.domain.SourceHasthumb;
-import com.example.domain.User;
-import com.example.mapper.UserMapper;
+import com.example.domain.dao.Source;
+import com.example.domain.dao.SourceHasfavour;
+import com.example.domain.dao.SourceHasthumb;
+import com.example.domain.dao.User;
 import com.example.service.SourceHasfavourService;
 import com.example.service.SourceHasthumbService;
 import com.example.service.SourceService;
@@ -20,7 +19,6 @@ import com.example.utils.UserUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**

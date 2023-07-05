@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.domain.SourceHasthumb;
+import com.example.domain.dao.SourceHasthumb;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

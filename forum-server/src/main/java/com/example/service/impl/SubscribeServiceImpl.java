@@ -1,7 +1,7 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.domain.Subscribe;
+import com.example.domain.dao.Subscribe;
 import com.example.service.SubscribeService;
 import com.example.mapper.SubscribeMapper;
 import org.springframework.stereotype.Service;

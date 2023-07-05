@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.SubscribeMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.Subscribe">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.Subscribe">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="beSubscribe" column="be_subscribe" jdbcType="INTEGER"/>
             <result property="subscribe" column="subscribe" jdbcType="INTEGER"/>

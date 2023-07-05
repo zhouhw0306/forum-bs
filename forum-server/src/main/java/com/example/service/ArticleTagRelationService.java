@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.domain.ArticleTagRelation;
+import com.example.domain.dao.ArticleTagRelation;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

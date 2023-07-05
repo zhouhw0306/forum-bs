@@ -2,10 +2,8 @@ package com.example.controller;
 
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.Category;
+import com.example.domain.dao.Category;
 import com.example.service.CategoryService;
-import com.sun.org.apache.regexp.internal.RE;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

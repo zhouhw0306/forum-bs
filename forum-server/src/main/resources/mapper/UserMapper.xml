@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.User">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.User">
             <id property="id" column="id" jdbcType="CHAR"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>

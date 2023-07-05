@@ -1,7 +1,7 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.domain.Notification;
+import com.example.domain.dao.Notification;
 import com.example.service.NotificationService;
 import com.example.mapper.NotificationMapper;
 import org.springframework.stereotype.Service;

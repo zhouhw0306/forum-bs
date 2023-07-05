@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
-import com.example.domain.Subscribe;
+import com.example.domain.dao.Subscribe;
 import com.example.service.SubscribeService;
 import com.example.utils.UserUtils;
 import org.springframework.cache.annotation.CacheEvict;

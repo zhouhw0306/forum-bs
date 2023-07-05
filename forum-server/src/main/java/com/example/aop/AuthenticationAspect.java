@@ -4,7 +4,7 @@ import com.example.annotation.Authentication;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
-import com.example.domain.User;
+import com.example.domain.dao.User;
 import com.example.mapper.UserMapper;
 import com.example.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;

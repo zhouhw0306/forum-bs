@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.SourceHasfavourMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.domain.SourceHasfavour">
+    <resultMap id="BaseResultMap" type="com.example.domain.dao.SourceHasfavour">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="userId" column="user_id" jdbcType="CHAR"/>
             <result property="sourceId" column="source_id" jdbcType="INTEGER"/>

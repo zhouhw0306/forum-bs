@@ -1,7 +1,7 @@
 package com.example.config;
 
 import cn.hutool.core.util.StrUtil;
-import com.example.domain.User;
+import com.example.domain.dao.User;
 import com.example.service.UserService;
 import com.example.utils.JWTUtil;
 import lombok.extern.slf4j.Slf4j;

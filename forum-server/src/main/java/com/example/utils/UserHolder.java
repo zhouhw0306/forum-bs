@@ -1,6 +1,6 @@
 package com.example.utils;
 
-import com.example.domain.User;
+import com.example.domain.dao.User;
 
 /**
  * @author zhw

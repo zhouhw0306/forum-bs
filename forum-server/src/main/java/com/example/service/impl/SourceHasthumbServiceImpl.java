@@ -1,7 +1,7 @@
 package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.domain.SourceHasthumb;
+import com.example.domain.dao.SourceHasthumb;
 import com.example.service.SourceHasthumbService;
 import com.example.mapper.SourceHasthumbMapper;
 import org.springframework.stereotype.Service;

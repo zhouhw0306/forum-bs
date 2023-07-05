@@ -2,7 +2,7 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
-import com.example.domain.Source;
+import com.example.domain.dao.Source;
 import com.example.mapper.UserMapper;
 import com.example.service.SourceService;
 import com.example.mapper.SourceMapper;

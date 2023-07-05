@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,13 +10,14 @@ import lombok.Data;
 /**
  * 
  * @author 24668
- * @TableName tb_tag
+ * @TableName tb_category
  */
-@TableName(value ="tb_tag")
+@TableName(value ="tb_category")
 @Data
-public class Tag implements Serializable {
+public class Category implements Serializable {
+
     /**
-     * id
+     * 
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -29,8 +30,13 @@ public class Tag implements Serializable {
     /**
      * 分类名
      */
-    private String tagName;
+    private String categoryName;
+
+    /**
+     * 描述
+     */
+    private String description;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = -66078278895318126L;
+    private static final long serialVersionUID = -7049964225082687735L;
 }

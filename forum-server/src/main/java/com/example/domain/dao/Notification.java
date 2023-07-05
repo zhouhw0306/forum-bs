@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -6,19 +6,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Builder;
 import lombok.Data;
 
 /**
  * 
- * @author zhw
- * @TableName tb_article_hasfavour
+ * @author 24668
+ * @TableName tb_notification
  */
-@TableName(value ="tb_article_hasfavour")
-@Builder
+@TableName(value ="tb_notification")
 @Data
-public class ArticleHasfavour implements Serializable {
+public class Notification implements Serializable {
+
     /**
      * id
      */
@@ -26,21 +24,20 @@ public class ArticleHasfavour implements Serializable {
     private Integer id;
 
     /**
-     * 用户id
+     * 标题
      */
-    private String userId;
+    private String title;
 
     /**
-     * 帖子id
+     * 内容
      */
-    private String articleId;
+    private String content;
 
     /**
-     * 收藏时间
+     * 创建时间
      */
     private Date createTime;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 287984246061046551L;
 }
