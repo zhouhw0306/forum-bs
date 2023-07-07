@@ -245,7 +245,7 @@ public class UserController {
 
     //更新头像
     @PostMapping("/avatar/update")
-    public Result updateAvatar(@RequestParam("file") MultipartFile avatarFile, @RequestParam("id") String id){
+    public Result updateAvatar(@RequestParam("file") MultipartFile avatarFile){
         if (avatarFile.isEmpty()) {
             return Result.error(ResultCode.UPLOAD_ERROR);
         }
@@ -253,7 +253,7 @@ public class UserController {
             QiNiuImage avatarImages = qiniuService.saveToQiNiu(avatarFile, "avatarImages");
             log.info(avatarImages.toString());
             User user = new User();
-            user.setId(id);
+            user.setId(UserUtils.getCurrentUser());
             user.setAvatar(avatarImages.getFileName());
             boolean res = userService.updateById(user);
             if (res){

@@ -7,6 +7,7 @@
         drag
         :action="uploadUrl()"
         :show-file-list="false"
+        :headers="{'Token' : token}"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
         <i class="el-icon-upload"></i>
@@ -31,12 +32,12 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userId'
+      'token'
     ])
   },
   methods: {
     uploadUrl () {
-      return `${this.$store.state.configure.HOST}/api/avatar/update?id=${this.userId}`
+      return `${this.$store.state.configure.HOST}/api/avatar/update`
     },
     handleAvatarSuccess (res, file) {
       if (res.code === 0) {

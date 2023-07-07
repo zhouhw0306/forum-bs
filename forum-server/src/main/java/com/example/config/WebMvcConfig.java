@@ -50,7 +50,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/comment/pushComment",
                         "/upload",
                         "/articles/publish",
-                        "/subScribe/**"
+                        "/subScribe/**",
+                        "/api/avatar/update"
                 ).order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())

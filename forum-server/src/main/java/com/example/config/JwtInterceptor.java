@@ -23,7 +23,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
-        log.info("拦截请求{}",request.getRequestURI());
+        log.info("验证token拦截请求{}",request.getRequestURI());
         String token = request.getHeader("token");
         // 如果不是映射到方法直接通过
         if (!(handler instanceof HandlerMethod)){
