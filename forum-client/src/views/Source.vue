@@ -74,29 +74,58 @@
         layout="prev, pager, next">
     </el-pagination>
 
-    <el-dialog title="分享" :visible.sync="dialogFormVisible" width="40%">
-      <el-form :model="form"  style="padding-right: 70px">
-        <el-form-item label="标题" label-width="100px">
-          <el-input v-model="form.title" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="信息" label-width="100px">
-          <el-input v-model="form.description" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="内容" label-width="100px">
-          <el-input v-model="form.content" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="封面" label-width="100px">
-          <el-input v-model="form.cover" ></el-input>
-        </el-form-item>
-        <el-form-item label="类型" label-width="100px">
-          <el-select v-model="form.category" placeholder="请选择类型">
-            <el-option label="工具" value="1"></el-option>
-            <el-option label="网站" value="2"></el-option>
-            <el-option label="项目" value="3"></el-option>
-            <el-option label="教程" value="4"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+    <el-dialog :visible.sync="dialogFormVisible" width="70%">
+      <template v-slot:title>
+        <i class="el-icon-share"/><span class="el-dialog__title"> 分享</span>
+      </template>
+      <el-row :gutter="50">
+        <el-form ref="sourceForm" :status-icon="true" :model="form" :rules="sourceForm" size="medium" label-width="60px" style="padding: 0 20px">
+          <el-col :span="12">
+            <el-form-item label="封面" prop="cover">
+              <el-input v-model="form.cover" placeholder="请输入封面" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="类型" prop="category">
+              <el-select v-model="form.category" placeholder="请选择类型">
+                <el-option label="工具" value="1"></el-option>
+                <el-option label="网站" value="2"></el-option>
+                <el-option label="项目" value="3"></el-option>
+                <el-option label="教程" value="4"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="form.title" placeholder="请输入标题" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="外链" prop="content">
+              <el-input v-model="form.content" placeholder="请输入外链" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="信息" prop="description">
+              <el-input v-model="form.description" placeholder="请输入描述信息" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="附件" prop="fileSrc">
+              <el-upload :limit="1"
+                         :headers="{'Token' : token}"
+                         :file-list="fileList"
+                         :action="fileAction"
+                         :on-remove="handleRemove"
+                         :before-remove="beforeRemove"
+                         :on-success="handleSuccess"
+                         :on-exceed="handleExceed">
+                <el-button size="mini" type="primary" icon="el-icon-upload">点击上传</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="share()">确 定</el-button>
@@ -108,7 +137,9 @@
 
 <script>
 import {mixin} from "@/mixins";
+import { sourceForm } from '@/assets/data/form'
 import {sourceShare, favour, getTableData, thumb} from "@/api";
+import {mapGetters} from "vuex";
 
 export default {
   data() {
@@ -126,12 +157,20 @@ export default {
         content:'',
         cover:'',
         category:''
-      }
+      },
+      sourceForm: {},
+      fileAction: '',
+      fileList: []
     };
   },
   mixins: [mixin],
-  created() {
+  mounted() {
+    this.fileAction = `${this.HOST}/source/upload`
+    this.sourceForm = sourceForm
     this.loadTable();
+  },
+  computed: {
+    ...mapGetters(['token','HOST']),
   },
   // 条件改变刷新页面
   watch: {
@@ -162,6 +201,7 @@ export default {
       this.pageNo = val;
       this.loadTable();
     },
+    //初始化
     loadTable(){
       let params = new URLSearchParams();
       params.append("type", this.type);
@@ -220,25 +260,46 @@ export default {
     view(id){
       this.$router.push({path: `/details/${id}`})
     },
+    //分享
     share(){
-      if (this.form.title ==='' || this.form.category ===''){
-        return this.$message.error('表单不能为空')
-      }
-      sourceShare(this.form).then(res => {
-         if (res.code === 0){
-           this.$message.success('分享成功正在审核')
-           this.dialogFormVisible = false
-           this.form = {
-             title:'',
-             description:'',
-             content:'',
-             cover:'',
-             category:''
-           }
-         } else {
-           this.$message.error(res.msg)
-         }
-      }).catch(err => this.$message.error(err))
+      this.$refs.sourceForm.validate(validate=>{
+        if (!validate) return;
+        if (this.form.title ==='' || this.form.category ===''){
+          return this.$message.error('表单不能为空')
+        }
+        if(this.fileList.length > 0){
+          this.form.fileName = this.fileList[0].fileName
+          this.form.fileUrl = this.fileList[0].fileUrl
+        }
+        sourceShare(this.form).then(res => {
+          if (res.code === 0){
+            this.$message.success('分享成功正在审核')
+            this.dialogFormVisible = false
+            this.form = {
+              title:'',
+              description:'',
+              content:'',
+              cover:'',
+              category:''
+            }
+            this.fileList = []
+          } else {
+            this.$message.error(res.msg)
+          }
+        }).catch(err => this.$message.error(err))
+      })
+    },
+    handleRemove(file, fileList) {
+      this.fileList = []
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`超出数量限制`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`)
+    },
+    handleSuccess(res, file, fileList){
+      this.fileList[0]=res.data
     }
   }
 }

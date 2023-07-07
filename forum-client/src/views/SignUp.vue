@@ -4,7 +4,7 @@
     <div class="signUp-head">
       <span>用户注册</span>
     </div>
-    <el-form :model="registerForm" status-icon :rules="rules" ref="registerForm" label-width="70px" class="demo-ruleForm">
+    <el-form :model="registerForm" :status-icon="true" :rules="rules" ref="registerForm" label-width="70px" class="demo-ruleForm">
       <el-form-item prop="username" label="用户名">
         <el-input v-model="registerForm.username" @focus="clearValida('username')" placeholder="用户名"></el-input>
       </el-form-item>

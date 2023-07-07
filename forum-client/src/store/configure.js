@@ -3,7 +3,9 @@ const configure = {
     HOST: 'http://localhost:8888',
   },
   getters: {
-
+    HOST: state => {
+      return state.HOST
+    },
   },
   mutations: {
 

@@ -77,6 +77,16 @@ public class Source implements Serializable {
     private String userId;
 
     /**
+     * 资源名称
+     */
+    private String fileName;
+
+    /**
+     * 资源路径
+     */
+    private String fileUrl;
+
+    /**
      * 点赞标识
      */
     @TableField(exist = false)

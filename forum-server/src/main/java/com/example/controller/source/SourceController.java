@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.annotation.Authentication;
 import com.example.constant.Result;
+import com.example.constant.ResultCode;
 import com.example.constant.SourceEnum;
+import com.example.domain.bo.QiNiuImage;
 import com.example.domain.dao.Source;
 import com.example.domain.dao.SourceHasfavour;
 import com.example.domain.dao.SourceHasthumb;
@@ -15,11 +17,16 @@ import com.example.service.SourceHasfavourService;
 import com.example.service.SourceHasthumbService;
 import com.example.service.SourceService;
 import com.example.service.UserService;
+import com.example.utils.QiniuServiceImpl;
 import com.example.utils.UserUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 24668
@@ -132,5 +139,29 @@ public class SourceController {
         source.setUserId(currentUser);
         boolean flag = sourceService.save(source);
         return flag ? Result.success() : Result.error();
+    }
+
+    @Resource
+    QiniuServiceImpl qiniuService;
+
+    @PostMapping("upload")
+    public Result upload(MultipartFile file) {
+
+        Result r = new Result();
+        try {
+            String filePath = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            String baseFolder = "source/" + filePath;
+
+            QiNiuImage qiNiuImage = qiniuService.saveToQiNiu(file, baseFolder);
+
+            r.setResultCode(ResultCode.SUCCESS);
+            Map<String, Object> map = r.simple();
+            map.put("fileUrl", qiNiuImage.getFileName());
+            map.put("fileName", file.getOriginalFilename());
+        } catch (Exception e) {
+            r.setResultCode(ResultCode.UPLOAD_ERROR);
+        }
+
+        return r;
     }
 }

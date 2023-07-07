@@ -19,7 +19,7 @@
           <el-form-item label="类型">
             <span>{{ props.row.category }}</span>
           </el-form-item>
-          <el-form-item label="内容">
+          <el-form-item label="外链">
             <span>{{ props.row.content }}</span>
           </el-form-item>
           <el-form-item label="点赞数">
@@ -33,6 +33,9 @@
           </el-form-item>
           <el-form-item label="创建时间">
             <span>{{ props.row.createTime }}</span>
+          </el-form-item>
+          <el-form-item label="资源附件" v-if="props.row.fileName">
+            <el-link icon="el-icon-download" :href="props.row.fileUrl" type="warning" :underline="false">{{props.row.fileName}}</el-link>
           </el-form-item>
         </el-form>
       </template>

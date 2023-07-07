@@ -18,6 +18,13 @@
         <div v-html="urlToLink(source.content)"></div>
       </div>
     </div>
+    <div v-if="source.fileName">
+      <el-alert
+          :closable="false"
+          type="warning">
+        <el-link style="font-size: 10px" icon="el-icon-download" :href="source.fileUrl" type="warning" :underline="false">{{source.fileName}}</el-link>
+      </el-alert>
+    </div>
     <div class="foot">
       <el-button class="san" @click="thumb(source.id)">
         <i v-if="!source.hasThumb" class="fa fa-thumbs-o-up"></i>

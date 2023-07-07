@@ -120,8 +120,33 @@ const cities = [{
   value: '台湾',
   label: '台湾'
 }]
+// 资源表单
+const sourceForm = {
+      cover: [{
+        required: true,
+        message: '请输入封面',
+        trigger: 'blur'
+      }],
+      category: [{
+        required: true,
+        message: '请选择类型',
+        trigger: 'blur'
+      }],
+      title: [{
+        required: true,
+        message: '请输入标题',
+        trigger: 'blur'
+      }],
+      description: [{
+        required: true,
+        message: '请输入信息',
+        trigger: 'blur'
+      }],
+      content: []
+}
 
 export {
   rules,
   cities,
+  sourceForm
 }
