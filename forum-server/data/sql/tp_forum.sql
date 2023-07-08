@@ -212,5 +212,6 @@ CREATE TABLE `tb_user`  (
   UNIQUE INDEX `phone_num_UNIQUE`(`phone_num`) USING BTREE,
   UNIQUE INDEX `email_UNIQUE`(`email`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+INSERT INTO `tb_user` VALUES ('f5a6b8dd105c32e37635176aaaea8682', 'uu', '202cb962ac59075b964b07152d234b70', '1', '15654846668', '2466864587@qq.com', '2022-09-29 00:00:00', '王侯将相,宁有种乎', '江西', 'http://rxazhgoae.hn-bkt.clouddn.com//avatarImages/b1a02c01c90240a6be8d20ae85dff63b.jpg', '2022-09-24 14:46:44', '2023-07-07 22:14:46', 166, 'ADMIN', '1');
 
 SET FOREIGN_KEY_CHECKS = 1;
