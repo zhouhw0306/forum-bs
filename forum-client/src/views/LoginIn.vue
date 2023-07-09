@@ -1,9 +1,11 @@
 <template>
 <div class="login-in">
-  <div class="login" >
+  <div class="login">
+
     <div class="login-head">
       <span>帐号登录</span>
     </div>
+
     <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" class="demo-ruleForm" >
       <el-form-item prop="username">
         <el-input placeholder="用户名" v-model.trim="loginForm.username"></el-input>
@@ -14,9 +16,16 @@
       <div class="login-btn">
         <el-button @click="goSignUp()">注册</el-button>
         <el-button type="primary" @click="handleLoginIn">登录</el-button>
-        <el-button type="primary" @click="githubLoginIn">GitHub</el-button>
       </div>
     </el-form>
+
+    <div class="login-sns">
+      <div class="login-sns-title">其它方式登录</div>
+      <div style="display: flex">
+        <div @click="githubLoginIn" class="login-sns-item"><img src="../assets/img/github.png" alt=""/>GitHub登录</div>
+      </div>
+    </div>
+
   </div>
 </div>
 </template>
@@ -129,4 +138,24 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/css/login-in.scss';
+
+.login-sns{
+  color: #9499a0;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 16px;
+}
+.login-sns-title {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.login-sns-item:hover{
+  cursor: pointer;
+}
+.login-sns-item img{
+  width: 25px;
+  vertical-align: middle;
+  margin-left: 5px
+}
 </style>

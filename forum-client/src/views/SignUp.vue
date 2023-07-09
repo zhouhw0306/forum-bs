@@ -86,7 +86,7 @@ export default {
     // 发送验证码
     sendCode(){
       this.btnCode=true
-      if (this.registerForm.email==='' || this.registerForm.email==null){
+      if (!this.registerForm.email){
         this.$message.warning('邮箱不能为空');
         this.btnCode=false
         return
