@@ -14,6 +14,25 @@ Vue.use(ElementUI)
 Vue.use(VCharts)
 Vue.config.productionTip = false
 
+router.beforeEach((to,from,next) => {
+  if (to.meta.requireLogin === true){
+    let loginIn = window.localStorage.getItem('loginIn')
+    console.log(window.localStorage.getItem('loginIn'))
+    if (loginIn === 'true'){
+      next()
+    } else {
+      next({
+        path: '/login',
+        query:{
+          redirect: to.fullPath
+        }
+      })
+    }
+  } else {
+    next()
+  }
+})
+
 new Vue({
   router,
   store,

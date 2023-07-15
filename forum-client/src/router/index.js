@@ -12,9 +12,7 @@ const routes = [
   {
     path: '/write/:id?',
     component: resolve => require(['../views/BlogWrite'], resolve),
-    meta: {
-      requireLogin: true
-    },
+    meta: {requireLogin: true}
   },
   {
     path: '',
@@ -39,11 +37,13 @@ const routes = [
       },
       {
         path: '/setting',
-        component: resolve => require(['../views/Setting'], resolve)
+        component: resolve => require(['../views/Setting'], resolve),
+        meta: {requireLogin: true}
       },
       {
         path: '/carePost',
-        component: resolve => require(['../views/SecondPage'], resolve)
+        component: resolve => require(['../views/SecondPage'], resolve),
+        meta: {requireLogin: true}
       },
       {
         path: '/source',
@@ -55,7 +55,8 @@ const routes = [
       },
       {
         path: '/center',
-        component: resolve => require(['../views/Center'], resolve)
+        component: resolve => require(['../views/Center'], resolve),
+        meta: {requireLogin: true}
       },
       {
         path: '/searchPage',
@@ -64,26 +65,32 @@ const routes = [
       {
         path: '/admin',
         component: resolve => require(['../views/Admin'], resolve),
+        meta: {requireLogin: true},
         children: [
           {
             path: '/info',
-            component: resolve => require(['../components/admin/Info'], resolve)
+            component: resolve => require(['../components/admin/Info'], resolve),
+            meta: {requireLogin: true}
           },
           {
             path: '/userManage',
-            component: resolve => require(['../components/admin/UserManage'], resolve)
+            component: resolve => require(['../components/admin/UserManage'], resolve),
+            meta: {requireLogin: true}
           },
           {
             path: '/articleManage',
-            component: resolve => require(['../components/admin/ArticleManage'], resolve)
+            component: resolve => require(['../components/admin/ArticleManage'], resolve),
+            meta: {requireLogin: true}
           },
           {
             path: '/commentManage',
-            component: resolve => require(['../components/admin/CommentManage'], resolve)
+            component: resolve => require(['../components/admin/CommentManage'], resolve),
+            meta: {requireLogin: true}
           },
           {
             path: '/sourceManage',
-            component: resolve => require(['../components/admin/SourceManage'], resolve)
+            component: resolve => require(['../components/admin/SourceManage'], resolve),
+            meta: {requireLogin: true}
           }
         ]
       }

@@ -14,20 +14,12 @@
     },
     methods: {
       toTop() {
-        // document.body.scrollTop = 0;
-        // document.documentElement.scrollTop = 0;
         window.scrollTo({top:0,left:0,behavior:'smooth'})
         this.topShow = false;
       },
       needToTop() {
         let curHeight = document.documentElement.scrollTop || document.body.scrollTop;
-
-        if (curHeight > 400) {
-          this.topShow = true;
-        } else {
-          this.topShow = false;
-        }
-
+        this.topShow = curHeight > 400;
       }
     },
     mounted() {
