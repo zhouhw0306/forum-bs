@@ -9,18 +9,22 @@ import com.example.domain.dao.Article;
 import com.example.service.ArticleService;
 import com.example.utils.SensitiveFilter;
 import com.example.utils.UserUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
  * 文章接口
- * @author 24668
+ * @author zhw
  */
 @RestController
 @RequestMapping(value = "/articles")
+@Api(tags = "文章接口")
 public class ArticleController {
 
     @Resource
@@ -29,34 +33,32 @@ public class ArticleController {
     @Resource
     private SensitiveFilter sensitiveFilter;
 
-    //id查询
     @GetMapping("/{id}")
+    @ApiOperation(value = "根据id查询文章")
     public Result findByKey(@PathVariable("id") String id) {
         return articleService.findById(id);
     }
 
-    //微搜
     @GetMapping("/by/{word}")
+    @ApiOperation(value = "根据关键词搜索文章")
     public Result byWord(@PathVariable("word") String word) {
         return articleService.searchByKey(word);
     }
 
-    //添加或更新
     @PostMapping("/publish")
+    @ApiOperation(value = "文章的新增或更新")
     @CacheEvict(value = "article", allEntries=true)
-    public Result saveArticle(@RequestBody Article article) {
-        if (!ObjectUtil.isEmpty(article.getUserId())){
-            if (!ObjectUtil.equal(article.getUserId(),UserUtils.getCurrentUser())){
-                Result.error(ResultCode.USER_NOT_LOGGED_IN);
-            }
+    public Result saveArticle(@RequestBody @Valid Article article) {
+        if (!ObjectUtil.equal(article.getUserId(),UserUtils.getCurrentUser())){
+            Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         article.setContent(sensitiveFilter.filter(article.getContent()));
         String articleId = articleService.publishArticle(article);
         return Result.success(articleId);
     }
 
-    //分页分类获取帖子
     @GetMapping("/getAll")
+    @ApiOperation(value = "分页分类获取文章")
     @Cacheable(value = "article",keyGenerator = "keyGenerator")
     public Result listArticles(@RequestParam Integer pageNumber,
                                @RequestParam Integer pageSize,
@@ -68,21 +70,20 @@ public class ArticleController {
         return Result.success(articles);
     }
 
-    //获取帖子数量
     @GetMapping("/getAllNOPage")
+    @ApiOperation(value = "获取文章数量")
     public Result AllArticles() {
         return Result.success(articleService.count());
     }
 
-    //添加文章阅读量
     @GetMapping("/addViewCount/{id}")
+    @ApiOperation(value = "添加文章阅读量")
     public Result addViewCount(@PathVariable("id") String id){
         return articleService.addViewCount(id);
     }
 
-
-    //获得热帖
     @GetMapping("/getHot")
+    @ApiOperation(value = "获得热门文章")
     public Result getHot(){
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.last("order by comment_count desc,view_count desc limit 6");
@@ -90,19 +91,17 @@ public class ArticleController {
         return Result.success(list);
     }
 
-    //deleteById文章
     @Authentication
     @CacheEvict(value = "article", allEntries=true)
     @PostMapping("deleteById/{id}")
+    @ApiOperation(value = "根据id删除文章")
     public Result deleteById(@PathVariable String id){
         boolean flag = articleService.removeById(id);
         return flag ? Result.success() : Result.error();
     }
 
-    /**
-     * 基于用户的协同过滤算法
-     */
     @GetMapping("getRecommend")
+    @ApiOperation(value = "基于用户的协同过滤算法，推荐文章")
     public Result getRecommend(){
         List<Article> list = articleService.getRecommend();
         return Result.success(list);

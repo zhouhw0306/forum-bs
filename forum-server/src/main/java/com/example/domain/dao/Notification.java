@@ -9,8 +9,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
- * @author 24668
+ * 公告表
  * @TableName tb_notification
  */
 @TableName(value ="tb_notification")

@@ -17,8 +17,9 @@ Vue.config.productionTip = false
 router.beforeEach((to,from,next) => {
   if (to.meta.requireLogin === true){
     let loginIn = window.localStorage.getItem('loginIn')
-    console.log(window.localStorage.getItem('loginIn'))
+    let role = window.localStorage.getItem('role')
     if (loginIn === 'true'){
+      if (to.matched[1].path === '/admin' && role !== '"ADMIN"') return
       next()
     } else {
       next({

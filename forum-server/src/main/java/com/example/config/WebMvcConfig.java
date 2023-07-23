@@ -55,7 +55,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 ).order(1);
 
         registry.addInterceptor(refreshTokenInterceptor())
-                .addPathPatterns("/**").order(0);
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/**",
+                        "/swagger-ui.html/**"
+                ).order(0);
     }
 
     @Bean

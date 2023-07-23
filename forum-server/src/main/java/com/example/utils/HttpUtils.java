@@ -3,8 +3,10 @@ package com.example.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 解析get请求的参数
+ */
 public class HttpUtils {
-
 
     public static Map<String, String> params2Map(String param) {
 

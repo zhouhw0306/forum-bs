@@ -22,7 +22,7 @@ axios.interceptors.request.use(config => {
   }
 )
 
-
+//响应拦截器
 axios.interceptors.response.use(
   response => {
     // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据

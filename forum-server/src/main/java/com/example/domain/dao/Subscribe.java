@@ -11,7 +11,6 @@ import lombok.Data;
 
 /**
  * 用户关注关系表
- * @author 24668
  * @TableName tb_subscribe
  */
 @TableName(value ="tb_subscribe")

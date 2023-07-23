@@ -6,9 +6,9 @@ import java.security.NoSuchAlgorithmException;
 
 public class MD5Util {
 
-        /***
-         * MD5加码 生成32位md5码
-         */
+    /***
+     * MD5加码 生成32位md5码
+     */
     public static String MD5Lower(String plainText) {
         try {
             // 获得MD5摘要算法的 MessageDigest 对象

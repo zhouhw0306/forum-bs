@@ -1,15 +1,20 @@
 package com.example.utils;
 
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+/**
+ * 图片加水印工具类
+ * @author zhw
+ */
 public class ImgAddWatermarkUtil {
 
-    // MutipartFile 转换为File
+    /**
+     * MutipartFile 转换为File
+     */
     public static File multipartFileToFile(MultipartFile file) throws Exception {
         File toFile = null;
         if (file.equals("") || file.getSize() <= 0) {
@@ -17,7 +22,7 @@ public class ImgAddWatermarkUtil {
         } else {
             InputStream ins = null;
             ins = file.getInputStream();
-            toFile = new File(file.getOriginalFilename());
+            toFile = new File(System.getProperty("java.io.tmpdir")+file.getOriginalFilename());
             inputStreamToFile(ins, toFile);
             ins.close();
         }

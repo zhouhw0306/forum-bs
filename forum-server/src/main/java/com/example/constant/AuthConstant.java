@@ -1,7 +1,7 @@
 package com.example.constant;
 
 /**
- * @author 24668
+ * @author zhw
  */
 
 public enum  AuthConstant {

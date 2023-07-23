@@ -2,13 +2,16 @@ package com.example.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 解析获取请求的ip地址
+ */
 public class IPUtils {
 
     private static final String LOCAL_IP = "0:0:0:0:0:0:0:1";
+
     /**
      * 获取Ip
-     *
-     * @param request  请求
+     * @param request 请求
      */
     public static String getIpRequest(HttpServletRequest request) {
         String unknown = "unknown";

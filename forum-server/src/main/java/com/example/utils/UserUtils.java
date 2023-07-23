@@ -1,31 +1,14 @@
 package com.example.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author 24668
+ * @author zhw
  */
-//@Component
 public class UserUtils {
-
-
-//    @Resource
-//    StringRedisTemplate stringRedisTemplate;
-//
-//    static UserUtils userUtils;
-//
-//    @PostConstruct
-//    public void init(){
-//        userUtils=this;
-//        userUtils.stringRedisTemplate = this.stringRedisTemplate;
-//    }
 
     /**
      * 获得当前用户

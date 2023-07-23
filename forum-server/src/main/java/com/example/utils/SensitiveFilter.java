@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 前缀树实现过滤敏感词
+ * @author zhw
  */
 @Component
 public class SensitiveFilter {
@@ -27,7 +28,9 @@ public class SensitiveFilter {
     // 根节点
     private TrieNode rootNode = new TrieNode();
 
-    //2.使用PostConstruct注解 在容器启动的时候 就会加载这个方法 构造这个前缀树结构
+    /**
+     * 使用PostConstruct注解 在容器启动的时候 就会加载这个方法 构造这个前缀树结构
+     */
     @PostConstruct
     public void init() {
         try (
@@ -44,7 +47,9 @@ public class SensitiveFilter {
         }
     }
 
-    // 将一个敏感词添加到前缀树中
+    /**
+     * 将一个敏感词添加到前缀树中
+     */
     private void addKeyword(String keyword) {
         TrieNode tempNode = rootNode;
         for (int i = 0; i < keyword.length(); i++) {
@@ -69,7 +74,6 @@ public class SensitiveFilter {
 
     /**
      * 过滤敏感词
-     *
      * @param text 待过滤的文本
      * @return 过滤后的文本
      */
@@ -130,13 +134,17 @@ public class SensitiveFilter {
         return sb.toString();
     }
 
-    // 判断是否为符号
+    /**
+     * 判断是否为符号
+     */
     private boolean isSymbol(Character c) {
         // 0x2E80~0x9FFF 是东亚文字范围
         return !CharUtils.isAsciiAlphanumeric(c) && (c < 0x2E80 || c > 0x9FFF);
     }
 
-    // 1 定义前缀树
+    /**
+     * 定义前缀树
+     */
     private class TrieNode {
 
         // 关键词结束标识

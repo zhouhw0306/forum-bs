@@ -23,7 +23,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        log.info("进入token拦截器刷新token");
+        log.info("进入token拦截器刷新token: {}",request.getRequestURI());
         String token = request.getHeader("token");
         if (StrUtil.isBlank(token)){
             return true;

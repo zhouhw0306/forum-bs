@@ -36,6 +36,8 @@ export const getAllCategorys = () =>get(`category/getCatAll`)
 export const getAllTags = () =>get(`tag/getTagAll`)
 //根据id获得文章
 export const getArticle = (id) => get(`articles/${id}`)
+//获取收藏
+export const getArticleHasFavour = () => get(`hasArticle/getHasFavour`)
 //获得所有文章
 export function getArticles(isCareMe, index, page) {
     return axios({
@@ -125,7 +127,7 @@ export const getSourceById = (id) => get(`source/${id}`)
 export const sourceShare = (source) => post(`source/insert`,source)
 
 //获取收藏资源
-export const getHasFavour = () => get(`source/getHasFavour`)
+export const getSourceHasFavour = () => get(`source/getHasFavour`)
 
 // =======================> 管理员 API
 //获取所有用户

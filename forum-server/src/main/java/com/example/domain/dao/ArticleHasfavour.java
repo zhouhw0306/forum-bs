@@ -11,8 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * 
- * @author zhw
+ * 文章收藏关系表
  * @TableName tb_article_hasfavour
  */
 @TableName(value ="tb_article_hasfavour")

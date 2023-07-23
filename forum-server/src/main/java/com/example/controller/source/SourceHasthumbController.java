@@ -1,6 +1,5 @@
 package com.example.controller.source;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
@@ -11,16 +10,16 @@ import com.example.service.SourceHasthumbService;
 import com.example.service.SourceService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
-/**
- * @author zhw
- */
 @RestController
 @RequestMapping("source")
+@Api(tags = "资源收藏操作接口")
 public class SourceHasthumbController {
 
     @Resource
@@ -32,10 +31,8 @@ public class SourceHasthumbController {
     @Resource
     private SourceService sourceService;
 
-    /**
-     * 点赞操作
-     */
     @PostMapping("thumb")
+    @ApiOperation(value = "点赞或取消点赞指定资源")
     public Result favour(Integer targetId){
         QueryWrapper<SourceHasthumb> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();

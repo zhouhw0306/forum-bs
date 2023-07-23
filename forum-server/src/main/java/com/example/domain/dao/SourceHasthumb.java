@@ -10,8 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * @author 24668
- * @TableName 点赞关系表
+ * @TableName 资源-点赞关系表
  */
 @TableName(value ="tb_source_hasthumb")
 @Data

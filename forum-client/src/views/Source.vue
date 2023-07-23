@@ -264,9 +264,6 @@ export default {
     share(){
       this.$refs.sourceForm.validate(validate=>{
         if (!validate) return;
-        if (this.form.title ==='' || this.form.category ===''){
-          return this.$message.error('表单不能为空')
-        }
         if(this.fileList.length > 0){
           this.form.fileName = this.fileList[0].fileName
           this.form.fileUrl = this.fileList[0].fileUrl

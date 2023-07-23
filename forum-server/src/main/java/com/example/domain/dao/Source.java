@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
+
+import javax.validation.constraints.NotBlank;
 
 /**
- * @author 24668
+ * @author zhw
  * @TableName 资源表
  */
 @TableName(value ="tb_source")
@@ -15,7 +18,7 @@ import lombok.Data;
 public class Source implements Serializable {
 
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -23,26 +26,31 @@ public class Source implements Serializable {
     /**
      * 标题
      */
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     /**
-     * 信息
+     * 描述信息
      */
+    @NotBlank(message = "描述信息不能为空")
     private String description;
 
     /**
      * 类型
      */
+    @NotBlank(message = "类型不能为空")
     private String category;
 
     /**
-     * 内容
+     * 内容（外链）
      */
+    @URL(message = "url非法")
     private String content;
 
     /**
      * 封面
      */
+    @NotBlank(message = "封面不能为空")
     private String cover;
 
     /**

@@ -6,7 +6,6 @@ import java.util.Map;
 
 /**
  * api接口数据返回封装
- *
  * @author zhw
  */
 public class Result implements Serializable {
@@ -56,6 +55,13 @@ public class Result implements Serializable {
         Result result = new Result();
         result.setResultCode(resultCode);
         result.setData(data);
+        return result;
+    }
+
+    public static Result error(ResultCode resultCode, String msg) {
+        Result result = new Result();
+        result.setResultCode(resultCode);
+        result.setMsg(msg);
         return result;
     }
 

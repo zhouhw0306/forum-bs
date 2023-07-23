@@ -10,6 +10,8 @@ import com.example.service.SourceHasfavourService;
 import com.example.service.SourceService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("source")
+@Api(tags = "资源收藏操作接口")
 public class SourceHasfavourController {
 
     @Resource
@@ -31,10 +35,8 @@ public class SourceHasfavourController {
     @Resource
     private SourceService sourceService;
 
-    /**
-     * 收藏操作
-     */
     @PostMapping("favour")
+    @ApiOperation(value = "收藏或取消收藏指定资源")
     public Result favour(Integer targetId){
         QueryWrapper<SourceHasfavour> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
@@ -64,21 +66,17 @@ public class SourceHasfavourController {
         }
     }
 
-    /**
-     * 获得所有收藏
-     */
     @GetMapping("getHasFavour")
+    @ApiOperation(value = "获得所有收藏")
     public Result getHasFavour(){
         String userId = UserUtils.getCurrentUser();
         if (userId == null){
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         List<SourceHasfavour> favourList = sourceHasfavourService.query().eq("user_id", userId).list();
-        List<Source> sourceList = new ArrayList<>();
-        for (SourceHasfavour sourceHasfavour : favourList) {
-            Source s = sourceService.getById(sourceHasfavour.getSourceId());
-            sourceList.add(s);
-        }
+        List<Source> sourceList = favourList.stream().map(sourceHasfavour ->
+                sourceService.getById(sourceHasfavour.getSourceId())
+        ).collect(Collectors.toList());
         return Result.success(sourceList);
     }
 }

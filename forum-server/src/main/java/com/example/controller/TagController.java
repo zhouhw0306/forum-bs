@@ -6,6 +6,8 @@ import com.example.domain.dao.ArticleTagRelation;
 import com.example.domain.dao.Tag;
 import com.example.service.ArticleTagRelationService;
 import com.example.service.TagService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 标签接口
- * @author 24668
+ * @author zhw
  */
 @RestController
 @RequestMapping(value = "/tag")
+@Api(tags = "标签接口")
 public class TagController {
-
 
     @Autowired
     private TagService tagService;
@@ -31,12 +32,14 @@ public class TagController {
     private ArticleTagRelationService articleTagRelationService;
 
     @GetMapping("/getTagAll")
+    @ApiOperation(value = "获取所有标签")
     public Result listTags() {
         List<Tag> tags = tagService.list();
         return Result.success(tags);
     }
 
     @GetMapping("/getByArticleId")
+    @ApiOperation(value = "获取指定文章的标签")
     public Result getByArticleId(String articleId){
         QueryWrapper<ArticleTagRelation> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id",articleId);

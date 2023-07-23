@@ -10,8 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * @author 24668
- * @TableName 收藏关系表
+ * @TableName 资源-收藏关系表
  */
 @TableName(value ="tb_source_hasfavour")
 @Builder

@@ -9,7 +9,9 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
+import com.example.annotation.RateLimiter;
 import com.example.constant.AuthConstant;
+import com.example.constant.RateLimiterType;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.bo.QiNiuImage;
@@ -21,6 +23,8 @@ import com.example.service.SubscribeService;
 import com.example.service.UserService;
 import com.example.utils.*;
 import com.example.domain.vo.Personal;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -38,12 +42,12 @@ import static com.example.constant.UserLockState.UN_LOCK_DOWN;
 import static com.example.utils.RedisConstants.*;
 
 /**
- * 用户接口
  * @author zhw
  */
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@Api(tags = "用户接口")
 public class UserController {
 
     @Resource
@@ -58,6 +62,17 @@ public class UserController {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    QiniuServiceImpl qiniuService;
+
+    @Resource
+    JavaMailSender jms;
+
+    @RateLimiter(time = 10,count = 5,limiterType = RateLimiterType.IP)
+    @RequestMapping(value = "/test",method = RequestMethod.GET)
+    public Result test(){
+        return Result.success("成功");
+    }
 
     /**
      * 接入github登录所需参数
@@ -69,14 +84,14 @@ public class UserController {
     @Value("${github.redirect.url}")
     private String GITHUB_REDIRECT_URL;
 
-    //登录
-    @RequestMapping(value = "/login/status",method = RequestMethod.POST)
+    @PostMapping(value = "/login/status")
+    @ApiOperation(value = "登录")
     public Result login(String username, String password){
         return userService.login(username,password);
     }
 
-    // github登录
     @GetMapping("githubLogin")
+    @ApiOperation(value = "返回github授权服务器地址")
     public Result githubLogin(HttpServletRequest request){
         // Github认证服务器地址
         String url = "https://github.com/login/oauth/authorize";
@@ -90,14 +105,12 @@ public class UserController {
         return Result.success(url + "?" + param);
     }
 
-   /**
-     * GitHub回调方法
+    /**
      * @param code 授权码
      * @param state 应与发送时一致
-     * @author jitwxs
-     * @since 2018/5/21 15:24
-    */
+     */
     @GetMapping("/githubCallback")
+    @ApiOperation(value = "用户同意授权后的GitHub回调接口")
     public Result githubCallback(String code, String state, HttpServletRequest request) throws Exception {
         // 验证state，如果不一致，可能被CSRF攻击
         String s = stringRedisTemplate.opsForValue().get(IPUtils.getIpRequest(request));
@@ -166,23 +179,18 @@ public class UserController {
         return Result.success(user);
     }
 
-    //注册用户
-    @RequestMapping(value = "/user/add", method = RequestMethod.POST)
+    @PostMapping(value = "/user/add")
+    @ApiOperation(value = "用户注册")
     public Result addUser(HttpServletRequest req){
         return userService.signUp(req);
     }
 
-    @Resource
-    JavaMailSender jms;
-
-    //发送验证码
     @PostMapping("/sigIn/code")
+    @ApiOperation(value = "发送验证码")
     public Result sendCode(HttpServletRequest req){
         String email = req.getParameter("email").trim();
         // 验证邮箱是否已存在
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("email", email);
-        User one = userService.getOne(queryWrapper);
+        User one = userService.lambdaQuery().eq(User::getEmail,email).one();
         if (one != null){
             return new Result(20008,"邮箱已被注册");
         }
@@ -194,8 +202,8 @@ public class UserController {
         return Result.success();
     }
 
-    //获得所登录用户的信息
     @GetMapping("/getUser")
+    @ApiOperation(value = "获得所登录用户的信息")
     public Result getById(){
         String currentUser = UserUtils.getCurrentUser();
         if (currentUser == null){
@@ -206,15 +214,15 @@ public class UserController {
         return Result.success(user);
     }
 
-    //获得指定id用户部分信息
     @GetMapping("/getUserById/{id}")
+    @ApiOperation(value = "获得指定id用户的可公开信息")
     public Result getUserById(@PathVariable String id){
         User user = userService.query().select("id","username","avatar","score","sex","introduction","birth").eq("id",id).one();
         return Result.success(user);
     }
 
-    //根据积分排行
     @GetMapping("/getByScore")
+    @ApiOperation(value = "获得积分排行的用户列表")
     public Result getByScore(){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id","username","avatar","score","sex","introduction","birth");
@@ -223,9 +231,10 @@ public class UserController {
         return Result.success(list);
     }
 
-    //更新用户信息
     @PostMapping("/updateUser")
+    @ApiOperation(value = "更新用户信息")
     public Result updateUser(@RequestBody User user){
+        assert UserUtils.getCurrentUser() != null;
         User newUser = new User();
         newUser.setUpdateTime(DateUtil.date());
         newUser.setBirth(user.getBirth());
@@ -235,16 +244,13 @@ public class UserController {
         newUser.setEmail(user.getEmail());
         newUser.setIntroduction(user.getIntroduction());
         newUser.setLocation(user.getLocation());
-        newUser.setId(user.getId());
+        newUser.setId(UserUtils.getCurrentUser());
         boolean b = userService.updateById(newUser);
         return b?Result.success():Result.error(ResultCode.ERROR);
     }
 
-    @Resource
-    QiniuServiceImpl qiniuService;
-
-    //更新头像
     @PostMapping("/avatar/update")
+    @ApiOperation(value = "更新头像")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatarFile){
         if (avatarFile.isEmpty()) {
             return Result.error(ResultCode.UPLOAD_ERROR);
@@ -267,8 +273,8 @@ public class UserController {
         }
     }
 
-    //获得个人数据
     @GetMapping("getPersonal")
+    @ApiOperation(value = "获得个人数据")
     public Result getPersonal(){
         String userId = UserUtils.getCurrentUser();
         User user = userService.getById(userId);
@@ -283,9 +289,9 @@ public class UserController {
         return Result.success(personal);
     }
 
-    //所有用户
     @Authentication
     @PostMapping("getAllUser")
+    @ApiOperation(value = "管理员获得所有用户")
     public Result getAllUser(){
         QueryWrapper<User> wrapper= new QueryWrapper<>();
         wrapper.ne("role",AuthConstant.ADMIN.toString())
@@ -294,9 +300,9 @@ public class UserController {
         return Result.success(users);
     }
 
-    //lockOrUnlock 用户
     @Authentication
     @PostMapping("lockOrUnlock/{id}")
+    @ApiOperation(value = "管理员ockOrUnlock用户")
     public Result lockOrUnlock(@PathVariable String id){
         User user = userService.getById(id);
         String lockState = user.getLockState();

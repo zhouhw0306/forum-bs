@@ -19,20 +19,24 @@ import com.example.service.SourceService;
 import com.example.service.UserService;
 import com.example.utils.QiniuServiceImpl;
 import com.example.utils.UserUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author 24668
+ * @author zhw
  */
 @RestController
 @RequestMapping("source")
+@Api(tags = "资源接口")
 public class SourceController {
 
     @Resource
@@ -47,11 +51,12 @@ public class SourceController {
     @Resource
     private SourceHasthumbService sourceHasthumbService;
 
-    /**
-     *  条件查
-      */
+    @Resource
+    QiniuServiceImpl qiniuService;
+
     @PostMapping("vo")
-    public IPage pageVo(String type,String sort,Integer pageNo,Integer pageSize){
+    @ApiOperation(value = "根据条件分页查询资源信息")
+    public IPage<Source> pageVo(String type,String sort,Integer pageNo,Integer pageSize){
         QueryWrapper<Source> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("category", SourceEnum.findEnumByName(type));
         queryWrapper.eq("state", 1);
@@ -79,10 +84,8 @@ public class SourceController {
         return iPage;
     }
 
-    /**
-     * 根据id查
-     */
     @GetMapping("/{id}")
+    @ApiOperation(value = "根据id查询资源信息")
     public Result getById(@PathVariable Integer id){
         Source record = sourceService.getById(id);
         User byId = userService.getById(record.getUserId());
@@ -101,37 +104,32 @@ public class SourceController {
         return Result.success(record);
     }
 
-    /**
-     * 查全部
-     */
     @Authentication
     @PostMapping("getAll/{state}")
-    public Result getALl(@PathVariable Integer state){
+    @ApiOperation(value = "根据状态查询资源信息")
+    public Result getAll(@PathVariable Integer state){
         List<Source> list = sourceService.query().eq("state",state).list();
         return Result.success(list);
     }
 
-    /**
-     * 根据id删除
-     */
     @Authentication
     @PostMapping("/delete/{id}")
+    @ApiOperation(value = "根据id删除资源")
     public Result deleteById(@PathVariable Integer id) {
         boolean flag = sourceService.removeById(id);
         return flag ? Result.success() : Result.error();
     }
 
-    /**
-     * 审核资源
-     */
     @Authentication
     @PostMapping("pass")
+    @ApiOperation(value = "管理员审核资源")
     public Result pass(Integer id,Integer type) {
         return sourceService.pass(id,type);
     }
 
     @PostMapping("insert")
-    public Result insert(@RequestBody Source source){
+    @ApiOperation(value = "表单提交分享资源")
+    public Result insert(@RequestBody @Valid Source source){
         String currentUser = UserUtils.getCurrentUser();
         if (currentUser == null){
             Result.error();
@@ -141,10 +139,8 @@ public class SourceController {
         return flag ? Result.success() : Result.error();
     }
 
-    @Resource
-    QiniuServiceImpl qiniuService;
-
     @PostMapping("upload")
+    @ApiOperation(value = "上传资源附件")
     public Result upload(MultipartFile file) {
 
         Result r = new Result();

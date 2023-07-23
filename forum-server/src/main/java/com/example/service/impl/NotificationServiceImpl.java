@@ -7,7 +7,7 @@ import com.example.mapper.NotificationMapper;
 import org.springframework.stereotype.Service;
 
 /**
-* @author 24668
+* @author zhw
 * @description 针对表【tb_notification】的数据库操作Service实现
 * @createDate 2022-10-02 20:01:29
 */

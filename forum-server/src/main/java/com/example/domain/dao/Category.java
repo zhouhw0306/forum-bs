@@ -8,8 +8,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 
- * @author 24668
+ * 文章类型表
  * @TableName tb_category
  */
 @TableName(value ="tb_category")
@@ -17,7 +16,7 @@ import lombok.Data;
 public class Category implements Serializable {
 
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;

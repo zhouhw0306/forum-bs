@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import ArticleItem from '@/components/ArticleItem'
+import ArticleItem from '@/components/article/ArticleItem'
 import ScrollPage from '@/components/ScrollPage'
-import {getArticles} from '@/api/index'
-import bus from '../assets/js/bus'
+import {getArticles} from '@/api'
+import bus from '@/assets/js/bus'
 
 export default {
   name: "ArticleScrollPage",

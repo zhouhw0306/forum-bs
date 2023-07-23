@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 
 /**
- *
+ * JWT工具类
  * @author zhw
  */
 public class JWTUtil {

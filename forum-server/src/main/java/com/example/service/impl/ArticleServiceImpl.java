@@ -28,7 +28,7 @@ import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
 import static com.example.utils.RedisConstants.VIEW_ART_KEY;
 
 /**
-* @author 24668
+* @author zhw
 * @description 针对表【tb_article(文章表)】的数据库操作Service实现
 * @createDate 2022-09-23 19:32:15
 */

@@ -10,8 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * 
- * @author 24668
+ * 文章-标签关系表
  * @TableName tb_article_tag_relation
  */
 @TableName(value ="tb_article_tag_relation")

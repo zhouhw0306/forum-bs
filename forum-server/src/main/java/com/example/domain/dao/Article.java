@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.List;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * 文章表
  * @TableName tb_article
@@ -22,28 +25,33 @@ public class Article implements Serializable {
     private String id;
 
     /**
-     * 用户ID
+     * 作者ID
      */
+    @NotBlank(message = "作者不能为空")
     private String userId;
 
     /**
      * 标题
      */
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     /**
      * 分类
      */
+    @NotNull(message = "类型不能为空")
     private Integer categoryId;
 
     /**
      * 原始的正文内容
      */
+    @NotBlank(message = "正文不能为空")
     private String contentHtml;
 
     /**
      * 过滤渲染后的正文内容
      */
+    @NotBlank(message = "正文不能为空")
     private String content;
 
     /**

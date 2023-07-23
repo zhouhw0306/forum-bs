@@ -131,7 +131,7 @@ export default {
         if (res.code===0){
           this.sourceCount = res.data.length
         }else {
-          this.$message.error(res.msg)
+          this.$message.error('资源数量加载失败')
         }
       }).catch(err => this.$message.error(err.msg))
     },
@@ -140,7 +140,7 @@ export default {
         if (res.code===0){
           this.articleCount = res.data
         }else {
-          this.$message.error(res.msg)
+          this.$message.error('文章数量加载失败')
         }
       }).catch(err => this.$message.error(err.msg))
     },

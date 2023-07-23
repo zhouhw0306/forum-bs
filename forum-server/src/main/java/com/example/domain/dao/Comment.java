@@ -11,8 +11,7 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * 
- * @author zhou
+ * 评论表
  * @TableName tb_comment
  */
 @TableName(value ="tb_comment")
