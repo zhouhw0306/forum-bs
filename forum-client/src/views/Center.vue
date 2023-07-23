@@ -109,21 +109,12 @@
         </router-link>
       </div>
     </el-card>
-    <el-card style="width: calc(50vw - 30px);margin: 20px 9px 0 19px;display: inline-block;vertical-align: top">
-      <p style="font-size: 16px;font-weight: 700;">浏览记录</p>
-      <el-empty v-if="browsingHistory.length===0" :image-size="100" description="暂无数据"></el-empty>
-      <div v-for="a in browsingHistory" style="margin: 15px">
-        <router-link :to="`/view/${a.id}`">
-          <a>{{a.title}}</a>
-        </router-link>
-      </div>
-    </el-card>
   </div>
 </template>
 
 <script>
 import {mixin} from "@/mixins";
-import {getArticleHasFavour, getAuthor, getBrowsingHistory, getSourceHasFavour} from "@/api";
+import {getArticleHasFavour, getAuthor, getSourceHasFavour} from "@/api";
 
 export default {
 
@@ -132,8 +123,7 @@ export default {
     return {
       user : {},
       sources : [],
-      articles : [],
-      browsingHistory : []
+      articles : []
     }
   },
   mounted () {
@@ -155,11 +145,6 @@ export default {
           this.articles = res.data
       }).catch(err => {
           this.$message.error(err)
-      })
-      getBrowsingHistory().then(res => {
-        this.browsingHistory = res.data
-      }).catch(err => {
-        this.$message.error(err)
       })
     },
   }

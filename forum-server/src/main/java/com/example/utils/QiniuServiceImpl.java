@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * @author 24668
+ * @author zhw
  * 七牛云上传文件工具类
  */
 @Slf4j

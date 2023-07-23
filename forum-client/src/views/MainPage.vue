@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import ArticlePage from '@/components/ArticlePage'
+import ArticlePage from '@/components/article/ArticlePage'
 import CardMsg from '@/components/card/CardMsg'
 import CardHot from "@/components/card/CardHot";
 

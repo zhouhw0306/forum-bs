@@ -1,6 +1,5 @@
 package com.example.config;
 
-import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -20,11 +19,9 @@ import java.util.List;
 
 /**
  * swagger配置类
- * @author 24668
  */
 @Configuration
 @EnableSwagger2
-@EnableKnife4j
 public class SwaggerConfig {
 
     @Bean

@@ -8,8 +8,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 
- * @author 24668
+ * 标签表
  * @TableName tb_tag
  */
 @TableName(value ="tb_tag")

@@ -10,8 +10,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 
- * @author 24668
+ * 用户表
  * @TableName tb_user
  */
 @TableName(value ="tb_user")

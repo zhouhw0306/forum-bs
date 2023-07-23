@@ -3,9 +3,8 @@
     style="padding-left: 25px"
     class="me-editor"
     ref="md"
-    :navigation="false"
     :ishljs="true"
-    toolbarsBackground="#ffffff"
+    toolbarsBackground="#cfdffc"
     v-model="editor.value"
     @imgAdd="imgAdd"
     v-bind="editor">
@@ -15,45 +14,46 @@
 
 <script>
 
-import {mavonEditor} from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
-import {upload} from '@/api'
+  import {mavonEditor} from 'mavon-editor'
+  import 'mavon-editor/dist/css/index.css'
 
-export default {
-  name: 'MarkdownEditor',
-  props: {
-    editor: Object
-  },
-  data() {
-    return {}
-  },
-  mounted() {
-    this.$set(this.editor, 'ref', this.$refs.md)
-  },
-  methods: {
-    imgAdd(pos, $file) {
-      let that = this
-      let formData = new FormData();
-      formData.append('image', $file);
+  import {upload} from '@/api/index'
 
-      upload(formData).then(res => {
-        // 第二步.将返回的url替换到文本原位置![...](./0) -> ![...](url)
-        if (res.data.code === 0) {
+  export default {
+    name: 'MarkdownEditor',
+    props: {
+      editor: Object
+    },
+    data() {
+      return {}
+    },
+    mounted() {
+      this.$set(this.editor, 'ref', this.$refs.md)
+    },
+    methods: {
+      imgAdd(pos, $file) {
+        let that = this
+        let formData = new FormData();
+        formData.append('image', $file);
 
-          that.$refs.md.$img2Url(pos, res.data.data.url);
-        } else {
-          that.$message({message: res.data.msg, type: 'error', showClose: true})
-        }
+        upload(formData).then(res => {
+          // 第二步.将返回的url替换到文本原位置![...](./0) -> ![...](url)
+          if (res.data.code === 0) {
 
-      }).catch(err => {
-        that.$message({message: err, type: 'error', showClose: true});
-      })
+            that.$refs.md.$img2Url(pos, res.data.data.url);
+          } else {
+            that.$message({message: res.data.msg, type: 'error', showClose: true})
+          }
+
+        }).catch(err => {
+          that.$message({message: err, type: 'error', showClose: true});
+        })
+      }
+    },
+    components: {
+      mavonEditor
     }
-  },
-  components: {
-    mavonEditor
   }
-}
 </script>
 <style scoped>
   .me-editor {
