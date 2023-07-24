@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px">
+  <div style="width:100vw;padding: 20px">
     <el-card style="margin: 0px 0px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
       <el-radio-group v-model="activeNav.type" size="medium" style="margin: 0 20px">
@@ -145,11 +145,9 @@ export default {
   data() {
     return {
       tableData: [],
-      pageNo: 1,
-      pageSize: 9,
       total: 0,
-      // type: '工具',
-      // sort: 'create_time',
+      pageNo: this.$route.query.pageNo,
+      pageSize: 9,
       dialogFormVisible: false,
       form: {
         title:'',
@@ -158,21 +156,18 @@ export default {
         cover:'',
         category:''
       },
-      sourceForm: {},
+      sourceForm: sourceForm,
       fileAction: '',
       fileList: [],
       activeNav:{
-        type : '工具',
-        sort : 'create_time'
+        type : this.$route.query.type,
+        sort : this.$route.query.sort,
       }
     };
   },
   mixins: [mixin],
   mounted() {
-    let {type,sort} = this.$route.query
-    this.activeNav = {type,sort}
     this.fileAction = `${this.HOST}/source/upload`
-    this.sourceForm = sourceForm
     this.loadTable();
   },
   computed: {
@@ -182,9 +177,9 @@ export default {
   watch: {
     activeNav : {
       handler() {
-        let activeNav = JSON.parse(JSON.stringify(this.activeNav))
-        this.$router.push({query: activeNav})
-        this.pageNo=1
+        let {type,sort} = this.activeNav
+        this.pageNo = 1
+        this.$router.push({query: {type: type,sort: sort,pageNo:this.pageNo}})
         this.loadTable()
       },
       deep: true
@@ -200,8 +195,11 @@ export default {
       this.pageSize = val;
       this.loadTable();
     },
+    // 翻页回调
     handleCurrentChange(val) {
       this.pageNo = val;
+      let {type,sort} = this.activeNav
+      this.$router.push({query: {type: type,sort: sort,pageNo:this.pageNo}})
       this.loadTable();
     },
     //初始化
