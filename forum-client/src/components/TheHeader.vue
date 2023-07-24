@@ -13,7 +13,7 @@
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/source">资源</el-menu-item>
+          <el-menu-item index="/source?type=工具&sort=create_time">资源</el-menu-item>
           <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
           <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
           <el-menu-item index="/searchPage">搜索</el-menu-item>

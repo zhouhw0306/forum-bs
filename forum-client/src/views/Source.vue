@@ -2,7 +2,7 @@
   <div style="padding: 20px">
     <el-card style="margin: 0px 0px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
-      <el-radio-group v-model="type" size="medium" style="margin: 0 20px">
+      <el-radio-group v-model="activeNav.type" size="medium" style="margin: 0 20px">
         <el-radio-button label="工具"></el-radio-button>
         <el-radio-button label="网站"></el-radio-button>
         <el-radio-button label="项目"></el-radio-button>
@@ -11,7 +11,7 @@
       <el-button v-if="this.$store.getters.loginIn" type="success" icon="el-icon-upload" size="small" @click="dialogFormVisible = true">分享</el-button>
       <div style="margin-top: 20px">
         <i class="el-icon-finished" style="margin-right: 10px"></i>排序
-        <el-radio-group v-model="sort" size="medium" style="margin-left: 20px">
+        <el-radio-group v-model="activeNav.sort" size="medium" style="margin-left: 20px">
           <el-radio-button label="create_time">最新</el-radio-button>
           <el-radio-button label="thumb_num">点赞</el-radio-button>
         </el-radio-group>
@@ -148,8 +148,8 @@ export default {
       pageNo: 1,
       pageSize: 9,
       total: 0,
-      type: '工具',
-      sort: 'create_time',
+      // type: '工具',
+      // sort: 'create_time',
       dialogFormVisible: false,
       form: {
         title:'',
@@ -160,11 +160,17 @@ export default {
       },
       sourceForm: {},
       fileAction: '',
-      fileList: []
+      fileList: [],
+      activeNav:{
+        type : '工具',
+        sort : 'create_time'
+      }
     };
   },
   mixins: [mixin],
   mounted() {
+    let {type,sort} = this.$route.query
+    this.activeNav = {type,sort}
     this.fileAction = `${this.HOST}/source/upload`
     this.sourceForm = sourceForm
     this.loadTable();
@@ -174,17 +180,14 @@ export default {
   },
   // 条件改变刷新页面
   watch: {
-    sort : {
-      handler(newName, oldName) {
+    activeNav : {
+      handler() {
+        let activeNav = JSON.parse(JSON.stringify(this.activeNav))
+        this.$router.push({query: activeNav})
         this.pageNo=1
         this.loadTable()
-      }
-    },
-    type : {
-      handler(newName, oldName) {
-        this.pageNo=1
-        this.loadTable()
-      }
+      },
+      deep: true
     }
   },
   methods:{
@@ -204,8 +207,8 @@ export default {
     //初始化
     loadTable(){
       let params = new URLSearchParams();
-      params.append("type", this.type);
-      params.append("sort", this.sort);
+      params.append("type", this.activeNav.type);
+      params.append("sort", this.activeNav.sort);
       params.append("pageNo", this.pageNo);
       params.append("pageSize", this.pageSize);
       getTableData(params)
