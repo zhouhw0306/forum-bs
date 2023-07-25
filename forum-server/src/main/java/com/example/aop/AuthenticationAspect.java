@@ -68,12 +68,15 @@ public class AuthenticationAspect {
             }
         }
         //要用户权限
-        try {
-            return proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            return Result.error();
+        if (realRole == AuthConstant.USER || realRole == AuthConstant.ADMIN){
+            try {
+                return proceedingJoinPoint.proceed();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return Result.error();
+            }
         }
+        return Result.error(ResultCode.USER_NOT_LOGGED_IN);
     }
 
     /**

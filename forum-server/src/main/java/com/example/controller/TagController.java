@@ -9,6 +9,7 @@ import com.example.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author zhw
@@ -41,14 +44,15 @@ public class TagController {
     @GetMapping("/getByArticleId")
     @ApiOperation(value = "获取指定文章的标签")
     public Result getByArticleId(String articleId){
-        QueryWrapper<ArticleTagRelation> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("article_id",articleId);
-        List<ArticleTagRelation> list = articleTagRelationService.list(queryWrapper);
-        List<Tag> tagList = new ArrayList<>();
-        for (ArticleTagRelation atr : list) {
-            Tag tag = tagService.getById(atr.getTagId());
-            tagList.add(tag);
-        }
+
+        List<ArticleTagRelation> list = articleTagRelationService.lambdaQuery()
+                .eq(ArticleTagRelation::getArticleId,articleId)
+                .list();
+
+        List<Tag> tagList = list.stream().map(
+                atr -> tagService.getById(atr.getTagId())
+        ).collect(Collectors.toList());
+
         return Result.success(tagList);
     }
 }

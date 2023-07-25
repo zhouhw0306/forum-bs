@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.constant.Result;
 import com.example.domain.dao.Source;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -12,4 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface SourceService extends IService<Source> {
 
     Result pass(Integer id, Integer type);
+
+    IPage<Source> pageVo(String type, String sort, Integer pageNo, Integer pageSize);
+
+    Result queryById(Integer id);
 }

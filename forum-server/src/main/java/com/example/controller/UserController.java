@@ -203,12 +203,10 @@ public class UserController {
     }
 
     @GetMapping("/getUser")
+    @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "获得所登录用户的信息")
     public Result getById(){
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
         User user = userService.getById(currentUser);
         user.setPassword("it's a secret");
         return Result.success(user);
@@ -232,9 +230,9 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
+    @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "更新用户信息")
     public Result updateUser(@RequestBody User user){
-        assert UserUtils.getCurrentUser() != null;
         User newUser = new User();
         newUser.setUpdateTime(DateUtil.date());
         newUser.setBirth(user.getBirth());
@@ -274,6 +272,7 @@ public class UserController {
     }
 
     @GetMapping("getPersonal")
+    @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "获得个人数据")
     public Result getPersonal(){
         String userId = UserUtils.getCurrentUser();

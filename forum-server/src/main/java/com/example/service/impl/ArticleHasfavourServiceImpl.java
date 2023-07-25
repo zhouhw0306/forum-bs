@@ -45,9 +45,6 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
     public Result favour(String targetId) {
         QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
         User user = userService.getById(currentUser);
         if (user == null){
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
@@ -70,24 +67,18 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
 
     @Override
     public Result isFavour(String id) {
-        QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",id);
-        ArticleHasfavour one = getOne(queryWrapper);;
+        ArticleHasfavour one = lambdaQuery()
+                .eq(ArticleHasfavour::getUserId,currentUser)
+                .eq(ArticleHasfavour::getArticleId,id)
+                .one();
         return Result.success(one != null);
     }
 
     @Override
     public Result getHasFavour() {
-        String userId = UserUtils.getCurrentUser();
-        if (userId == null){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        List<ArticleHasfavour> favourList = lambdaQuery().eq(ArticleHasfavour::getUserId, userId).list();
+        String currentUser = UserUtils.getCurrentUser();
+        List<ArticleHasfavour> favourList = lambdaQuery().eq(ArticleHasfavour::getUserId, currentUser).list();
         List<Article> articleList = favourList.stream().map(articleHasfavour ->
                 articleService.lambdaQuery()
                         .select(Article::getId, Article::getTitle)

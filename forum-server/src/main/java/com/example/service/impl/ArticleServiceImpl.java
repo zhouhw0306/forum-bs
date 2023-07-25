@@ -156,11 +156,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         if (CollectionUtils.isEmpty(set)){
             List<Article> list = query().notIn(!CollectionUtils.isEmpty(me),"id",me).list();
-            list = list.subList(0, Math.min(list.size(), 5));
-            return list;
+            return list.subList(0, Math.min(list.size(), 5));
         }
-        List<Article> list = query().in("id", set).list().subList(0, Math.min(set.size(), 5));
-        return list;
+        return query().in("id", set).list().subList(0, Math.min(set.size(), 5));
     }
 
     @Override

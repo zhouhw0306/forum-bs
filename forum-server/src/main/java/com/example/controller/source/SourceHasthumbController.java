@@ -1,14 +1,13 @@
 package com.example.controller.source;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.annotation.Authentication;
+import com.example.constant.AuthConstant;
 import com.example.constant.Result;
-import com.example.constant.ResultCode;
 import com.example.domain.dao.Source;
 import com.example.domain.dao.SourceHasthumb;
-import com.example.domain.dao.User;
 import com.example.service.SourceHasthumbService;
 import com.example.service.SourceService;
-import com.example.service.UserService;
 import com.example.utils.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,23 +25,14 @@ public class SourceHasthumbController {
     private SourceHasthumbService sourceHasthumbService;
 
     @Resource
-    private UserService userService;
-
-    @Resource
     private SourceService sourceService;
 
     @PostMapping("thumb")
+    @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "点赞或取消点赞指定资源")
     public Result favour(Integer targetId){
         QueryWrapper<SourceHasthumb> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        User user = userService.getById(currentUser);
-        if (user == null){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
         queryWrapper.eq("user_id",currentUser);
         queryWrapper.eq("source_id",targetId);
         SourceHasthumb one = sourceHasthumbService.getOne(queryWrapper);

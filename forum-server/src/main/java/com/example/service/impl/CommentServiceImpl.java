@@ -44,9 +44,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Transactional
     public Result addComm(Comment comment) {
         String authorId = UserUtils.getCurrentUser();
-        if (StringUtils.isBlank(authorId)) {
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
         comment.setAuthorId(authorId);
         commentMapper.insert(comment);
         //封装author对象
