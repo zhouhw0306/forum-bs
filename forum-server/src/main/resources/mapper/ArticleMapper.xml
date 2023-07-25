@@ -29,7 +29,7 @@
         UPDATE tb_article SET view_count = view_count + 1 WHERE id=#{articleId}
     </insert>
 
-    <update id="updateCommCount">
+    <update id="addCommCount">
         UPDATE tb_article SET comment_count = comment_count + 1 WHERE id=#{articleId}
     </update>
 

@@ -3,7 +3,6 @@ package com.example.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
-import com.example.constant.ResultCode;
 import com.example.domain.dao.Comment;
 import com.example.domain.dao.User;
 import com.example.mapper.ArticleMapper;
@@ -12,7 +11,6 @@ import com.example.service.CommentService;
 import com.example.mapper.CommentMapper;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +54,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             User toUser = userMapper.selectById(comment1.getToUid());
             comment1.setToUser(toUser);
         }
-        articleMapper.updateCommCount(comment.getArticleId());
+        articleMapper.addCommCount(comment.getArticleId());
         return Result.success(comment1);
     }
 
