@@ -27,7 +27,6 @@ public class Article implements Serializable {
     /**
      * 作者ID
      */
-    @NotBlank(message = "作者不能为空")
     private String userId;
 
     /**

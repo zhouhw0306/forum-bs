@@ -62,6 +62,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public String publishArticle(Article article) {
         //更新
         if(StringUtils.isNotBlank(article.getId())){
+            if (!UserUtils.getCurrentUser().equals(article.getUserId())) return "";
             articleMapper.updateById(article);
             List<Tag> tags = article.getTags();
             // 删除旧的文章-标签对应关系
