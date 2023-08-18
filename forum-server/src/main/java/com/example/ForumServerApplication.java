@@ -18,14 +18,6 @@ public class ForumServerApplication {
 //        for (String name : names) {
 //            System.out.println(name);
 //        }
-        //解决bug1
-        //解决bug2
-        //解决bug3
-        //解决bug5
-        // 解决4
-        // 解决6
-        // 解决7
-        // 解决8--
     }
 
 }
