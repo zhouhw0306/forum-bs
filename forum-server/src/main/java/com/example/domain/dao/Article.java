@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotNull;
  */
 @TableName(value ="tb_article")
 @Data
+@Builder
 public class Article implements Serializable {
 
     /**
