@@ -21,6 +21,7 @@ public class ForumServerApplication {
         //解决bug1
         //解决bug2
         //解决bug3
+        //解决bug5
     }
 
 }
