@@ -17,7 +17,7 @@ public class ForumServerApplication {
 //        String[] names = run.getBeanDefinitionNames();
 //        for (String name : names) {
 //            System.out.println(name);
-//        }
+//        }//
     }
 
 }
