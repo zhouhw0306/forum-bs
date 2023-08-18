@@ -18,7 +18,7 @@ public class ForumServerApplication {
 //        for (String name : names) {
 //            System.out.println(name);
 //        }
-        //解决bug1
+        //解决bug11
     }
 
 }
