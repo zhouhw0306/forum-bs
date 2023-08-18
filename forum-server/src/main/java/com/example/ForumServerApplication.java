@@ -25,7 +25,7 @@ public class ForumServerApplication {
         // 解决4
         // 解决6
         // 解决7
-        // 解决8
+        // 解决8--
     }
 
 }
