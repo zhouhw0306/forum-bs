@@ -34,7 +34,7 @@ public class ArticleHasfavourController {
         return articleHasfavourService.isFavour(id);
     }
 
-    @GetMapping("getHasFavour")
+    @GetMapping("getArticleHasFavour")
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "获得登录用户的所有收藏文章信息")
     public Result getHasFavour(){

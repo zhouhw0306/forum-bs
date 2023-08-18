@@ -25,4 +25,6 @@ public interface ArticleService extends IService<Article> {
     List<Article> getRecommend();
 
     List<Article> listArticles(Integer pageNumber, Integer pageSize, Boolean isCareMe, String sort, String index);
+
+    List<Article> getBrowsingHistory();
 }

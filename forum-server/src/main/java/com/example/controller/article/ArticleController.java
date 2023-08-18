@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.example.utils.RedisConstants.VIEW_ART_KEY;
+
 /**
  * 文章接口
  * @author zhw
@@ -105,5 +107,11 @@ public class ArticleController {
     public Result getRecommend(){
         List<Article> list = articleService.getRecommend();
         return Result.success(list);
+    }
+
+    @GetMapping("getBrowsingHistory")
+    @ApiOperation(value = "获取浏览历史")
+    public Result getBrowsingHistory(){
+        return Result.success(articleService.getBrowsingHistory());
     }
 }

@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 文章收藏关系表
@@ -16,6 +18,8 @@ import lombok.Data;
  */
 @TableName(value ="tb_article_hasfavour")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ArticleHasfavour implements Serializable {
     /**

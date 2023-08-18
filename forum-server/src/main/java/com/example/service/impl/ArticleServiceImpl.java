@@ -192,6 +192,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         List<Article> articles = list(queryWrapper);
         return articles;
     }
+
+    @Override
+    public List<Article> getBrowsingHistory() {
+        Set<String> articles = stringRedisTemplate.opsForSet().members(VIEW_ART_KEY + UserUtils.getCurrentUser());
+        return lambdaQuery().in(Article::getId, articles).list();
+    }
 }
 
 

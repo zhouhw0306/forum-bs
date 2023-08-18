@@ -6,14 +6,19 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @TableName 资源-点赞关系表
  */
 @TableName(value ="tb_source_hasthumb")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class SourceHasthumb implements Serializable {
 

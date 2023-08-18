@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 文章-标签关系表
@@ -15,6 +17,8 @@ import lombok.Data;
  */
 @TableName(value ="tb_article_tag_relation")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class ArticleTagRelation implements Serializable {
     /**

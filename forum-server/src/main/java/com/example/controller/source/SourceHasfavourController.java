@@ -56,7 +56,7 @@ public class SourceHasfavourController {
         }
     }
 
-    @GetMapping("getHasFavour")
+    @GetMapping("getSourceHasFavour")
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "获得所有收藏")
     public Result getHasFavour(){
