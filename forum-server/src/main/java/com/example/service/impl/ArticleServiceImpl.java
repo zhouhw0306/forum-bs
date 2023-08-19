@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
@@ -20,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
 import static com.example.utils.RedisConstants.VIEW_ART_KEY;
 
@@ -59,10 +58,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     @Transactional
-    public String publishArticle(Article article) {
+    public Result publishArticle(Article article) {
         //更新
         if(StringUtils.isNotBlank(article.getId())){
-            if (!UserUtils.getCurrentUser().equals(article.getUserId())) return "";
+            Article article1 = articleMapper.selectOne(Wrappers.lambdaQuery(Article.class).eq(Article::getId, article.getId()));
+            if (ObjectUtil.isEmpty(article1)){
+                return Result.error(ResultCode.ERROR,"文章不存在");
+            }
+            if (!Objects.equals(UserUtils.getCurrentUser(), article1.getUserId())){
+                return Result.error(ResultCode.ERROR,"非法修改");
+            }
             articleMapper.updateById(article);
             List<Tag> tags = article.getTags();
             // 删除旧的文章-标签对应关系
@@ -74,7 +79,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 ArticleTagRelation atr = ArticleTagRelation.builder().articleId(article.getId()).tagId(tag.getId()).build();
                 articleTagRelationMapper.insert(atr);
             }
-            return article.getId();
+            return Result.success(article.getId());
         }else{
             //添加
             article.setUserId(UserUtils.getCurrentUser());
@@ -86,7 +91,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 articleTagRelationMapper.insert(atr);
             }
             userMapper.addScore(UserUtils.getCurrentUser(),2);
-            return artId;
+            return Result.success(artId);
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.domain.dao.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Update;
 
 /**
 * @author zhw
@@ -14,6 +15,7 @@ public interface UserMapper extends BaseMapper<User> {
     /**
      * 添加积分
      */
+    @Update("update tb_user set score = score + #{score} where id = #{id}")
     int addScore(String id,int score);
 
 }

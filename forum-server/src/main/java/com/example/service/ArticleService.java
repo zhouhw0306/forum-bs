@@ -14,7 +14,7 @@ import java.util.List;
 */
 public interface ArticleService extends IService<Article> {
 
-    String publishArticle(Article article);
+    Result publishArticle(Article article);
 
     Result addViewCount(String id);
 

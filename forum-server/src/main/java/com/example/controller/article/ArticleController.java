@@ -55,8 +55,7 @@ public class ArticleController {
             Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         article.setContent(sensitiveFilter.filter(article.getContent()));
-        String articleId = articleService.publishArticle(article);
-        return Result.success(articleId);
+        return articleService.publishArticle(article);
     }
 
     @GetMapping("/getAll")

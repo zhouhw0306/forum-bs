@@ -29,8 +29,8 @@
         avatar,create_time,update_time,score,role,lockState
     </sql>
 
-    <insert id="addScore">
-        update tb_user set score = score + #{score} where id = #{id}
-    </insert>
+<!--    <insert id="addScore">-->
+<!--        update tb_user set score = score + #{score} where id = #{id}-->
+<!--    </insert>-->
 
 </mapper>
