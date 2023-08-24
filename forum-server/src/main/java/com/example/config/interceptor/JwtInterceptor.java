@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.config.interceptor;
 
 import cn.hutool.core.util.StrUtil;
 import com.example.domain.dao.User;
