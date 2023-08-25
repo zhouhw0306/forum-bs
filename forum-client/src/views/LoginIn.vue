@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mixin } from '../mixins'
+import { mixin } from '@/mixins'
 import {githubCallback, githubLoginIn, loginIn} from '../api/index'
 
 export default {

@@ -1,6 +1,7 @@
 package com.example.controller.article;
 
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.service.*;
@@ -21,6 +22,7 @@ public class ArticleHasfavourController {
     private ArticleHasfavourService articleHasfavourService;
 
     @PostMapping("favour")
+    @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "收藏操作")
     public Result favour(String targetId){

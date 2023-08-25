@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.domain.dao.Comment;
@@ -38,6 +39,7 @@ public class CommentController {
     @PostMapping("/pushComment")
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "添加评论")
+    @RepeatSubmit
     public Result pushComment(Comment comment) {
         comment.setContent(sensitiveFilter.filter(comment.getContent()));
         return commentService.addComm(comment);

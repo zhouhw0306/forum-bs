@@ -47,7 +47,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { cities} from '../assets/data/form'
+import { cities} from '@/assets/data/form'
 import { updateUser, getAuthor } from '../api/index'
 import {mixin} from "@/mixins";
 

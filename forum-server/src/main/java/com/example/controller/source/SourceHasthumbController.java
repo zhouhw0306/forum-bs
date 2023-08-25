@@ -2,6 +2,7 @@ package com.example.controller.source;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.domain.dao.Source;
@@ -28,6 +29,7 @@ public class SourceHasthumbController {
     private SourceService sourceService;
 
     @PostMapping("thumb")
+    @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "点赞或取消点赞指定资源")
     public Result favour(Integer targetId){

@@ -18,6 +18,7 @@ public class ForumServerApplication {
 //        for (String name : names) {
 //            System.out.println(name);
 //        }
+        System.out.println("http://localhost:8888/swagger-ui.html");
         // 解决bug1
         // 解决bug2--
         // 解决bug3-- *

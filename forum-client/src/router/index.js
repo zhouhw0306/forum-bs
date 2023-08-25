@@ -70,27 +70,27 @@ const routes = [
           {
             path: '/info',
             component: resolve => require(['../components/admin/Info'], resolve),
-            meta: {requireLogin: true}
+            meta: {requireLogin: true,admin:true}
           },
           {
             path: '/userManage',
             component: resolve => require(['../components/admin/UserManage'], resolve),
-            meta: {requireLogin: true}
+            meta: {requireLogin: true,admin:true}
           },
           {
             path: '/articleManage',
             component: resolve => require(['../components/admin/ArticleManage'], resolve),
-            meta: {requireLogin: true}
+            meta: {requireLogin: true,admin:true}
           },
           {
             path: '/commentManage',
             component: resolve => require(['../components/admin/CommentManage'], resolve),
-            meta: {requireLogin: true}
+            meta: {requireLogin: true,admin:true}
           },
           {
             path: '/sourceManage',
             component: resolve => require(['../components/admin/SourceManage'], resolve),
-            meta: {requireLogin: true}
+            meta: {requireLogin: true,admin:true}
           }
         ]
       }

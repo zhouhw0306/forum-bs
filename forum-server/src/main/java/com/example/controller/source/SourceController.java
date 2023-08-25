@@ -2,6 +2,7 @@ package com.example.controller.source;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
@@ -71,6 +72,7 @@ public class SourceController {
     }
 
     @PostMapping("insert")
+    @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "表单提交分享资源")
     public Result insert(@RequestBody @Valid Source source){

@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.Result;
 import com.example.domain.dao.Subscribe;
 import com.example.service.SubscribeService;
@@ -36,6 +37,7 @@ public class SubScribeController {
     }
 
     @PostMapping("/addFollow")
+    @RepeatSubmit
     @CacheEvict(value = "article", allEntries=true)
     @ApiOperation(value = "关注指定用户")
     public Result addFollow(String authorId) {
@@ -44,6 +46,7 @@ public class SubScribeController {
     }
 
     @PostMapping("/removeFollow")
+    @RepeatSubmit
     @CacheEvict(value = "article", allEntries=true)
     @ApiOperation(value = "移除关注")
     public Result removeFollow(String authorId) {

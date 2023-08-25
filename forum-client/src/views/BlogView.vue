@@ -13,7 +13,14 @@
               <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"/>
             </a>
             <div class="me-view-info">
-              <span>{{article.author.username}}</span><button v-if="this.article.author.id !== this.$store.getters.userId" @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
+              <div>
+                <span>{{article.author.username}}</span>
+                <template v-if="this.article.author.id !== this.$store.getters.userId">
+                  <el-button v-if="!isFollow" @click="updateFollow" style="margin-left: 10px;background-color:#ecf5ff;border-color:#bad6f1;color: #58a3f1" size="mini">关注√</el-button>
+                  <el-button v-else @click="updateFollow" style="margin-left: 10px" size="mini">已关注</el-button>
+                </template>
+              </div>
+
               <div class="me-view-meta">
                 <span style="padding-right: 20px">发布时间:   {{article.createTime}}</span>
                 <span style="padding-right: 20px">阅读   {{article.viewCount}}</span>
@@ -158,7 +165,6 @@ export default {
       comment: {
         content: ''
       },
-      follow: '',
       isFollow: false, //是否关注作者
       hasFavour: false
     }
@@ -210,7 +216,6 @@ export default {
         removeFollow(params).then(res => {
           if (res.code === 0){
             this.isFollow = false
-            this.follow = '+关注'
             this.$message.success('取消成功')
           }else {
             this.$message.error('取消失败')
@@ -221,12 +226,11 @@ export default {
         addFollow(params).then(res => {
           if (res.code === 0){
             this.isFollow = true
-            this.follow = '已关注'
             this.$message.success('关注成功')
           }else {
             this.$message.error('关注失败')
           }
-        })
+        }).catch(err => this.$message.error(err.data.msg))
       }
     },
     //更新收藏关系
@@ -250,7 +254,6 @@ export default {
       let userId = this.$store.getters.userId
       //未登录直接返回
       if (userId === '' || userId === null){
-        this.follow='+关注'
         this.isFollow=false
         return
       }
@@ -259,7 +262,6 @@ export default {
       // 是否关注作者
       isFollow(params).then(res => {
         this.isFollow = res.data
-        res.data ? this.follow='已关注' : this.follow='+关注'
       }).catch( err => {this.$message.error(err.msg)})
       // 判断是否收藏
       isFavour(this.article.id).then(res => {
@@ -462,21 +464,6 @@ export default {
 
   .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
     background: #fff !important;
-  }
-  .follow{
-    background-color: #f25d8e;
-    color: #fff;
-    border-style: none;
-  }
-  .btnOf{
-    border-style: none;
-    border-radius: 3px;
-    margin-left: 3px;
-    padding: 2px 5px;
-    border-radius: 15px;
-  }
-  .btnOf:hover{
-    background-color: #dbdada;
   }
   .hljs{
     background: #f6f8fa!important;

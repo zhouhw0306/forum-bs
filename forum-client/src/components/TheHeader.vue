@@ -74,7 +74,6 @@
 <script>
 import {mixin} from "@/mixins";
 import { mapGetters } from 'vuex';
-import {searchData} from '@/api';
 
 export default {
   name: 'TheHeader',

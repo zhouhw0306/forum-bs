@@ -10,6 +10,7 @@ import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
 import com.example.annotation.RateLimiter;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.RateLimiterType;
 import com.example.constant.Result;
@@ -26,6 +27,7 @@ import com.example.domain.vo.Personal;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -48,7 +50,7 @@ import static com.example.utils.RedisConstants.*;
 @RestController
 @RequestMapping("/api")
 @Api(tags = "用户接口")
-public class UserController {
+public class UserController implements InitializingBean {
 
     @Resource
     private UserService userService;
@@ -172,20 +174,20 @@ public class UserController {
         user.setPassword("it's a secret");
         user.setToken(token);
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
         stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL, TimeUnit.MINUTES);
         return Result.success(user);
     }
 
     @PostMapping(value = "/user/add")
+    @RepeatSubmit
     @ApiOperation(value = "用户注册")
     public Result addUser(HttpServletRequest req){
         return userService.signUp(req);
     }
 
     @PostMapping("/sigIn/code")
+    @RepeatSubmit
     @ApiOperation(value = "发送验证码")
     public Result sendCode(HttpServletRequest req){
         String email = req.getParameter("email").trim();
@@ -230,6 +232,7 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
+    @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "更新用户信息")
     public Result updateUser(@RequestBody User user){
@@ -321,4 +324,10 @@ public class UserController {
         return flag ? Result.success(0) : Result.error();
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //使用Jackson2JsonRedisSerialize 替换默认序列化
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+    }
 }

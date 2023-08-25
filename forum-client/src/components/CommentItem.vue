@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import {pushComment} from '@/api/index'
+import {pushComment} from '@/api'
 import {mixin} from "@/mixins";
 
 export default {

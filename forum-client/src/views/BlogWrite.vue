@@ -60,8 +60,8 @@
 import TheHeader from '@/components/TheHeader'
 import MarkdownEditor from '@/components/article/MarkdownEditor'
 import {publishArticle, getArticleById} from '@/api/index'
-import {getAllCategorys} from '@/api/index'
-import {getAllTags} from '@/api/index'
+import {getAllCategorys} from '@/api'
+import {getAllTags} from '@/api'
 
 export default {
   name: 'BlogWrite',

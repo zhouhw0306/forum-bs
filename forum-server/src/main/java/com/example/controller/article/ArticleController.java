@@ -3,6 +3,7 @@ package com.example.controller.article;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.dao.Article;
@@ -47,6 +48,7 @@ public class ArticleController {
         return articleService.searchByKey(word);
     }
 
+    @RepeatSubmit
     @PostMapping("/publish")
     @ApiOperation(value = "文章的新增或更新")
     @CacheEvict(value = "article", allEntries=true)

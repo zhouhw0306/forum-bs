@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -61,12 +63,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setToken(token);
         //缓存到Redis
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
-        //使用Jackson2JsonRedisSerialize 替换默认序列化
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
         stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL, TimeUnit.MINUTES);
-
+        Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries("");
         result.setResultCode(ResultCode.SUCCESS);
         result.setData(user);
         return result;
@@ -97,25 +96,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 验证用户是否已存在
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("username", username);
-        User one = getOne(queryWrapper);
-        if (one != null){
+        User one = lambdaQuery().eq(User::getUsername,username).one();
+        if (ObjectUtil.isNotEmpty(one)){
             return Result.error(ResultCode.USER_HAS_EXISTED);
         }
 
         User user = new User();
-        if (birth!=""){
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date myBirth = new Date();
+        if (StringUtils.isNotBlank(birth)){
+            Date myBirth = null;
             try {
-                myBirth = dateFormat.parse(birth);
-            } catch (Exception e){
+                myBirth = new SimpleDateFormat("yyyy-MM-dd").parse(birth);
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
             user.setBirth(myBirth);
         }
-
         user.setUsername(username);
         user.setPassword(MD5Util.MD5Lower(password));
         user.setSex(Integer.parseInt(sex));

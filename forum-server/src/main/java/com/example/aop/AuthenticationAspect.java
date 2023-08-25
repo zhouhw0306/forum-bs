@@ -42,9 +42,9 @@ public class AuthenticationAspect {
         if (!pass || role == AuthConstant.ANON) {
             try {
                 return proceedingJoinPoint.proceed();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                return Result.error();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                return Result.error(e.getMessage());
             }
         }
         //获得token
@@ -59,9 +59,9 @@ public class AuthenticationAspect {
             if (realRole == AuthConstant.ADMIN){
                 try {
                     return proceedingJoinPoint.proceed();
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    return Result.error();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    return Result.error(e.getMessage());
                 }
             }else {
                 return Result.error(ResultCode.PERMISSION_NO_ACCESS);
@@ -71,9 +71,9 @@ public class AuthenticationAspect {
         if (realRole == AuthConstant.USER || realRole == AuthConstant.ADMIN){
             try {
                 return proceedingJoinPoint.proceed();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                return Result.error();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                return Result.error(e.getMessage());
             }
         }
         return Result.error(ResultCode.USER_NOT_LOGGED_IN);

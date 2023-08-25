@@ -2,6 +2,7 @@ package com.example.controller.source;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.annotation.Authentication;
+import com.example.annotation.RepeatSubmit;
 import com.example.constant.AuthConstant;
 import com.example.constant.Result;
 import com.example.domain.dao.Source;
@@ -32,6 +33,7 @@ public class SourceHasfavourController {
     private SourceService sourceService;
 
     @PostMapping("favour")
+    @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "收藏或取消收藏指定资源")
     public Result favour(Integer targetId){
