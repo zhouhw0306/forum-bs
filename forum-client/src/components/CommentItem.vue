@@ -20,25 +20,33 @@
         <a class="me-view-comment-tool" @click="showComment(-1)">
           <i class="me-icon-comment"></i>&nbsp; 评论
         </a>
+        <a v-show="!extension && comment.childrens.length>0" class="me-view-comment-tool" @click="extension = !extension">
+          <i class="me-icon-comment"></i>&nbsp; 展开↓
+        </a>
+        <a v-show="extension && comment.childrens.length>0" class="me-view-comment-tool" @click="extension = !extension">
+          <i class="me-icon-comment"></i>&nbsp; 收起↑
+        </a>
       </div>
 
       <div class="me-reply-list">
-        <div class="me-reply-item" v-for="c in comment.childrens" :key="c.id">
-          <div style="font-size: 14px">
-            <span class="me-reply-user">{{c.user.username}}:&nbsp;&nbsp;</span>
+        <template v-if="extension">
+          <div class="me-reply-item" v-for="c in comment.childrens" :key="c.id">
+            <div style="font-size: 14px">
+              <span class="me-reply-user">{{c.user.username}}:&nbsp;&nbsp;</span>
 
-            <span v-if="c.level == 2" class="me-reply-user">@{{c.toUser.username}} </span>
+              <span v-if="c.level === 2" class="me-reply-user">@{{c.toUser.username}} </span>
 
-            <span>{{c.content}}</span>
+              <span>{{c.content}}</span>
+            </div>
+            <div class="me-view-meta">
+              <span style="padding-right: 10px">{{c.createTime}}</span>
+              <a class="me-view-comment-tool" @click="showComment(c.id, c.user)">
+                <i class="me-icon-comment"></i>&nbsp;回复
+              </a>
+            </div>
           </div>
-          <div class="me-view-meta">
-            <span style="padding-right: 10px">{{c.createTime}}</span>
-            <a class="me-view-comment-tool" @click="showComment(c.id, c.user)">
-              <i class="me-icon-comment"></i>&nbsp;回复
-            </a>
-          </div>
+        </template>
 
-        </div>
         <!--回复框-->
         <div class="comment-write" v-show="commentShow">
 
@@ -79,7 +87,8 @@ export default {
       placeholder: '你的评论...',
       commentShow: false,
       commentShowIndex: '',
-      reply: this.getEmptyReply()
+      reply: this.getEmptyReply(),
+      extension: false
     }
   },
   methods: {
@@ -129,6 +138,7 @@ export default {
         }
         this.comment.childrens.unshift(data.data)
         this.$emit('commentCountsIncrement')
+        this.extension = true
         this.showComment(this.commentShowIndex)
       }).catch(err => {
         if(err.status === 401){
@@ -210,6 +220,7 @@ export default {
     font-size: 13px;
     color: #a6a6a6;
     padding-right: 14px;
+    user-select:none;
   }
 
   .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
