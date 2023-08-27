@@ -15,9 +15,11 @@
         prop="username"
         label="账号">
     </el-table-column>
-    <el-table-column
-        prop="sex"
-        label="性别">
+    <el-table-column label="性别">
+      <template slot-scope="scope">
+        <span v-if="scope.row.sex === 0">女<i class="el-icon-female" style="color: red"/></span>
+        <span v-else>男<i class="el-icon-male" style="color: blue"/></span>
+      </template>
     </el-table-column>
     <el-table-column
         prop="phoneNum"

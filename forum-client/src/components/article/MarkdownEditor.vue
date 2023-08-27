@@ -3,6 +3,7 @@
     style="padding-left: 25px"
     class="me-editor"
     ref="md"
+    :navigation="false"
     :ishljs="true"
     toolbarsBackground="#ffffff"
     v-model="editor.value"

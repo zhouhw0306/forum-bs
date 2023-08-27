@@ -183,6 +183,7 @@ export default {
   vertical-align: middle;
   background-color: #409EFF;
   margin-left: 30px;
+  transition: all 0.3s ease 0s;
 }
 .me-header-picture:hover{
   width: 50px;

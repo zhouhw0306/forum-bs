@@ -20,10 +20,10 @@
         <a class="me-view-comment-tool" @click="showComment(-1)">
           <i class="me-icon-comment"></i>&nbsp; 评论
         </a>
-        <a v-show="!extension && comment.childrens.length>0" class="me-view-comment-tool" @click="extension = !extension">
+        <a v-show="!extension && comment.childrens?.length>0" class="me-view-comment-tool" @click="extension = !extension">
           <i class="me-icon-comment"></i>&nbsp; 展开↓
         </a>
-        <a v-show="extension && comment.childrens.length>0" class="me-view-comment-tool" @click="extension = !extension">
+        <a v-show="extension && comment.childrens?.length>0" class="me-view-comment-tool" @click="extension = !extension">
           <i class="me-icon-comment"></i>&nbsp; 收起↑
         </a>
       </div>
@@ -77,7 +77,7 @@ export default {
   name: "CommentItem",
   mixins: [mixin],
   props: {
-    articleId: String,
+    articleId: String | Number,
     comment: Object,
     index: Number,
     rootCommentCounts: Number
