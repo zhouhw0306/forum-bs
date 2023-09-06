@@ -36,23 +36,23 @@ public class SourceHasfavourController {
     @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "收藏或取消收藏指定资源")
-    public Result favour(Integer targetId){
+    public Result<Integer> favour(Integer targetId) {
         String currentUser = UserUtils.getCurrentUser();
         QueryWrapper<SourceHasfavour> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("source_id",targetId);
+        queryWrapper.eq("user_id", currentUser);
+        queryWrapper.eq("source_id", targetId);
         SourceHasfavour one = sourceHasfavourService.getOne(queryWrapper);
         Source source = sourceService.getById(targetId);
-        if (one == null){
+        if (one == null) {
             //添加收藏关系
             sourceHasfavourService.save(SourceHasfavour.builder().userId(currentUser).sourceId(targetId).build());
-            source.setFavourNum(source.getFavourNum()+1);
+            source.setFavourNum(source.getFavourNum() + 1);
             sourceService.updateById(source);
             return Result.success(1);
-        }else {
+        } else {
             //删除收藏关系
             sourceHasfavourService.remove(queryWrapper);
-            source.setFavourNum(source.getFavourNum()-1);
+            source.setFavourNum(source.getFavourNum() - 1);
             sourceService.updateById(source);
             return Result.success(-1);
         }
@@ -61,7 +61,7 @@ public class SourceHasfavourController {
     @GetMapping("getSourceHasFavour")
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "获得所有收藏")
-    public Result getHasFavour(){
+    public Result<List<Source>> getHasFavour() {
         String userId = UserUtils.getCurrentUser();
         List<SourceHasfavour> favourList = sourceHasfavourService.query().eq("user_id", userId).list();
         List<Source> sourceList = favourList.stream().map(sourceHasfavour ->

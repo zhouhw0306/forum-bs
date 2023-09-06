@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author zhw
@@ -32,30 +33,32 @@ public class CommentController {
 
     @GetMapping("/getCommentsByArticle")
     @ApiOperation(value = "加载模块下所有评论")
-    public Result getCommentsByArticle(String articleId) {
-        return commentService.getCommentsByAid(articleId);
+    public Result<List<Comment>> getCommentsByArticle(String articleId) {
+        List<Comment> commentList = commentService.getCommentsByAid(articleId);
+        return Result.success(commentList);
     }
 
     @PostMapping("/pushComment")
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "添加评论")
     @RepeatSubmit
-    public Result pushComment(Comment comment) {
+    public Result<Comment> pushComment(Comment comment) {
         comment.setContent(sensitiveFilter.filter(comment.getContent()));
-        return commentService.addComm(comment);
+        return Result.success(commentService.addComm(comment));
     }
 
     @Authentication
     @PostMapping("/getCommentAll")
     @ApiOperation(value = "获取系统所有评论")
-    public Result getCommentAll() {
-        return commentService.getCommentAll();
+    public Result<List<Comment>> getCommentAll() {
+        return Result.success(commentService.getCommentAll());
     }
 
     @Authentication
     @PostMapping("/delete")
     @ApiOperation(value = "删除评论")
-    public Result getCommentAll(String id, String level) {
-        return commentService.deleteComment(id, level);
+    public Result<Void> getCommentAll(String id, String level) {
+        commentService.deleteComment(id, level);
+        return Result.success();
     }
 }

@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 
 @RestController
@@ -32,23 +33,23 @@ public class SourceHasthumbController {
     @RepeatSubmit
     @Authentication(role = AuthConstant.USER)
     @ApiOperation(value = "点赞或取消点赞指定资源")
-    public Result favour(Integer targetId){
+    public Result<Integer> favour(Integer targetId) {
         QueryWrapper<SourceHasthumb> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("source_id",targetId);
+        queryWrapper.eq("user_id", currentUser);
+        queryWrapper.eq("source_id", targetId);
         SourceHasthumb one = sourceHasthumbService.getOne(queryWrapper);
         Source source = sourceService.getById(targetId);
-        if (one == null){
+        if (one == null) {
             //添加点赞关系
             sourceHasthumbService.save(SourceHasthumb.builder().userId(currentUser).sourceId(targetId).build());
-            source.setThumbNum(source.getThumbNum()+1);
+            source.setThumbNum(source.getThumbNum() + 1);
             sourceService.updateById(source);
             return Result.success(1);
-        }else {
+        } else {
             //删除点赞关系
             sourceHasthumbService.remove(queryWrapper);
-            source.setThumbNum(source.getThumbNum()-1);
+            source.setThumbNum(source.getThumbNum() - 1);
             sourceService.updateById(source);
             return Result.success(-1);
         }

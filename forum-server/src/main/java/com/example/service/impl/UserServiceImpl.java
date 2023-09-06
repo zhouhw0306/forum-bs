@@ -43,36 +43,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Result login(String username, String password) {
-        Result result = new Result();
+    public Result<User> login(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username);
+        queryWrapper.eq("username", username);
         queryWrapper.eq("password", MD5Util.MD5Lower(password));
         List<User> list = list(queryWrapper);
-        if (list.size()==0){
-            result.setResultCode(ResultCode.USER_LOGIN_ERROR);
-            return result;
+        if (list.size() == 0) {
+            return Result.error(ResultCode.USER_LOGIN_ERROR);
         }
         User user = list.get(0);
-        if ("0".equals(user.getLockState())){
+        if ("0".equals(user.getLockState())) {
             return Result.error(ResultCode.USER_ACCOUNT_FORBIDDEN);
         }
         // 生成token
-        String token = JWTUtil.sign(user.getId(),user.getPassword());
+        String token = JWTUtil.sign(user.getId(), user.getPassword());
         user.setPassword("it's a secret");
         user.setToken(token);
         //缓存到Redis
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
         stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL, TimeUnit.MINUTES);
-        Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries("");
-        result.setResultCode(ResultCode.SUCCESS);
-        result.setData(user);
-        return result;
+        return Result.success(user);
     }
 
     @Override
-    public Result signUp(HttpServletRequest req) {
+    public Result<Void> signUp(HttpServletRequest req) {
         String username = req.getParameter("username").trim();
         String password = req.getParameter("password").trim();
         String sex = req.getParameter("sex").trim();
@@ -82,10 +77,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String location = req.getParameter("location").trim();
         String avatar = req.getParameter("avatar").trim();
         // 验证是否为空
-        if ("".equals(username)){
+        if ("".equals(username)) {
             return Result.error(ResultCode.USER_Register_ERROR);
         }
-        if ("".equals(password)){
+        if ("".equals(password)) {
             return Result.error(ResultCode.USER_Register_ERROR);
         }
         // 验证码

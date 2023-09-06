@@ -25,7 +25,7 @@ public class NotificationController {
 
     @GetMapping("/getAll")
     @ApiOperation(value = "获取全部公告")
-    public Result getAll(){
+    public Result<List<Notification>> getAll() {
         List<Notification> list = notificationService.list();
         return Result.success(list);
     }

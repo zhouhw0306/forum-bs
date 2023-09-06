@@ -29,27 +29,27 @@ public class SubScribeController {
 
     @PostMapping("/isFollowAuthor")
     @ApiOperation(value = "判断与登录用户的关注关系")
-    public Result isFollow(String authorId){
+    public Result<Boolean> isFollow(String authorId) {
         Subscribe list = subscribeService.lambdaQuery()
-                .eq(Subscribe::getSubscribe,UserUtils.getCurrentUser())
-                .eq(Subscribe::getBeSubscribe,authorId).one();
+                .eq(Subscribe::getSubscribe, UserUtils.getCurrentUser())
+                .eq(Subscribe::getBeSubscribe, authorId).one();
         return Result.success(list != null);
     }
 
     @PostMapping("/addFollow")
     @RepeatSubmit
-    @CacheEvict(value = "article", allEntries=true)
+    @CacheEvict(value = "article", allEntries = true)
     @ApiOperation(value = "关注指定用户")
-    public Result addFollow(String authorId) {
+    public Result<Void> addFollow(String authorId) {
         boolean flag = subscribeService.save(Subscribe.builder().beSubscribe(authorId).subscribe(UserUtils.getCurrentUser()).build());
         return flag ? Result.success() : Result.error();
     }
 
     @PostMapping("/removeFollow")
     @RepeatSubmit
-    @CacheEvict(value = "article", allEntries=true)
+    @CacheEvict(value = "article", allEntries = true)
     @ApiOperation(value = "移除关注")
-    public Result removeFollow(String authorId) {
+    public Result<Void> removeFollow(String authorId) {
         boolean flag = subscribeService.lambdaUpdate()
                 .eq(Subscribe::getSubscribe, UserUtils.getCurrentUser())
                 .eq(Subscribe::getBeSubscribe, authorId)
@@ -59,7 +59,7 @@ public class SubScribeController {
 
     @GetMapping("/getFans")
     @ApiOperation(value = "获取所有粉丝")
-    public Result getFans() {
+    public Result<List<Subscribe>> getFans() {
         List<Subscribe> list = subscribeService.lambdaQuery()
                 .eq(Subscribe::getBeSubscribe, UserUtils.getCurrentUser())
                 .list();
@@ -68,7 +68,7 @@ public class SubScribeController {
 
     @GetMapping("/getFollows")
     @ApiOperation(value = "获取关注列表")
-    public Result getFollows() {
+    public Result<List<Subscribe>> getFollows() {
         List<Subscribe> list = subscribeService.lambdaQuery()
                 .eq(Subscribe::getSubscribe, UserUtils.getCurrentUser())
                 .list();

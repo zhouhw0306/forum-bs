@@ -42,22 +42,23 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
      * 收藏操作
      */
     @Override
-    public Result favour(String targetId) {
+    public Result<Integer> favour(String targetId) {
         QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
         User user = userService.getById(currentUser);
-        if (user == null){
+        if (user == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",targetId);
-        ArticleHasfavour one = getOne(queryWrapper);;
-        if (one == null){
+        queryWrapper.eq("user_id", currentUser);
+        queryWrapper.eq("article_id", targetId);
+        ArticleHasfavour one = getOne(queryWrapper);
+        ;
+        if (one == null) {
             //添加收藏关系
             save(ArticleHasfavour.builder().userId(currentUser).articleId(targetId).build());
             stringRedisTemplate.opsForSet().add(FAVOUR_ART_KEY + currentUser, targetId);
             return Result.success(1);
-        }else {
+        } else {
             //删除收藏关系
             remove(queryWrapper);
             stringRedisTemplate.opsForSet().remove(FAVOUR_ART_KEY + currentUser, targetId);
@@ -66,17 +67,17 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
     }
 
     @Override
-    public Result isFavour(String id) {
+    public Result<Boolean> isFavour(String id) {
         String currentUser = UserUtils.getCurrentUser();
         ArticleHasfavour one = lambdaQuery()
-                .eq(ArticleHasfavour::getUserId,currentUser)
-                .eq(ArticleHasfavour::getArticleId,id)
+                .eq(ArticleHasfavour::getUserId, currentUser)
+                .eq(ArticleHasfavour::getArticleId, id)
                 .one();
         return Result.success(one != null);
     }
 
     @Override
-    public Result getHasFavour() {
+    public Result<List<Article>> getHasFavour() {
         String currentUser = UserUtils.getCurrentUser();
         List<ArticleHasfavour> favourList = lambdaQuery().eq(ArticleHasfavour::getUserId, currentUser).list();
         List<Article> articleList = favourList.stream().map(articleHasfavour ->

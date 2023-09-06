@@ -58,21 +58,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     @Transactional
-    public Result publishArticle(Article article) {
+    public Result<String> publishArticle(Article article) {
         //更新
-        if(StringUtils.isNotBlank(article.getId())){
+        if (StringUtils.isNotBlank(article.getId())) {
             Article article1 = articleMapper.selectOne(Wrappers.lambdaQuery(Article.class).eq(Article::getId, article.getId()));
-            if (ObjectUtil.isEmpty(article1)){
-                return Result.error(ResultCode.ERROR,"文章不存在");
+            if (ObjectUtil.isEmpty(article1)) {
+                return Result.error(ResultCode.ERROR, "文章不存在");
             }
-            if (!Objects.equals(UserUtils.getCurrentUser(), article1.getUserId())){
-                return Result.error(ResultCode.ERROR,"非法修改");
+            if (!Objects.equals(UserUtils.getCurrentUser(), article1.getUserId())) {
+                return Result.error(ResultCode.ERROR, "非法修改");
             }
             articleMapper.updateById(article);
             List<Tag> tags = article.getTags();
             // 删除旧的文章-标签对应关系
             QueryWrapper<ArticleTagRelation> wrapper = new QueryWrapper<>();
-            wrapper.eq("article_id",article.getId());
+            wrapper.eq("article_id", article.getId());
             articleTagRelationMapper.delete(wrapper);
             // 添加的文章-标签对应关系
             for (Tag tag : tags) {
@@ -96,45 +96,32 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public Result addViewCount(String id) {
+    public void addViewCount(String id) {
         articleMapper.addViewCount(id);
         // 如登录加入到该用户的浏览历史表
-        if (StringUtils.isNotBlank(UserUtils.getCurrentUser())){
+        if (StringUtils.isNotBlank(UserUtils.getCurrentUser())) {
             stringRedisTemplate.opsForSet().add(VIEW_ART_KEY + UserUtils.getCurrentUser(), id);
         }
-        return Result.success();
     }
 
     @Override
-    public Result findById(String id) {
-        Result r = new Result();
-
-        if (null == id) {
-            r.setResultCode(ResultCode.PARAM_IS_BLANK);
-            return r;
-        }
-
-        Article article = getById(id);
-
-        r.setResultCode(ResultCode.SUCCESS);
-        r.setData(article);
-        return r;
+    public Article findById(String id) {
+        return getById(id);
     }
 
     @Override
-    public Result searchByKey(String word) {
-        if (ObjectUtil.isEmpty(word)){
-            return Result.success();
-        }
-        List<Article> list1 = query().select("id","title","content_html","comment_count","view_count","create_time").like("title",word).list();
-        List<User> list2 = userService.query().select("id","username","avatar","introduction").like("username",word).list();
-        List<Source> list3 = sourceService.query().like("title",word).list();
-        Result result = new Result();
-        Map<String, Object> simple = result.simple();
-        simple.put("articleData",list1);
-        simple.put("userData",list2);
-        simple.put("sourceData",list3);
-        return result;
+    public Map<String, Object> searchByKey(String word) {
+//        if (ObjectUtil.isEmpty(word)){
+//            return Result.success();
+//        }
+        List<Article> list1 = query().select("id", "title", "content_html", "comment_count", "view_count", "create_time").like("title", word).list();
+        List<User> list2 = userService.query().select("id", "username", "avatar", "introduction").like("username", word).list();
+        List<Source> list3 = sourceService.query().like("title", word).list();
+        Map<String, Object> simple = new HashMap<>(3);
+        simple.put("articleData", list1);
+        simple.put("userData", list2);
+        simple.put("sourceData", list3);
+        return simple;
     }
 
     @Override

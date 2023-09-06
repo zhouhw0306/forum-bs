@@ -10,9 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author zhw
@@ -27,22 +30,19 @@ public class UploadController {
 
     @PostMapping("/upload")
     @ApiOperation(value = "上传文章中的图片")
-    public Result upload(MultipartFile image) {
-
-        Result r = new Result();
-
+    public Result<Map<String, Object>> upload(MultipartFile image) {
         try {
             String filePath = new SimpleDateFormat("yyyyMMdd").format(new Date());
             String baseFolder = "articleFile/" + filePath;
 
             QiNiuImage qiNiuImage = qiniuService.saveToQiNiu(image, baseFolder);
 
-            r.setResultCode(ResultCode.SUCCESS);
-            r.simple().put("url", qiNiuImage.getFileName());
+            Map<String, Object> map = new HashMap<>(1);
+            map.put("url", qiNiuImage.getFileName());
+            return Result.simple(map);
         } catch (Exception e) {
-            r.setResultCode(ResultCode.UPLOAD_ERROR);
+            e.printStackTrace();
         }
-
-        return r;
+        return Result.error(ResultCode.UPLOAD_ERROR);
     }
 }
