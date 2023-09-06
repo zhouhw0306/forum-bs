@@ -5,7 +5,8 @@ import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONUtil;
 import com.example.annotation.RepeatSubmit;
 import com.example.exception.RateLimitException;
-import com.example.exception.SystemException;
+import com.example.filter.RepeatedlyRequestWrapper;
+import com.example.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -15,17 +16,16 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 防止表单重复提交
+ *
  * @author zhou
  */
 @Slf4j
@@ -45,7 +45,7 @@ public class RepeatSubmitAspect {
     StringRedisTemplate stringRedisTemplate;
 
     @Before("@annotation(repeatSubmit)")
-    public void before(JoinPoint jp, RepeatSubmit repeatSubmit){
+    public void before(JoinPoint jp, RepeatSubmit repeatSubmit) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String nowParams = getParams(request);
         if (StringUtils.isEmpty(nowParams)) {
@@ -60,13 +60,13 @@ public class RepeatSubmitAspect {
         String token = StringUtils.trimToEmpty(request.getHeader(TOKEN));
         String repeatKey = REPEAT_SUBMIT_KEY + url + ":" + token;
 
-        synchronized (repeatKey.intern()){
+        synchronized (repeatKey.intern()) {
             Map<Object, Object> preDataMap = stringRedisTemplate.opsForHash().entries(repeatKey);
             if (MapUtil.isNotEmpty(preDataMap) && compareParams(nowDataMap, preDataMap) && compareTime(nowDataMap, preDataMap, repeatSubmit.interval())) {
                 throw new RateLimitException(repeatSubmit.message());
             }
             stringRedisTemplate.opsForHash().putAll(repeatKey, nowDataMap);
-            stringRedisTemplate.expire(repeatKey,repeatSubmit.interval(), TimeUnit.MILLISECONDS);
+            stringRedisTemplate.expire(repeatKey, repeatSubmit.interval(), TimeUnit.MILLISECONDS);
         }
 
     }
@@ -89,20 +89,15 @@ public class RepeatSubmitAspect {
         return (time1 - time2) < interval;
     }
 
-    private String getParams(HttpServletRequest request){
+    private String getParams(HttpServletRequest request) {
         String nowParams = null;
-        try {
-            BufferedReader streamReader = new BufferedReader( new InputStreamReader(request.getInputStream(), "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String inputStr;
-            while ((inputStr = streamReader.readLine()) != null) {
-                sb.append(inputStr);
-            }
-            if (StringUtils.isEmpty(nowParams = sb.toString())){
-                nowParams = JSONUtil.toJsonStr(request.getParameterMap());
-            }
-        } catch (IOException e) {
-            throw new SystemException("读取请求参数异常");
+        if (request instanceof RepeatedlyRequestWrapper) {
+            RepeatedlyRequestWrapper repeatedlyRequest = (RepeatedlyRequestWrapper) request;
+            nowParams = HttpUtils.getBodyString(repeatedlyRequest);
+        }
+        // body参数为空，获取Parameter的数据
+        if (StringUtils.isEmpty(nowParams)) {
+            nowParams = JSONUtil.toJsonStr(request.getParameterMap());
         }
         return nowParams;
     }
