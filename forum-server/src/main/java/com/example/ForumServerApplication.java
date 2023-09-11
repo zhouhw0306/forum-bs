@@ -19,8 +19,6 @@ public class ForumServerApplication {
 //            System.out.println(name);
 //        }
         System.out.println("http://localhost:8888/swagger-ui.html");
-        // 1
-        // 2
     }
 
 }
