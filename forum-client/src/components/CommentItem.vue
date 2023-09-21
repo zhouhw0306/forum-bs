@@ -34,7 +34,7 @@
             <div style="font-size: 14px">
               <span class="me-reply-user">{{c.user.username}}:&nbsp;&nbsp;</span>
 
-              <span v-if="c.level === 2" class="me-reply-user">@{{c.toUser.username}} </span>
+              <span v-if="c.level === '2'" class="me-reply-user">@{{c.toUser.username}} </span>
 
               <span>{{c.content}}</span>
             </div>

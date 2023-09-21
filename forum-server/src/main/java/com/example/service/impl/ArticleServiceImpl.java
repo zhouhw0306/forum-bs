@@ -188,6 +188,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Override
     public List<Article> getBrowsingHistory() {
         Set<String> articles = stringRedisTemplate.opsForSet().members(VIEW_ART_KEY + UserUtils.getCurrentUser());
+        if (CollectionUtils.isEmpty(articles)) {
+            return new ArrayList<>();
+        }
         return lambdaQuery().in(Article::getId, articles).list();
     }
 }
