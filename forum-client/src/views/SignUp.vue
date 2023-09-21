@@ -152,7 +152,7 @@ export default {
               } else {
                 _this.notify(res.msg, 'error')
               }
-            }).catch(err => this.$message.error(err))
+            })
       })
     },
     clearValida(data){

@@ -86,16 +86,16 @@ export default {
     return {
       placeholder: '你的评论...',
       commentShow: false,
-      commentShowIndex: '',
+      replyCommId: '',
       reply: this.getEmptyReply(),
       extension: false
     }
   },
   methods: {
-    showComment(commentShowIndex, toUser) {
+    showComment(replyCommId, toUser) {
       this.reply = this.getEmptyReply()
 
-      if (this.commentShowIndex !== commentShowIndex) {
+      if (this.replyCommId !== replyCommId) {
 
         if (toUser) {
           this.placeholder = `@${toUser.username} `
@@ -105,10 +105,10 @@ export default {
         }
 
         this.commentShow = true
-        this.commentShowIndex = commentShowIndex
+        this.replyCommId = replyCommId
       } else {
         this.commentShow = false
-        this.commentShowIndex = ''
+        this.replyCommId = ''
       }
     },
     pushComment() {
@@ -139,7 +139,7 @@ export default {
         this.comment.childrens.unshift(data.data)
         this.$emit('commentCountsIncrement')
         this.extension = true
-        this.showComment(this.commentShowIndex)
+        this.showComment(this.replyCommId)
       }).catch(err => {
         if(err.status === 401){
           this.$message({type: 'error', message: `请重新登录`, showClose: true})

@@ -60,14 +60,15 @@
                   </a>
                 </el-col>
                 <el-col :span="22">
-                  <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 2}"
-                    placeholder="你的评论..."
-                    class="me-view-comment-text"
-                    v-model="comment.content"
-                    resize="none">
-                  </el-input>
+<!--                  <el-input-->
+<!--                    type="textarea"-->
+<!--                    :autosize="{ minRows: 2}"-->
+<!--                    placeholder="你的评论..."-->
+<!--                    class="me-view-comment-text"-->
+<!--                    v-model="comment.content"-->
+<!--                    resize="none">-->
+<!--                  </el-input>-->
+                  <VueEmoji ref="emoji" width="100%" height="100" :value="comment.content" @input="onInput" />
                 </el-col>
               </el-row>
 
@@ -119,6 +120,7 @@
 </template>
 
 <script>
+import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins"
 import MarkdownEditor from '@/components/article/MarkdownEditor'
 import CommmentItem from '@/components/CommentItem'
@@ -200,6 +202,9 @@ export default {
     }
   },
   methods: {
+    onInput (event) {
+      this.comment.content = event.data
+    },
     back(){
       this.$router.go(-1)
     },
@@ -337,6 +342,7 @@ export default {
           this.$message({type: 'success', message: '评论成功', showClose: true})
           this.comments.unshift(res.data)
           this.commentCountsIncrement()
+          this.$refs.emoji.clear()
           this.comment.content = ''
         }else{
           this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
@@ -368,7 +374,8 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor,
-    CommmentItem
+    CommmentItem,
+    VueEmoji
   },
 }
 </script>
@@ -455,7 +462,7 @@ export default {
   }
 
   .v-show-content {
-    padding: 8px 25px 15px 0px !important;
+    padding: 8px 25px 15px 0 !important;
   }
 
   .v-note-wrapper .v-note-panel {
@@ -465,9 +472,7 @@ export default {
   .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
     background: #fff !important;
   }
-  .hljs{
-    background: #f6f8fa!important;
-  }
+
   .infoCard{
     float: right;
     margin-left: 20px;
@@ -476,5 +481,9 @@ export default {
     padding: 15px;
     position: sticky;
     top: 100px
+  }
+  .far_box {
+    height: 100vh;
+    text-align: left;
   }
 </style>

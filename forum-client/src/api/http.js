@@ -21,7 +21,7 @@ axios.interceptors.request.use(config => {
       return Promise.reject(error)
   }
 )
-
+import ElementUI from 'element-ui'
 //响应拦截器
 axios.interceptors.response.use(
   response => {
@@ -64,6 +64,8 @@ axios.interceptors.response.use(
         case 404:
           // console.log('请求页面飞到火星去了')
           break;
+        default:
+          ElementUI.Notification(error.response.data.msg);
       }
       return Promise.reject(error.response);
     }

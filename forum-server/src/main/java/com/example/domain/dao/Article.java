@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * 文章表
@@ -63,21 +64,25 @@ public class Article implements Serializable {
     /**
      * 评论数量
      */
+    @Null
     private Integer commentCount;
 
     /**
      * 阅读数量
      */
+    @Null
     private Integer viewCount;
 
     /**
      * 创建时间
      */
+    @Null
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @Null
     private Date updateTime;
 
     /**

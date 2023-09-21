@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 全局异常处理
@@ -27,16 +28,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result handleException(Exception e) {
+    public Result<Void> handleException(Exception e) {
         log.error("系统内部异常，异常信息：", e);
         return Result.error(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
     }
 
     @ExceptionHandler(value = SystemException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result handleParamsInvalidException(SystemException e) {
+    public Result<Void> handleParamsInvalidException(SystemException e) {
         log.error("系统错误：{}", e.getMessage());
-        return new Result(500,e.getMessage());
+        return new Result<>(500, e.getMessage());
     }
 
     /**
@@ -44,14 +45,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result validExceptionHandler(BindException e) {
+    public Result<Void> validExceptionHandler(BindException e) {
         StringBuilder message = new StringBuilder();
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         for (FieldError error : fieldErrors) {
             message.append(error.getField()).append(error.getDefaultMessage()).append(",");
         }
         message = new StringBuilder(message.substring(0, message.length() - 1));
-        return new Result(400,message.toString());
+        return new Result<>(400,message.toString());
 
     }
 
@@ -60,17 +61,17 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RateLimitException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result rateLimitException(RateLimitException e){
-        return new Result(500,e.getMessage());
+    public Result<Void> rateLimitException(RateLimitException e){
+        return new Result<>(500,e.getMessage());
     }
 
     /**
      * valid注解验证失败
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         log.error(e.getMessage(), e);
-        String message = e.getBindingResult().getFieldError().getDefaultMessage();
+        String message = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
         return Result.error(ResultCode.PARAM_TYPE_BIND_ERROR,message);
     }
 

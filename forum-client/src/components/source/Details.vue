@@ -54,14 +54,15 @@
              </a>
            </el-col>
            <el-col :span="22">
-             <el-input
-                 type="textarea"
-                 :autosize="{ minRows: 2}"
-                 placeholder="你的评论..."
-                 class="me-view-comment-text"
-                 v-model="comment.content"
-                 resize="none">
-             </el-input>
+<!--             <el-input-->
+<!--                 type="textarea"-->
+<!--                 :autosize="{ minRows: 2}"-->
+<!--                 placeholder="你的评论..."-->
+<!--                 class="me-view-comment-text"-->
+<!--                 v-model="comment.content"-->
+<!--                 resize="none">-->
+<!--             </el-input>-->
+             <VueEmoji ref="emoji" width="100%" height="100" :value="comment.content" @input="onInput" />
            </el-col>
          </el-row>
 
@@ -89,6 +90,7 @@
 </template>
 
 <script>
+import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins";
 import {favour, getCommentsByArticle, getSourceById, pushComment, thumb} from "@/api";
 import CommmentItem from "@/components/CommentItem";
@@ -121,7 +123,8 @@ export default {
   },
   mixins: [mixin],
   components: {
-    CommmentItem
+    CommmentItem,
+    VueEmoji
   },
   mounted () {
     window.scrollTo({top:0,left:0})
@@ -147,6 +150,9 @@ export default {
     }
   },
   methods : {
+    onInput (event) {
+      this.comment.content = event.data
+    },
     init (){
       getSourceById(this.id)
           .then((res) => {
@@ -207,6 +213,7 @@ export default {
         if (res.code===0){
           this.$message({type: 'success', message: '评论成功', showClose: true})
           this.comments.unshift(res.data)
+          this.$refs.emoji.clear()
           this.comment.content = ''
         }else{
           this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
