@@ -111,12 +111,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public Map<String, Object> searchByKey(String word) {
-//        if (ObjectUtil.isEmpty(word)){
-//            return Result.success();
-//        }
         List<Article> list1 = query().select("id", "title", "content_html", "comment_count", "view_count", "create_time").like("title", word).list();
         List<User> list2 = userService.query().select("id", "username", "avatar", "introduction").like("username", word).list();
         List<Source> list3 = sourceService.query().like("title", word).list();
+        list1.forEach(v -> {
+            String title = v.getTitle();
+            String replace =  title.replace(word, "<em>" + word + "</em>");
+            v.setTitle(replace);
+        });
+        list3.forEach(v -> {
+            String title = v.getTitle();
+            String replace = title.replace(word, "<em>" + word + "</em>");
+            v.setTitle(replace);
+        });
         Map<String, Object> simple = new HashMap<>(3);
         simple.put("articleData", list1);
         simple.put("userData", list2);

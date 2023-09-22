@@ -6,13 +6,13 @@
         <el-card shadow="hover" style="height: 200px;">
           <div>
             <el-avatar :src="attachImageUrl(item.avatar)"></el-avatar>
-            <span style="vertical-align: top;margin-left: 5px">
-            {{item.username}}
-          </span>
+            <b style="vertical-align: top;margin-left: 15px">{{item.username}}</b>
           </div>
-          <span style="margin-top: 200px">
+          <div style="margin-top: 50px">
+            <span>
             简介： {{item.introduction}}
-          </span>
+            </span>
+          </div>
         </el-card>
       </el-col>
     </el-row>

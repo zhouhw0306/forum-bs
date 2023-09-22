@@ -7,7 +7,7 @@
 
             <div style="max-width: calc(100% - 100px);height:100px;display: inline-block">
               <div>
-                <a class="hover-title" @click="view(item.id)"><b>{{item.title}}</b></a>
+                <a class="hover-title" @click="view(item.id)"><b v-html="item.title"/></a>
               </div>
             </div>
             <div style="float: right;display: inline-block">

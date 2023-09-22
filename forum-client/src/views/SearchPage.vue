@@ -76,4 +76,8 @@ export default {
   font-size: xx-large;
   color: #67C23A;
 }
+em{
+  font-style: revert;
+  color: #67C23A;
+}
 </style>
