@@ -78,6 +78,6 @@ export default {
 }
 em{
   font-style: revert;
-  color: #67C23A;
+  color: #fc5531;
 }
 </style>

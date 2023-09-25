@@ -9,6 +9,7 @@ import com.example.constant.ResultCode;
 import com.example.domain.dao.*;
 import com.example.mapper.ArticleTagRelationMapper;
 import com.example.mapper.UserMapper;
+import com.example.search.ArticleSearchService;
 import com.example.service.ArticleService;
 import com.example.mapper.ArticleMapper;
 import com.example.service.SourceService;
@@ -16,6 +17,7 @@ import com.example.service.SubscribeService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +57,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Resource
     private SubscribeService subscribeService;
+
+    @Resource
+    @Lazy
+    ArticleSearchService articleSearchService;
 
     @Override
     @Transactional
@@ -111,14 +117,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public Map<String, Object> searchByKey(String word) {
-        List<Article> list1 = query().select("id", "title", "content_html", "comment_count", "view_count", "create_time").like("title", word).list();
+        List<Article> list1 = articleSearchService.searchByKey(word);
         List<User> list2 = userService.query().select("id", "username", "avatar", "introduction").like("username", word).list();
         List<Source> list3 = sourceService.query().like("title", word).list();
-        list1.forEach(v -> {
-            String title = v.getTitle();
-            String replace =  title.replace(word, "<em>" + word + "</em>");
-            v.setTitle(replace);
-        });
         list3.forEach(v -> {
             String title = v.getTitle();
             String replace = title.replace(word, "<em>" + word + "</em>");
