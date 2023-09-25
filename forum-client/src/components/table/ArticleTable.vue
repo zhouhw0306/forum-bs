@@ -15,9 +15,8 @@
             <i class="el-icon-time"></i>&nbsp;{{item.createTime}}
           </span>
         </div>
-        <div class="me-artile-description">
-          {{filterHtml(item.contentHtml)}}
-        </div>
+        <div class="me-artile-description" v-html="filterHtml(item.contentHtml)"/>
+
       </el-card>
     </el-col>
   </div>
@@ -36,9 +35,9 @@ export default {
       this.$router.push({path:`/view/${id}`})
     },
     filterHtml(strHTML){
-      let re = new RegExp('<[^<>]+>','g');
-      strHTML = strHTML.replace(re ,"");
-      strHTML = strHTML.replace(/<[^<>]+>/g,"");
+      // let re = new RegExp('<(?!em).*?>','g');
+      // strHTML = strHTML.replace(re ,"");
+      strHTML = strHTML.replace(/<(?!em|\/em).*?>/g, "");
       return strHTML
     }
   }

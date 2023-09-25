@@ -2,12 +2,14 @@ package com.example.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.dao.*;
 import com.example.mapper.ArticleTagRelationMapper;
 import com.example.mapper.UserMapper;
+import com.example.search.ArticleSearchService;
 import com.example.service.ArticleService;
 import com.example.mapper.ArticleMapper;
 import com.example.service.SourceService;
@@ -15,15 +17,14 @@ import com.example.service.SubscribeService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
 import static com.example.utils.RedisConstants.VIEW_ART_KEY;
 
@@ -57,23 +58,34 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private SubscribeService subscribeService;
 
+    @Resource
+    @Lazy
+    ArticleSearchService articleSearchService;
+
     @Override
     @Transactional
-    public String publishArticle(Article article) {
+    public Result<String> publishArticle(Article article) {
         //更新
-        if(StringUtils.isNotBlank(article.getId())){
+        if (StringUtils.isNotBlank(article.getId())) {
+            Article article1 = articleMapper.selectOne(Wrappers.lambdaQuery(Article.class).eq(Article::getId, article.getId()));
+            if (ObjectUtil.isEmpty(article1)) {
+                return Result.error(ResultCode.ERROR, "文章不存在");
+            }
+            if (!Objects.equals(UserUtils.getCurrentUser(), article1.getUserId())) {
+                return Result.error(ResultCode.ERROR, "非法修改");
+            }
             articleMapper.updateById(article);
             List<Tag> tags = article.getTags();
             // 删除旧的文章-标签对应关系
             QueryWrapper<ArticleTagRelation> wrapper = new QueryWrapper<>();
-            wrapper.eq("article_id",article.getId());
+            wrapper.eq("article_id", article.getId());
             articleTagRelationMapper.delete(wrapper);
             // 添加的文章-标签对应关系
             for (Tag tag : tags) {
                 ArticleTagRelation atr = ArticleTagRelation.builder().articleId(article.getId()).tagId(tag.getId()).build();
                 articleTagRelationMapper.insert(atr);
             }
-            return article.getId();
+            return Result.success(article.getId());
         }else{
             //添加
             article.setUserId(UserUtils.getCurrentUser());
@@ -85,50 +97,39 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 articleTagRelationMapper.insert(atr);
             }
             userMapper.addScore(UserUtils.getCurrentUser(),2);
-            return artId;
+            return Result.success(artId);
         }
     }
 
     @Override
-    public Result addViewCount(String id) {
+    public void addViewCount(String id) {
         articleMapper.addViewCount(id);
         // 如登录加入到该用户的浏览历史表
-        if (StringUtils.isNotBlank(UserUtils.getCurrentUser())){
+        if (StringUtils.isNotBlank(UserUtils.getCurrentUser())) {
             stringRedisTemplate.opsForSet().add(VIEW_ART_KEY + UserUtils.getCurrentUser(), id);
         }
-        return Result.success();
     }
 
     @Override
-    public Result findById(String id) {
-        Result r = new Result();
-
-        if (null == id) {
-            r.setResultCode(ResultCode.PARAM_IS_BLANK);
-            return r;
-        }
-
-        Article article = getById(id);
-
-        r.setResultCode(ResultCode.SUCCESS);
-        r.setData(article);
-        return r;
+    public Article findById(String id) {
+        return getById(id);
     }
 
     @Override
-    public Result searchByKey(String word) {
-        if (ObjectUtil.isEmpty(word)){
-            return Result.success();
-        }
-        List<Article> list1 = query().select("id","title","content_html","comment_count","view_count","create_time").like("title",word).list();
-        List<User> list2 = userService.query().select("id","username","avatar","introduction").like("username",word).list();
-        List<Source> list3 = sourceService.query().like("title",word).list();
-        Result result = new Result();
-        Map<String, Object> simple = result.simple();
-        simple.put("articleData",list1);
-        simple.put("userData",list2);
-        simple.put("sourceData",list3);
-        return result;
+    public Map<String, Object> searchByKey(String word) {
+        List<Article> list1 = articleSearchService.searchByKey(word);
+        List<User> list2 = userService.query().select("id", "username", "avatar", "introduction").like("username", word).list();
+        List<Source> list3 = sourceService.query().like("title", word).list();
+        list3.forEach(v -> {
+            String title = v.getTitle();
+            String replace = title.replace(word, "<em>" + word + "</em>");
+            v.setTitle(replace);
+        });
+        Map<String, Object> simple = new HashMap<>(3);
+        simple.put("articleData", list1);
+        simple.put("userData", list2);
+        simple.put("sourceData", list3);
+        return simple;
     }
 
     @Override
@@ -156,11 +157,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         if (CollectionUtils.isEmpty(set)){
             List<Article> list = query().notIn(!CollectionUtils.isEmpty(me),"id",me).list();
-            list = list.subList(0, Math.min(list.size(), 5));
-            return list;
+            return list.subList(0, Math.min(list.size(), 5));
         }
-        List<Article> list = query().in("id", set).list().subList(0, Math.min(set.size(), 5));
-        return list;
+        return query().in("id", set).list().subList(0, Math.min(set.size(), 5));
     }
 
     @Override
@@ -192,6 +191,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         List<Article> articles = list(queryWrapper);
         return articles;
+    }
+
+    @Override
+    public List<Article> getBrowsingHistory() {
+        Set<String> articles = stringRedisTemplate.opsForSet().members(VIEW_ART_KEY + UserUtils.getCurrentUser());
+        if (CollectionUtils.isEmpty(articles)) {
+            return new ArrayList<>();
+        }
+        return lambdaQuery().in(Article::getId, articles).list();
     }
 }
 
