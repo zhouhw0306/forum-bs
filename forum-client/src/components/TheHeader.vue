@@ -62,6 +62,16 @@
                     </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
                 </el-popover>
+                <i @click="drawer = true" class="fa fa-commenting-o"  style="font-size: 30px;vertical-align: middle;margin-left: 10px"></i>
+                <el-drawer
+                    title="讯飞星火大模型"
+                    :visible.sync="drawer"
+                    size="50%"
+                    direction="rtl"
+                    :append-to-body="true"
+                    :modal-append-to-body="false">
+                    <AiModel/>
+                </el-drawer>
           </template>
         </el-menu>
       </el-col>
@@ -74,9 +84,11 @@
 <script>
 import {mixin} from "@/mixins";
 import { mapGetters } from 'vuex';
+import AiModel from "@/components/aiModel/AiModel";
 
 export default {
   name: 'TheHeader',
+  components: {AiModel},
   mixins: [mixin],
   props: {
     activeIndex: String,
@@ -88,6 +100,7 @@ export default {
   data() {
     return {
       inputValue: "", //搜索框输入
+      drawer: false
     }
   },
   computed: {
@@ -224,4 +237,7 @@ export default {
 .el-scrollbar__bar.is-horizontal {
   display: none;
 }
+/*.icon:hover {*/
+/*  color: rgb(81, 255, 0);*/
+/*}*/
 </style>

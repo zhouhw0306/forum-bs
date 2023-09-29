@@ -155,3 +155,6 @@ export const deleteSource = (id) => post(`source/delete/${id}`)
 
 //审核资源
 export const sourcePass = (param) => post(`source/pass`,param)
+
+//请求chatAi
+export const chatAi = (param) => get('chat/ask',param)

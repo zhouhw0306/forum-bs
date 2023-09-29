@@ -486,4 +486,11 @@ export default {
     height: 100vh;
     text-align: left;
   }
+  .markdown-body .highlight pre, .markdown-body pre{
+    padding: 0 !important;
+  }
+  .hljs{
+    padding: 10px;
+    border-radius: 10px;
+  }
 </style>
