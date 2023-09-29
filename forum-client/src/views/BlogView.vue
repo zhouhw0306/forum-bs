@@ -13,7 +13,14 @@
               <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"/>
             </a>
             <div class="me-view-info">
-              <span>{{article.author.username}}</span><button v-if="this.article.author.id !== this.$store.getters.userId" @click="updateFollow" :class="{btnOf : true,follow : !isFollow}">{{follow}}</button>
+              <div>
+                <span>{{article.author.username}}</span>
+                <template v-if="this.article.author.id !== this.$store.getters.userId">
+                  <el-button v-if="!isFollow" @click="updateFollow" style="margin-left: 10px;background-color:#ecf5ff;border-color:#bad6f1;color: #58a3f1" size="mini">关注√</el-button>
+                  <el-button v-else @click="updateFollow" style="margin-left: 10px" size="mini">已关注</el-button>
+                </template>
+              </div>
+
               <div class="me-view-meta">
                 <span style="padding-right: 20px">发布时间:   {{article.createTime}}</span>
                 <span style="padding-right: 20px">阅读   {{article.viewCount}}</span>
@@ -53,14 +60,15 @@
                   </a>
                 </el-col>
                 <el-col :span="22">
-                  <el-input
-                    type="textarea"
-                    :autosize="{ minRows: 2}"
-                    placeholder="你的评论..."
-                    class="me-view-comment-text"
-                    v-model="comment.content"
-                    resize="none">
-                  </el-input>
+<!--                  <el-input-->
+<!--                    type="textarea"-->
+<!--                    :autosize="{ minRows: 2}"-->
+<!--                    placeholder="你的评论..."-->
+<!--                    class="me-view-comment-text"-->
+<!--                    v-model="comment.content"-->
+<!--                    resize="none">-->
+<!--                  </el-input>-->
+                  <VueEmoji ref="emoji" width="100%" height="100" :value="comment.content" @input="onInput" />
                 </el-col>
               </el-row>
 
@@ -112,6 +120,7 @@
 </template>
 
 <script>
+import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins"
 import MarkdownEditor from '@/components/article/MarkdownEditor'
 import CommmentItem from '@/components/CommentItem'
@@ -158,7 +167,6 @@ export default {
       comment: {
         content: ''
       },
-      follow: '',
       isFollow: false, //是否关注作者
       hasFavour: false
     }
@@ -194,6 +202,9 @@ export default {
     }
   },
   methods: {
+    onInput (event) {
+      this.comment.content = event.data
+    },
     back(){
       this.$router.go(-1)
     },
@@ -210,7 +221,6 @@ export default {
         removeFollow(params).then(res => {
           if (res.code === 0){
             this.isFollow = false
-            this.follow = '+关注'
             this.$message.success('取消成功')
           }else {
             this.$message.error('取消失败')
@@ -221,12 +231,11 @@ export default {
         addFollow(params).then(res => {
           if (res.code === 0){
             this.isFollow = true
-            this.follow = '已关注'
             this.$message.success('关注成功')
           }else {
             this.$message.error('关注失败')
           }
-        })
+        }).catch(err => this.$message.error(err.data.msg))
       }
     },
     //更新收藏关系
@@ -250,7 +259,6 @@ export default {
       let userId = this.$store.getters.userId
       //未登录直接返回
       if (userId === '' || userId === null){
-        this.follow='+关注'
         this.isFollow=false
         return
       }
@@ -259,7 +267,6 @@ export default {
       // 是否关注作者
       isFollow(params).then(res => {
         this.isFollow = res.data
-        res.data ? this.follow='已关注' : this.follow='+关注'
       }).catch( err => {this.$message.error(err.msg)})
       // 判断是否收藏
       isFavour(this.article.id).then(res => {
@@ -335,6 +342,7 @@ export default {
           this.$message({type: 'success', message: '评论成功', showClose: true})
           this.comments.unshift(res.data)
           this.commentCountsIncrement()
+          this.$refs.emoji.clear()
           this.comment.content = ''
         }else{
           this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
@@ -366,7 +374,8 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor,
-    CommmentItem
+    CommmentItem,
+    VueEmoji
   },
 }
 </script>
@@ -453,7 +462,7 @@ export default {
   }
 
   .v-show-content {
-    padding: 8px 25px 15px 0px !important;
+    padding: 8px 25px 15px 0 !important;
   }
 
   .v-note-wrapper .v-note-panel {
@@ -463,24 +472,7 @@ export default {
   .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
     background: #fff !important;
   }
-  .follow{
-    background-color: #f25d8e;
-    color: #fff;
-    border-style: none;
-  }
-  .btnOf{
-    border-style: none;
-    border-radius: 3px;
-    margin-left: 3px;
-    padding: 2px 5px;
-    border-radius: 15px;
-  }
-  .btnOf:hover{
-    background-color: #dbdada;
-  }
-  .hljs{
-    background: #f6f8fa!important;
-  }
+
   .infoCard{
     float: right;
     margin-left: 20px;
@@ -489,5 +481,16 @@ export default {
     padding: 15px;
     position: sticky;
     top: 100px
+  }
+  .far_box {
+    height: 100vh;
+    text-align: left;
+  }
+  .markdown-body .highlight pre, .markdown-body pre{
+    padding: 0 !important;
+  }
+  .hljs{
+    padding: 10px;
+    border-radius: 10px;
   }
 </style>

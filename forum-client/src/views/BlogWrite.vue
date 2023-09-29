@@ -103,6 +103,7 @@ export default {
             ul: true, // 无序列表
             imagelink: true, // 图片链接
             code: true, // code
+            table: true, // 表格
             fullscreen: true, // 全屏编辑
             readmodel: true, // 沉浸式阅读
             help: true, // 帮助

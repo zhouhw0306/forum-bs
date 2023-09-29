@@ -5,25 +5,26 @@
 
       <el-col :span="4" class="me-header-left">
         <router-link to="/" class="me-title">
-          <img style="vertical-align: bottom" src="../assets/logo.png"/>
-          <span style="color: black"> 编程社区</span>
+          <img src="../assets/logo.png"/>
+          <span> codebase</span>
         </router-link>
       </el-col>
       <el-col v-if="!simple" :span="16">
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal">
           <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/carePost" @click="toCarePost">关注</el-menu-item>
-          <el-menu-item index="/tools/1">资源</el-menu-item>
-          <el-menu-item index="/world">世界</el-menu-item>
-          <el-menu-item index="/nav">编程导航</el-menu-item>
-          <div class="el-search">
-            <el-input placeholder="请输入想要搜索的内容" v-model="searchUser">
+          <el-menu-item index="/source?type=工具&sort=create_time&pageNo=1">资源</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
+          <el-menu-item index="/searchPage">搜索</el-menu-item>
+          <el-menu-item v-if="role === 'ADMIN'" index="/info">管理</el-menu-item>
+          <div>
+            <el-input @keyup.enter.native="toSearch" v-model="inputValue" placeholder="请输入想要搜索的内容" class="el-search">
               <i
                   slot="suffix"
                   style="cursor: pointer"
                   class="el-input__icon el-icon-search"
-                  @click="selUser"
+                  @click="toSearch"
               ></i>
             </el-input>
           </div>
@@ -36,9 +37,8 @@
 
       <el-col :span="4">
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
-
           <template v-if="!loginIn">
-            <el-tooltip class="item" effect="dark" content="登录后可发帖和评论" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="登录查看更多内容" placement="bottom">
               <el-menu-item index="/login">
                 <el-button type="text">登录</el-button>
               </el-menu-item>
@@ -49,25 +49,29 @@
           </template>
 
           <template v-else>
-<!--            <el-submenu index>-->
-<!--              <template slot="title">-->
                 <el-popover
                     :visible-arrow="false"
                     placement="bottom"
-                    width="200"
+                    width="150"
                     trigger="hover">
-                  <div>
-                    <div style="justify-content: center">
+                    <div>
                       <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                      <el-button class="btt" @click="logout"><i class="el-icon-switch-button icon"></i>退出</el-button>
+                      <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>发帖</el-button>
+<!--                      <el-button class="btt" style="margin-left: 0"><i class="el-icon-user icon"></i>内容管理</el-button>-->
+                      <el-button class="btt" @click="logout" style="margin-left: 0;color: #e86f6f"><i class="el-icon-switch-button icon"></i>退出</el-button>
                     </div>
-                  </div>
                   <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
                 </el-popover>
-<!--              </template>-->
-<!--              <el-menu-item index @click="setting"><i class="el-icon-back"></i>个人资料</el-menu-item>-->
-<!--              <el-menu-item index @click="logout"><i class="el-icon-back"></i>退出</el-menu-item>-->
-<!--            </el-submenu>-->
+                <i @click="drawer = true" class="fa fa-commenting-o"  style="font-size: 30px;vertical-align: middle;margin-left: 10px"></i>
+                <el-drawer
+                    title="讯飞星火大模型"
+                    :visible.sync="drawer"
+                    size="50%"
+                    direction="rtl"
+                    :append-to-body="true"
+                    :modal-append-to-body="false">
+                    <AiModel/>
+                </el-drawer>
           </template>
         </el-menu>
       </el-col>
@@ -75,15 +79,16 @@
     </el-row>
 
   </el-header>
-
 </template>
 
 <script>
 import {mixin} from "@/mixins";
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import AiModel from "@/components/aiModel/AiModel";
 
 export default {
   name: 'TheHeader',
+  components: {AiModel},
   mixins: [mixin],
   props: {
     activeIndex: String,
@@ -94,7 +99,8 @@ export default {
   },
   data() {
     return {
-      searchUser: "" //搜索框输入
+      inputValue: "", //搜索框输入
+      drawer: false
     }
   },
   computed: {
@@ -102,11 +108,17 @@ export default {
       'userId',
       'avatar',
       'username',
+      'role',
       'loginIn'
     ]),
   },
   methods: {
-    selUser() {},//搜索触发事件
+    write(){
+      this.$router.push('/write')
+    },
+    toSearch(){
+      this.$router.push({path: `/searchPage`,query : {inputValue : this.inputValue}})
+    },
     toWrite(){
       if (!this.$store.getters.loginIn){
         this.$message({type: 'error', message: '请先登录', showClose: true})
@@ -115,31 +127,29 @@ export default {
       this.$router.push({path: '/write'})
     },
     logout() {
-      localStorage.removeItem('loginIn') //登录状态
-      localStorage.removeItem('userId')  //用户id
-      localStorage.removeItem('username') //用户名
-      localStorage.removeItem('avatar') //头像url
-      localStorage.removeItem('token')
+      this.$store.commit('setLoginIn', false) //是否登录
+      this.$store.commit('setUserId', '')  //用户id
+      this.$store.commit('setUsername', '')  //用户名
+      this.$store.commit('setAvatar', '')  //头像url
+      this.$store.commit('setRole', '')  //身份
+      this.$store.commit('setToken','') //存储用户信息到浏览器
+      this.$router.push('/')
       this.$router.go(0)
-      this.notify("退出成功",'success')
     },
     setting() {
       if(this.loginIn){
-        this.$router.push({path:'/setting'})
-      }
-    },
-    toCarePost(){
-      if (!this.$store.getters.loginIn){
-        this.$router.push({path : '/login'})
-      }else {
-        this.$router.push({path : '/carePost'})
+        this.$router.push({path:'/center'})
       }
     }
   }
 }
 </script>
-
 <style scoped>
+.el-menu-item:hover{
+  border-bottom: #2aa3ef solid 2px !important;
+}
+</style>
+<style>
 .el-dropdown-link {
   cursor: pointer;
   color: #409EFF;
@@ -163,8 +173,8 @@ export default {
   background: rgba(255,255,255,0.7);
 }
 .me-title {
-  margin-top: 10px;
   font-size: 22px;
+  color: #409EFF;
 }
 
 .me-header-left {
@@ -175,6 +185,7 @@ export default {
 .me-title img {
   max-height: 2.4rem;
   max-width: 100%;
+  vertical-align: bottom
 }
 
 .me-header-picture {
@@ -185,6 +196,7 @@ export default {
   vertical-align: middle;
   background-color: #409EFF;
   margin-left: 30px;
+  transition: all 0.3s ease 0s;
 }
 .me-header-picture:hover{
   width: 50px;
@@ -193,29 +205,39 @@ export default {
 }
 .el-menu-item:hover{
   color: #1787FB !important;
-  border-bottom: #2aa3ef solid 2px !important;
 }
 .el-search{
   width: 200px;
-  /*margin-top: 10px;*/
   margin-right: 20px;
   float: right;
   transition: all 0.5s ease 0s;
-}
-.el-search:hover{
-  width: 300px;
-  box-shadow: 0 0 5px rgba(109,207,246,.5)
 }
 .el-menu.el-menu--horizontal{
   line-height: 60px;
   border: none;
 }
 .btt{
-  margin-left: 0px;
   width: 100%;
   border:none;
 }
 .icon{
   float: left;
 }
+.me-pull-right {
+  float: right;
+}
+.me-article-count {
+  color: #a6a6a6;
+  padding-left: 14px;
+  font-size: 13px;
+}
+.el-scrollbar__wrap{
+  overflow-x: hidden;
+}
+.el-scrollbar__bar.is-horizontal {
+  display: none;
+}
+/*.icon:hover {*/
+/*  color: rgb(81, 255, 0);*/
+/*}*/
 </style>

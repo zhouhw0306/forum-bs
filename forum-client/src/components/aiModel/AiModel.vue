@@ -63,9 +63,9 @@ export default {
       let param = new URLSearchParams()
       param.append('issue',this.issue)
       chatAi(param).then(res => {
+        this.issue = ''
         this.pushAiMsg(marked(res.data))
       })
-      this.issue = ''
     },
     pushAiMsg(text){
       this.content += `<div class="el-row" style="padding: 5px 0">
@@ -115,8 +115,7 @@ export default {
 .tip {
   color: black;
   border-radius: 10px;
-  /*font-family: sans-serif;*/
-  font-family: 'Courier New', Courier, monospace;
+  font-family: sans-serif;
   padding: 10px;
   width:auto;
   display:inline-block;
