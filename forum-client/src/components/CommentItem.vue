@@ -15,7 +15,7 @@
       </div>
     </div>
     <div>
-      <p class="me-view-comment-content">{{comment.content}}</p>
+      <p class="me-view-comment-content" v-hljs v-html="marked(comment.content)"></p>
       <div class="me-view-comment-tools">
         <a class="me-view-comment-tool" @click="showComment(-1)">
           <i class="me-icon-comment"></i>&nbsp; 评论
@@ -72,7 +72,7 @@
 <script>
 import {pushComment} from '@/api'
 import {mixin} from "@/mixins";
-
+import {marked} from 'marked';
 export default {
   name: "CommentItem",
   mixins: [mixin],
@@ -88,7 +88,8 @@ export default {
       commentShow: false,
       replyCommId: '',
       reply: this.getEmptyReply(),
-      extension: false
+      extension: false,
+      marked : marked
     }
   },
   methods: {

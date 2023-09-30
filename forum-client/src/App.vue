@@ -47,7 +47,8 @@ a:hover {
 pre code.hljs{
   display:block !important;
   overflow-x:auto !important;
-  padding:1em !important;
+  padding:20px !important;
+  border-radius: 10px;
 }
 code.hljs{
   padding:3px 5px !important;
@@ -101,4 +102,22 @@ code.hljs{
 .hljs-strong{
   font-weight:700 !important;
 }
+ pre::before{
+  position: absolute;
+  margin-top: 7px;
+  margin-left: 20px;
+  width: 12px;
+  height: 12px;
+  overflow: visible;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 12px;
+  white-space: nowrap;
+  text-indent: 75px;
+  background-color: #fc625d;
+  border-radius: 16px;
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  content: attr(codetype);
+}
+/** 代码高亮stackoverflow-dark.css **/
 </style>

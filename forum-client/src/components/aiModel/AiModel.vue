@@ -63,9 +63,9 @@ export default {
       let param = new URLSearchParams()
       param.append('issue',this.issue)
       chatAi(param).then(res => {
-        this.issue = ''
         this.pushAiMsg(marked(res.data))
       })
+      this.issue = ''
     },
     pushAiMsg(text){
       this.content += `<div class="el-row" style="padding: 5px 0">
