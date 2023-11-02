@@ -18,8 +18,8 @@ public class ForumServerApplication {
 //        for (String name : names) {
 //            System.out.println(name);
 //        }
-        System.out.println("http://localhost:8888/swagger-ui.html");
-        //
+        System.out.println("swagger:"+"http://localhost:8888/swagger-ui.html");
+        System.out.println("knife4j:"+"http://localhost:8880/doc.html");
     }
 
 }

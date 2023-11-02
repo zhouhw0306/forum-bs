@@ -52,7 +52,6 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
         queryWrapper.eq("user_id", currentUser);
         queryWrapper.eq("article_id", targetId);
         ArticleHasfavour one = getOne(queryWrapper);
-        ;
         if (one == null) {
             //添加收藏关系
             save(ArticleHasfavour.builder().userId(currentUser).articleId(targetId).build());

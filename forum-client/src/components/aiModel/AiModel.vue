@@ -115,7 +115,8 @@ export default {
 .tip {
   color: black;
   border-radius: 10px;
-  font-family: sans-serif;
+  /*font-family: sans-serif;*/
+  font-family: 'Courier New', Courier, monospace;
   padding: 10px;
   width:auto;
   display:inline-block;
