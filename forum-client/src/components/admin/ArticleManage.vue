@@ -23,7 +23,7 @@
     </el-table-column>
     <el-table-column label="正文">
       <template slot-scope="scope">
-        <p style="height: 100px; overflow-y: scroll">{{ scope.row.content }}</p>
+        <el-button size="mini" @click="viewArticle(scope.row)">预览</el-button>
       </template>
     </el-table-column>
     <el-table-column
@@ -42,10 +42,15 @@
       </template>
     </el-table-column>
   </el-table>
+
+  <el-dialog :title="'标题：' + currentArticle.title" :visible.sync="dialogTableVisible">
+      <markdown-editor style="box-shadow: none;height: 50vh" :editor=editor></markdown-editor>
+  </el-dialog>
   </div>
 </template>
 
 <script>
+import MarkdownEditor from '@/components/article/MarkdownEditor'
 import {deleteArticle, getArticles} from "@/api";
 
 export default {
@@ -60,6 +65,14 @@ export default {
         pageNumber: 0,
         sort: 'desc'
       },
+      currentArticle: {title:'',content:''},
+      dialogTableVisible : false,
+      editor: {
+        value: '',
+        toolbarsFlag: false,
+        subfield: false,
+        defaultOpen: 'preview'
+      }
     }
   },
   watch: {
@@ -110,8 +123,14 @@ export default {
         }).catch(err => {
           this.$message.error(err.msg)
         })
+    },
+    viewArticle(article){
+      this.dialogTableVisible = true
+      this.currentArticle = article
+      this.editor.value = article.content
     }
-  }
+  },
+  components: {MarkdownEditor}
 }
 </script>
 
@@ -122,5 +141,15 @@ export default {
 
 .el-table .success-row {
   background: #f0f9eb;
+}
+pre::before {
+  display: none;
+}
+.markdown-body .highlight pre, .markdown-body pre{
+  padding: 0 !important;
+}
+.hljs{
+  padding: 20px;
+  border-radius: 10px;
 }
 </style>
