@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -66,7 +67,7 @@ public class SourceHasfavourController {
         List<SourceHasfavour> favourList = sourceHasfavourService.query().eq("user_id", userId).list();
         List<Source> sourceList = favourList.stream().map(sourceHasfavour ->
                 sourceService.getById(sourceHasfavour.getSourceId())
-        ).collect(Collectors.toList());
+        ).filter(Objects::nonNull).collect(Collectors.toList());
         return Result.success(sourceList);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
@@ -84,7 +85,7 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
                         .select(Article::getId, Article::getTitle)
                         .eq(Article::getId, articleHasfavour.getArticleId())
                         .one()
-        ).collect(Collectors.toList());
+        ).filter(Objects::nonNull).collect(Collectors.toList());
         return Result.success(articleList);
     }
 }
