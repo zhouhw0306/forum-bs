@@ -4,6 +4,11 @@
 
 运行环境：jdk1.8、Mysql、Redis、Maven、Node.js
 
+| tool      | version |
+| ----------- | ----------- |
+| Node.js      | v18.19.0       |
+| npm   | v10.2.3        |
+
 下载代码
 ```
 git clone https://github.com/zhouhw0306/forum-bs
