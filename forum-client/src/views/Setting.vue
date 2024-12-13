@@ -50,5 +50,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/setting.scss';
+@use '../assets/css/setting.scss';
 </style>

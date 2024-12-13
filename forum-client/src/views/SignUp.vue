@@ -167,5 +167,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/sign-up.scss';
+@use '../assets/css/sign-up.scss';
 </style>

@@ -1,4 +1,4 @@
-@import "var.scss";
+@use "var.scss" as *;
 
 // 上下左右居中
 @mixin layout(

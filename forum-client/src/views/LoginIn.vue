@@ -137,7 +137,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/login-in.scss';
+@use '../assets/css/login-in.scss';
 
 .login-sns{
   color: #9499a0;
