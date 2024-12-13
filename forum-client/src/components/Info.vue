@@ -110,7 +110,8 @@ export default {
                 this.$store.commit('setUsername', this.registerForm.username)
                 this.notify('更新成功', 'success')
                 setTimeout(function () {
-                  this.$router.go(-1)
+                  console.log(this.$router)
+                  that.$router.go(-1)
                 }, 2000)
               } else {
                 this.notify('更新失败', 'error')
