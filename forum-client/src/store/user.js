@@ -5,7 +5,8 @@ const user = {
     avatar: '', // 头像
     token:'', // token
     role:'', // 身份
-    loginIn: false // 用户是否登录
+    loginIn: false, // 用户是否登录
+    likedComments: null // 点赞的评论
   },
   getters: {
     userId: state => {
@@ -49,6 +50,13 @@ const user = {
         loginIn = JSON.parse(window.localStorage.getItem('loginIn') || null)
       }
       return loginIn
+    },
+    likedComments : state => {
+      let likedComments = state.likedComments
+      if (!likedComments) {
+        likedComments = JSON.parse(window.localStorage.getItem('likedComments') || null)
+      }
+      return likedComments
     }
   },
   mutations: {
@@ -75,6 +83,10 @@ const user = {
     setLoginIn: (state, loginIn) => {
       state.loginIn = loginIn
       window.localStorage.setItem('loginIn', JSON.stringify(loginIn))
+    },
+    setLikedComments: (state, likedComments) => {
+      state.likedComments = likedComments
+      window.localStorage.setItem('likedComments', JSON.stringify(likedComments))
     }
   },
   actions: {}

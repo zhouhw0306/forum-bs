@@ -218,7 +218,8 @@ export default {
   },
   mounted() {
     this.initMarkdownConfig()
-    this.likedComments = JSON.parse(window.localStorage.getItem('allLikeCommonId')) || []
+    this.likedComments = this.$store.getters.likedComments
+    console.log(this.likedComments)
   },
   methods: {
     initMarkdownConfig() {
@@ -357,7 +358,7 @@ export default {
           this.comment.likeCount = Math.max(0, (this.comment.likeCount || 0) - 1)
           this.$message.success('取消点赞成功')
         }
-        window.localStorage.setItem('allLikeCommonId', JSON.stringify(this.likedComments))
+        this.$store.commit('setLikedComments', this.likedComments)
       } catch (error) {
         console.error(error)
         this.$message.error('操作失败')

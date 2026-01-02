@@ -32,7 +32,7 @@
 
 <script>
 import { mixin } from '@/mixins'
-import {githubCallback, githubLoginIn, loginIn} from '../api/index'
+import {githubCallback, githubLoginIn, loginIn, allLikeCommonId} from '../api/index'
 
 export default {
   name: 'LoginIn',
@@ -123,6 +123,9 @@ export default {
       this.$store.commit('setAvatar', item.avatar)  //头像url
       this.$store.commit('setRole', item.role)  //身份
       this.$store.commit('setToken',item.token) //存储用户信息到浏览器
+      allLikeCommonId().then(res => {
+        this.$store.commit('setLikedComments', res.data)
+      })
     },
     goSignUp () {
       this.$router.push({path: '/register'})

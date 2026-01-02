@@ -15,7 +15,6 @@
 <script>
 import TheHeader from "../components/TheHeader";
 import TheFooter from "../components/TheFooter";
-import {allLikeCommonId} from '@/api'
 
 export default {
   name:'Home',
@@ -34,18 +33,6 @@ export default {
   beforeRouteUpdate (to, from, next) {
     this.footerShow = to.path === '/';
     next()
-  },
-  mounted() {
-    this.allLikeCommonId()
-  },
-  methods : {
-    async allLikeCommonId() {
-      if (!this.$store.getters.loginIn) {
-        return
-      }
-      const response = await allLikeCommonId()
-      window.localStorage.setItem('allLikeCommonId', JSON.stringify(response.data))
-    }
   }
 }
 </script>

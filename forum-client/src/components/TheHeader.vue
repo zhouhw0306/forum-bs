@@ -133,6 +133,7 @@ export default {
       this.$store.commit('setAvatar', '')  //头像url
       this.$store.commit('setRole', '')  //身份
       this.$store.commit('setToken','') //存储用户信息到浏览器
+      this.$store.commit('setLikedComments',null)
       this.$router.push('/')
       this.$router.go(0)
     },
