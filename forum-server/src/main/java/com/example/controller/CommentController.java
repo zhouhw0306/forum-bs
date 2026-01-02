@@ -7,8 +7,10 @@ import com.example.constant.Result;
 import com.example.domain.dao.Comment;
 import com.example.service.CommentService;
 import com.example.utils.SensitiveFilter;
+import com.example.utils.UserUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +28,10 @@ import java.util.List;
 public class CommentController {
 
     @Resource
-    CommentService commentService;
+    private CommentService commentService;
 
     @Resource
-    SensitiveFilter sensitiveFilter;
+    private SensitiveFilter sensitiveFilter;
 
     @GetMapping("/getCommentsByArticle")
     @ApiOperation(value = "加载模块下所有评论")
@@ -60,5 +62,21 @@ public class CommentController {
     public Result<Void> getCommentAll(String id, String level) {
         commentService.deleteComment(id, level);
         return Result.success();
+    }
+
+
+    @PostMapping("/likeComment")
+    @Authentication(role = AuthConstant.USER)
+    @ApiOperation(value = "点赞评论")
+    public Result<Integer> likeComment(String commentId, String type) {
+        return Result.success(commentService.likeComment(commentId, type));
+    }
+
+
+    @PostMapping("/allLikeCommonId")
+    @Authentication(role = AuthConstant.USER)
+    @ApiOperation(value = "点赞过的评论数组")
+    public Result<List<String>> allLikeCommonId() {
+        return Result.success(commentService.allLikeCommonId());
     }
 }

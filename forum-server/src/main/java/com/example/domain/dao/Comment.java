@@ -59,6 +59,11 @@ public class Comment implements Serializable {
     private String level;
 
     /**
+     * 点赞数
+     */
+    private Integer likeCount;
+
+    /**
      * 评论者信息
      */
     @TableField(exist = false)
@@ -68,7 +73,7 @@ public class Comment implements Serializable {
      * 子评论
      */
     @TableField(exist = false)
-    private List<Comment> childrens;
+    private List<Comment> children;
 
     /**
      * 评论的回复对象user

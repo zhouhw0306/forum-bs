@@ -20,4 +20,12 @@
         article_id,author_id,parent_id,
         to_uid,level
     </sql>
+    
+    <update id="disLikeComment">
+        update tb_comment set like_count = like_count - 1 where id = #{commentId}
+    </update>
+    
+    <update id="likeComment">
+         update tb_comment set like_count = like_count + 1 where id = #{commentId}
+    </update>
 </mapper>

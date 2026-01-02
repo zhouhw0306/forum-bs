@@ -79,24 +79,21 @@ CREATE TABLE `tb_category`  (
 -- Table structure for tb_comment
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_comment`;
-CREATE TABLE `tb_comment`  (
-  `id` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `article_id` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `author_id` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `parent_id` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `to_uid` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `level` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+CREATE TABLE `tb_comment` (
+  `id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `article_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `author_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `parent_id` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `to_uid` char(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `level` varchar(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `like_count` int DEFAULT '0',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `cc`(`parent_id`) USING BTREE,
-  INDEX `dd`(`to_uid`) USING BTREE,
-  INDEX `bb`(`author_id`) USING BTREE,
-  INDEX `aa`(`article_id`) USING BTREE,
-  CONSTRAINT `bb` FOREIGN KEY (`author_id`) REFERENCES `tb_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `cc` FOREIGN KEY (`parent_id`) REFERENCES `tb_comment` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `dd` FOREIGN KEY (`to_uid`) REFERENCES `tb_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+  KEY `idx_parent_id` (`parent_id`) USING BTREE,
+  KEY `idx_author_id` (`author_id`) USING BTREE,
+  KEY `idx_article_id` (`article_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for tb_notification

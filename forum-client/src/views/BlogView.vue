@@ -83,7 +83,7 @@
               <span>{{article.commentCount}} 条评论</span>
             </div>
 
-            <commment-item
+            <comment-item
               v-for="(c,index) in comments"
               :comment="c"
               :articleId="article.id"
@@ -92,7 +92,7 @@
               :rootCommentCounts="comments.length"
               @commentCountsIncrement="commentCountsIncrement"
               :key="c.id">
-            </commment-item>
+            </comment-item>
 
           </div>
         </div>
@@ -124,7 +124,7 @@
 import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins"
 import MarkdownEditor from '@/components/article/MarkdownEditor'
-import CommmentItem from '@/components/CommentItem'
+import CommentItem from '@/components/CommentItem'
 import {
   getTypeById,
   getCommentsByArticle,
@@ -375,7 +375,7 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor,
-    CommmentItem,
+    CommentItem,
     VueEmoji
   },
 }

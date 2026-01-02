@@ -2,7 +2,6 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.constant.Result;
 import com.example.domain.dao.Comment;
 import com.example.domain.dao.User;
 import com.example.mapper.ArticleMapper;
@@ -11,32 +10,37 @@ import com.example.service.CommentService;
 import com.example.mapper.CommentMapper;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zhw
- * @description 针对表【tb_comment】的数据库操作Service实现
- * @createDate 2022-09-29 14:20:56
  */
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         implements CommentService {
 
     @Resource
-    CommentMapper commentMapper;
+    private CommentMapper commentMapper;
 
     @Resource
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Resource
-    UserService userService;
+    private UserService userService;
 
     @Resource
-    ArticleMapper articleMapper;
+    private ArticleMapper articleMapper;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     @Transactional
@@ -82,7 +86,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             }
             // 封装子评论信息
             List<Comment> childrens = pushChildrenComment(comm);
-            comm.setChildrens(childrens);
+            comm.setChildren(childrens);
         }
 
         return list;
@@ -100,7 +104,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             }
             // 封装子评论信息
             List<Comment> childrens = pushChildrenComment(comm);
-            comm.setChildrens(childrens);
+            comm.setChildren(childrens);
         }
         return commentList;
     }
@@ -126,6 +130,29 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             }
         }
         return childrens;
+    }
+
+
+    @Override
+    public Integer likeComment(String commentId, String type) {
+        Boolean isMember = stringRedisTemplate.opsForSet().isMember("LIKE_COMMON:" + UserUtils.getCurrentUser(), commentId);
+        if (Boolean.TRUE.equals(isMember)) {
+            stringRedisTemplate.opsForSet().remove("LIKE_COMMON:" + UserUtils.getCurrentUser(), commentId);
+            commentMapper.disLikeComment(commentId);
+            return -1;
+        } else {
+            stringRedisTemplate.opsForSet().add("LIKE_COMMON:" + UserUtils.getCurrentUser(), commentId);
+            return commentMapper.likeComment(commentId);
+        }
+    }
+
+    @Override
+    public List<String> allLikeCommonId() {
+        Set<String> members = stringRedisTemplate.opsForSet().members("LIKE_COMMON:" + UserUtils.getCurrentUser());
+        if (members == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(members);
     }
 }
 

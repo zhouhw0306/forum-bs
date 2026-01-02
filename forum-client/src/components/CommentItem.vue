@@ -25,7 +25,7 @@
           type="text"
           size="mini"
           class="action-btn"
-          @click="toggleLike"
+          @click="toggleLike(comment.id)"
         >
           <i
             :class="['el-icon-thumb', { 'liked': isLiked }]"
@@ -57,26 +57,26 @@
     <!-- 评论工具栏 -->
     <div class="comment-toolbar">
       <el-button
-        v-show="comment.childrens && comment.childrens?.length > 0"
+        v-show="comment.children && comment.children?.length > 0"
         type="text"
         size="mini"
         class="toolbar-btn"
         @click="toggleExtension"
       >
         <i :class="extension ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
-        {{ extension ? '收起' : '展开' }}({{ comment.childrens?.length }})
+        {{ extension ? '收起' : '展开' }}({{ comment.children?.length }})
       </el-button>
     </div>
 
     <!-- 子评论列表 -->
     <transition-group
-      v-if="extension && comment.childrens && comment.childrens?.length > 0"
+      v-if="extension && comment.children && comment.children?.length > 0"
       name="reply-list"
       tag="div"
       class="replies-container"
     >
       <div
-        v-for="reply in comment.childrens"
+        v-for="reply in comment.children"
         :key="reply.id"
         class="reply-item"
       >
@@ -205,7 +205,6 @@ export default {
       extension: false,
       marked: marked,
       likedComments: [],
-      likedReplies: [],
       submitting: false
     }
   },
@@ -219,6 +218,7 @@ export default {
   },
   mounted() {
     this.initMarkdownConfig()
+    this.likedComments = JSON.parse(window.localStorage.getItem('allLikeCommonId')) || []
   },
   methods: {
     initMarkdownConfig() {
@@ -281,11 +281,11 @@ export default {
 
         this.$message.success('评论成功')
 
-        if (!this.comment.childrens) {
-          this.comment.childrens = []
+        if (!this.comment.children) {
+          this.comment.children = []
         }
 
-        this.comment.childrens.unshift(response.data)
+        this.comment.children.unshift(response.data)
         this.$emit('commentCountsIncrement')
         this.extension = true
         this.showComment(this.replyCommId)
@@ -336,7 +336,7 @@ export default {
       this.extension = !this.extension
     },
 
-    async toggleLike() {
+    async toggleLike(commentId) {
       if (!this.$store.getters.loginIn) {
         this.$message.error('请先登录')
         return
@@ -344,51 +344,45 @@ export default {
 
       try {
         const params = new URLSearchParams()
-        params.append('commentId', this.comment.id)
-        params.append('type', 'comment') // 'comment' for root comment, 'reply' for reply
-
+        params.append('commentId', commentId)
+        params.append('type', 'comment')
         const response = await likeComment(params)
 
         if (response.data === 1) {
-          // 点赞成功
-          this.likedComments.push(this.comment.id)
+          this.likedComments.push(commentId)
           this.comment.likeCount = (this.comment.likeCount || 0) + 1
+          this.$message.success('点赞成功')
         } else if (response.data === -1) {
-          // 取消点赞
           this.likedComments = this.likedComments.filter(id => id !== this.comment.id)
           this.comment.likeCount = Math.max(0, (this.comment.likeCount || 0) - 1)
-        } else {
-          this.$message.error(response.msg)
+          this.$message.success('取消点赞成功')
         }
+        window.localStorage.setItem('allLikeCommonId', JSON.stringify(this.likedComments))
       } catch (error) {
+        console.error(error)
         this.$message.error('操作失败')
       }
     },
-
     async toggleReplyLike(replyId) {
       if (!this.$store.getters.loginIn) {
         this.$message.error('请先登录')
         return
       }
-
       try {
         const params = new URLSearchParams()
         params.append('commentId', replyId)
         params.append('type', 'reply')
-
         const response = await likeComment(params)
 
         if (response.data === 1) {
-          // 点赞成功
-          this.likedReplies.push(replyId)
-          const reply = this.comment.childrens.find(r => r.id === replyId)
+          this.likedComments.push(replyId)
+          const reply = this.comment.children.find(r => r.id === replyId)
           if (reply) {
             reply.likeCount = (reply.likeCount || 0) + 1
           }
         } else if (response.data === -1) {
-          // 取消点赞
-          this.likedReplies = this.likedReplies.filter(id => id !== replyId)
-          const reply = this.comment.childrens.find(r => r.id === replyId)
+          this.likedComments = this.likedComments.filter(id => id !== replyId)
+          const reply = this.comment.children.find(r => r.id === replyId)
           if (reply) {
             reply.likeCount = Math.max(0, (reply.likeCount || 0) - 1)
           }
@@ -396,14 +390,13 @@ export default {
           this.$message.error(response.msg)
         }
       } catch (error) {
+        console.error(error)
         this.$message.error('操作失败')
       }
     },
-
     isReplyLiked(replyId) {
-      return this.likedReplies.includes(replyId)
+      return this.likedComments.includes(replyId)
     },
-
     formatTime(timeString) {
       const date = new Date(timeString)
       const now = new Date()
