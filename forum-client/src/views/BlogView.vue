@@ -87,6 +87,7 @@
               v-for="(c,index) in comments"
               :comment="c"
               :articleId="article.id"
+              :articleAuthorId="article.author.id"
               :index="index"
               :rootCommentCounts="comments.length"
               @commentCountsIncrement="commentCountsIncrement"

@@ -77,6 +77,7 @@
            v-for="(c,index) in comments"
            :comment="c"
            :articleId="source.id"
+           :articleAuthorId="source.user.id"
            :index="index"
            :rootCommentCounts="comments.length"
            :key="c.id">
