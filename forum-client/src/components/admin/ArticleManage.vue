@@ -1,155 +1,150 @@
 <template>
-  <div>
-  <el-input v-model="select_word" size="mini" placeholder="筛选标题关键词" class="handle-input"></el-input>
-  <el-table
-      :data="tableData"
-      style="width: 100%"
-      height="80vh"
-      :row-class-name="tableRowClassName">
-    <el-table-column
-        prop="id"
-        label="id"
-        width="180">
-    </el-table-column>
-    <el-table-column
-        prop="userId"
-        label="作者Id"
-        width="180">
-    </el-table-column>
-    <el-table-column
-        prop="title"
-        label="标题"
-        width="150">
-    </el-table-column>
-    <el-table-column label="正文">
-      <template slot-scope="scope">
-        <el-button size="mini" @click="viewArticle(scope.row)">预览</el-button>
-      </template>
-    </el-table-column>
-    <el-table-column
-        prop="createTime"
-        label="创建时间">
-    </el-table-column>
-    <el-table-column
-        prop="updateTime"
-        label="创建时间">
-    </el-table-column>
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button size="mini"
-                   type="danger"
-                   @click="handleDelete(scope.row)">删除</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div class="article-manage">
+    <div class="am-toolbar">
+      <el-input v-model="keyword" size="small" placeholder="搜索标题..." prefix-icon="el-icon-search" clearable class="am-search" />
+      <span class="am-total">共 {{ tableData.length }} 篇</span>
+    </div>
 
-  <el-dialog :title="'标题：' + currentArticle.title" :visible.sync="dialogTableVisible">
-      <markdown-editor style="box-shadow: none;height: 50vh" :editor=editor></markdown-editor>
-  </el-dialog>
+    <el-table :data="pagedData" style="width: 100%" size="medium" :row-class-name="rowClass">
+      <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
+      <el-table-column prop="userId" label="作者ID" width="120" show-overflow-tooltip />
+      <el-table-column prop="viewCount" label="阅读" width="70" align="center" />
+      <el-table-column prop="commentCount" label="评论" width="70" align="center" />
+      <el-table-column prop="createTime" label="创建时间" width="160" />
+      <el-table-column label="操作" width="120" align="center">
+        <template slot-scope="{ row }">
+          <el-button type="text" size="mini" icon="el-icon-view" @click="preview(row)">预览</el-button>
+          <el-button type="text" size="mini" icon="el-icon-delete" style="color:#f56c6c" @click="handleDelete(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
+      v-if="total > pageSize"
+      class="am-pager"
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="pageSize"
+      :current-page.sync="currentPage"
+    />
+
+    <!-- 预览弹窗 -->
+    <el-dialog :title="previewTitle" :visible.sync="dialogVisible" width="70%" top="5vh" destroy-on-close>
+      <div class="am-preview-body" v-html="previewHtml"></div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import MarkdownEditor from '@/components/article/MarkdownEditor'
-import {deleteArticle, getArticles} from "@/api";
+import { deleteArticle, getArticles } from "@/api";
+import { marked } from "marked";
+import hljs from "highlight.js";
 
 export default {
-
   data() {
     return {
       tableData: [],
-      tempData: [],
-      select_word: '',
-      innerPage: {
-        pageSize: 0,
-        pageNumber: 0,
-        sort: 'desc'
-      },
-      currentArticle: {title:'',content:''},
-      dialogTableVisible : false,
-      editor: {
-        value: '',
-        toolbarsFlag: false,
-        subfield: false,
-        defaultOpen: 'preview'
-      }
-    }
+      allData: [],
+      keyword: "",
+      currentPage: 1,
+      pageSize: 15,
+      dialogVisible: false,
+      previewTitle: "",
+      previewHtml: "",
+    };
+  },
+  computed: {
+    filteredData() {
+      if (!this.keyword) return this.allData;
+      const kw = this.keyword.toLowerCase();
+      return this.allData.filter(
+        (row) =>
+          (row.title || "").toLowerCase().includes(kw) ||
+          (row.userId || "").toLowerCase().includes(kw)
+      );
+    },
+    pagedData() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.filteredData.slice(start, start + this.pageSize);
+    },
+    total() {
+      return this.filteredData.length;
+    },
   },
   watch: {
-    select_word: function () {
-      if (this.select_word === '') {
-        this.tableData = this.tempData
-      } else {
-        this.tableData = []
-        for (let item of this.tempData) {
-          if (item.title.includes(this.select_word)) {
-            this.tableData.push(item)
-          }
-        }
-      }
-    }
+    keyword() { this.currentPage = 1; },
   },
-  mounted() {
-    this.init()
-  },
+  mounted() { this.loadData(); },
   methods: {
-    tableRowClassName({row, rowIndex}) {
-      if (rowIndex%4 === 1) {
-        return 'warning-row';
-      } else if (rowIndex%4 === 3) {
-        return 'success-row';
-      }
-      return '';
+    async loadData() {
+      try {
+        const res = await getArticles(false, -1, { pageSize: 0, pageNumber: 0, sort: "desc" });
+        this.allData = res.data?.data || [];
+        this.tableData = this.allData;
+      } catch (e) { this.$message.error("加载失败"); }
     },
-    init(){
-      getArticles(false,-1,this.innerPage).then(res => {
-        if (res.data.code===0){
-          this.tableData = res.data.data
-          this.tempData = res.data.data
-        }else {
-          this.$message.error(res.data.msg)
-        }
-      }).catch(err => this.$message.error(err.data.msg))
+    rowClass({ rowIndex }) {
+      return rowIndex % 2 ? "am-even" : "";
     },
-    // 删除文章
-    handleDelete(row){
-        deleteArticle(row.id).then(res => {
-          if (res.code === 0){
-            this.$message.success('删除成功')
-            this.init()
-          }else{
-            this.$message.error('删除失败')
+    preview(row) {
+      this.previewTitle = row.title || "预览";
+      this.previewHtml = this.md2html(row.content || "");
+      this.dialogVisible = true;
+    },
+    md2html(text) {
+      try {
+        marked.setOptions({ highlight: (c) => hljs.highlightAuto(c).value, breaks: true });
+        return marked(text);
+      } catch (e) { return text; }
+    },
+    handleDelete(row) {
+      this.$confirm("确认删除该文章？", "提示", { type: "warning" }).then(() => {
+        deleteArticle(row.id).then((res) => {
+          if (res.code === 0) {
+            this.$message.success("已删除");
+            this.allData = this.allData.filter((r) => r.id !== row.id);
+          } else {
+            this.$message.error("删除失败");
           }
-        }).catch(err => {
-          this.$message.error(err.msg)
-        })
+        }).catch(() => this.$message.error("删除失败"));
+      }).catch(() => {});
     },
-    viewArticle(article){
-      this.dialogTableVisible = true
-      this.currentArticle = article
-      this.editor.value = article.content
-    }
   },
-  components: {MarkdownEditor}
-}
+};
 </script>
 
-<style>
-.el-table .warning-row {
-  background: oldlace;
+<style scoped>
+.article-manage { padding: 0; }
+.am-toolbar {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 16px;
 }
+.am-search { width: 280px; }
+.am-total { font-size: 13px; color: #909399; }
 
-.el-table .success-row {
-  background: #f0f9eb;
+.am-pager { margin-top: 20px; text-align: center; }
+
+.am-preview-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 16px 20px;
+  background: #fafbfc;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #303133;
 }
-pre::before {
-  display: none;
+.am-preview-body >>> pre {
+  background: #1e1e1e; color: #d4d4d4;
+  padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; font-size: 13px;
 }
-.markdown-body .highlight pre, .markdown-body pre{
-  padding: 0 !important;
+.am-preview-body >>> code {
+  font-family: "Fira Code", monospace; font-size: 13px;
 }
-.hljs{
-  padding: 20px;
-  border-radius: 10px;
-}
+</style>
+
+<style>
+.am-even { background: #fafbfc; }
 </style>

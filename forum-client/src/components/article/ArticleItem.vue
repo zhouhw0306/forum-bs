@@ -61,6 +61,7 @@ export default {
   methods: {
     //过滤html标签
     filterHtml(strHTML){
+      if (!strHTML) return '';
       let re = new RegExp('<[^<>]+>','g');
       strHTML = strHTML.replace(re ,"");
       strHTML = strHTML.replace(/<[^<>]+>/g,"");

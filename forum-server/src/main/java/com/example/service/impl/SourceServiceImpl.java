@@ -70,9 +70,11 @@ public class SourceServiceImpl extends ServiceImpl<SourceMapper, Source>
     @Override
     public IPage<Source> pageVo(String type, String sort, Integer pageNo, Integer pageSize) {
         QueryWrapper<Source> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category", SourceEnum.findEnumByName(type));
+        if (type != null && !type.isEmpty()) {
+            queryWrapper.eq("category", SourceEnum.findEnumByName(type));
+        }
         queryWrapper.eq("state", 1);
-        queryWrapper.orderByDesc(sort);
+        queryWrapper.orderByDesc(sort != null ? sort : "create_time");
         IPage<Source> page = new Page<>(pageNo,pageSize);
         IPage<Source> iPage = page(page, queryWrapper);
         List<Source> records = iPage.getRecords();

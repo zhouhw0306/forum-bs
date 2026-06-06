@@ -1,138 +1,147 @@
 <template>
-  <div>
-  <el-input v-model="select_word" size="mini" placeholder="筛选账号关键词" class="handle-input"></el-input>
-  <el-table
-      :data="tableData"
-      style="width: 100%"
-      height="80vh"
-      :row-class-name="tableRowClassName">
-    <el-table-column
-        prop="id"
-        label="id"
-        width="180">
-    </el-table-column>
-    <el-table-column
-        prop="username"
-        label="账号">
-    </el-table-column>
-    <el-table-column label="性别">
-      <template slot-scope="scope">
-        <span v-if="scope.row.sex === 0">女<i class="el-icon-female" style="color: red"/></span>
-        <span v-else>男<i class="el-icon-male" style="color: blue"/></span>
-      </template>
-    </el-table-column>
-    <el-table-column
-        prop="phoneNum"
-        label="手机号">
-    </el-table-column>
-    <el-table-column
-        prop="email"
-        label="邮箱">
-    </el-table-column>
-    <el-table-column
-        prop="birth"
-        label="生日">
-    </el-table-column>
-    <el-table-column
-        prop="score"
-        label="积分">
-    </el-table-column>
-    <el-table-column
-        prop="createTime"
-        label="创建时间">
-    </el-table-column>
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button v-if="scope.row.lockState !== '0'"
-            size="mini"
-            type="danger"
-            @click="handleLockDown(scope.row)">禁用</el-button>
-        <el-button v-else
-            size="mini"
-            type="success"
-            @click="handleLockDown(scope.row)">解禁</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+  <div class="user-manage">
+    <div class="um-toolbar">
+      <el-input v-model="keyword" size="small" placeholder="搜索用户名/邮箱..." prefix-icon="el-icon-search" clearable class="um-search" />
+      <span class="um-total">共 {{ filteredData.length }} 个用户</span>
+    </div>
+
+    <el-table :data="pagedData" style="width: 100%" size="medium" :row-class-name="rowClass">
+      <el-table-column label="用户" min-width="160">
+        <template slot-scope="{ row }">
+          <div class="um-user-cell">
+            <img :src="attachImageUrl(row.avatar)" class="um-avatar" />
+            <span>{{ row.username }}</span>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="性别" width="70" align="center">
+        <template slot-scope="{ row }">
+          <i v-if="row.sex == 0" class="el-icon-female" style="color:#f56c6c;font-size:16px" />
+          <i v-else class="el-icon-male" style="color:#409eff;font-size:16px" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="email" label="邮箱" min-width="170" show-overflow-tooltip />
+      <el-table-column prop="phoneNum" label="手机" width="130" show-overflow-tooltip />
+      <el-table-column prop="score" label="积分" width="70" align="center" sortable />
+      <el-table-column label="角色" width="80" align="center">
+        <template slot-scope="{ row }">
+          <el-tag :type="row.role === 'ADMIN' ? 'warning' : 'info'" size="mini" effect="plain">
+            {{ row.role === 'ADMIN' ? '管理员' : '用户' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="80" align="center">
+        <template slot-scope="{ row }">
+          <el-tag :type="row.lockState === '0' ? 'danger' : 'success'" size="mini" effect="plain">
+            {{ row.lockState === '0' ? '已禁用' : '正常' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="注册时间" width="160" />
+      <el-table-column label="操作" width="100" align="center">
+        <template slot-scope="{ row }">
+          <el-button
+            v-if="row.lockState !== '0'"
+            size="mini" type="danger" plain
+            @click="handleToggle(row)"
+          >禁用</el-button>
+          <el-button
+            v-else
+            size="mini" type="success" plain
+            @click="handleToggle(row)"
+          >解禁</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
+      v-if="total > pageSize"
+      class="um-pager"
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="pageSize"
+      :current-page.sync="currentPage"
+    />
   </div>
 </template>
 
 <script>
-import {getAllUser,lockOrUnlock} from "@/api";
+import { getAllUser, lockOrUnlock } from "@/api";
+import { mixin } from "@/mixins";
 
 export default {
-
+  mixins: [mixin],
   data() {
     return {
-      tableData: [],
-      tempData: [],
-      select_word: ''
-    }
+      allData: [],
+      keyword: "",
+      currentPage: 1,
+      pageSize: 15,
+    };
   },
-  watch: {
-    select_word: function () {
-      if (this.select_word === '') {
-        this.tableData = this.tempData
-      } else {
-        this.tableData = []
-        for (let item of this.tempData) {
-          if (item.username.includes(this.select_word)) {
-            this.tableData.push(item)
-          }
-        }
-      }
-    }
+  computed: {
+    filteredData() {
+      if (!this.keyword) return this.allData;
+      const kw = this.keyword.toLowerCase();
+      return this.allData.filter(
+        (r) =>
+          (r.username || "").toLowerCase().includes(kw) ||
+          (r.email || "").toLowerCase().includes(kw) ||
+          (r.phoneNum || "").includes(kw)
+      );
+    },
+    pagedData() {
+      const s = (this.currentPage - 1) * this.pageSize;
+      return this.filteredData.slice(s, s + this.pageSize);
+    },
+    total() { return this.filteredData.length; },
   },
-  mounted() {
-    this.init()
-  },
+  watch: { keyword() { this.currentPage = 1; } },
+  mounted() { this.loadData(); },
   methods: {
-    tableRowClassName({row, rowIndex}) {
-      if (rowIndex%4 === 1) {
-        return 'warning-row';
-      } else if (rowIndex%4 === 3) {
-        return 'success-row';
-      }
-      return '';
+    async loadData() {
+      try {
+        const res = await getAllUser();
+        if (res.code === 0) this.allData = res.data || [];
+        else this.$message.error(res.msg);
+      } catch (e) { this.$message.error("加载失败"); }
     },
-    init(){
-      getAllUser().then(res => {
-        if (res.code===0){
-          this.tableData = res.data
-          this.tempData = res.data
-        }else {
-          this.$message.error(res.msg)
-        }
-      })
-      .catch(err => this.$message.error(err.msg))
-    },
-    handleLockDown(row) {
-      lockOrUnlock(row.id).then(res => {
-        if (res.code===0){
-          if (res.data === 0){
-            row.lockState = '0'
-            this.$message.warning('封禁成功')
-          }else{
-            row.lockState = '1'
-            this.$message.success('解封成功')
+    rowClass({ rowIndex }) { return rowIndex % 2 ? "um-even" : ""; },
+    handleToggle(row) {
+      const action = row.lockState === "0" ? "解禁" : "禁用";
+      this.$confirm(`确认${action}用户「${row.username}」？`, "提示", { type: "warning" }).then(() => {
+        lockOrUnlock(row.id).then((res) => {
+          if (res.code === 0) {
+            row.lockState = res.data === 0 ? "0" : "1";
+            this.$message.success(`${action}成功`);
+          } else {
+            this.$message.error(res.msg);
           }
-        }else {
-          this.$message.error(res.msg)
-        }
-      }).catch(err => this.$message.error(err.msg))
-    }
-  }
-}
+        }).catch(() => this.$message.error("操作失败"));
+      }).catch(() => {});
+    },
+  },
+};
 </script>
 
+<style scoped>
+.user-manage { padding: 0; }
+.um-toolbar {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 16px;
+}
+.um-search { width: 260px; }
+.um-total { font-size: 13px; color: #909399; }
+.um-user-cell { display: flex; align-items: center; gap: 10px; }
+.um-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%; object-fit: cover;
+  border: 1px solid #eee;
+}
+.um-pager { margin-top: 20px; text-align: center; }
+</style>
+
 <style>
-.el-table .warning-row {
-  background: oldlace;
-}
-
-.el-table .success-row {
-  background: #f0f9eb;
-}
-
-
+.um-even { background: #fafbfc; }
 </style>

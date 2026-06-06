@@ -3,6 +3,7 @@
     <el-card style="margin: 0px 0px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
       <el-radio-group v-model="activeNav.type" size="medium" style="margin: 0 20px">
+        <el-radio-button label="">全部</el-radio-button>
         <el-radio-button label="工具"></el-radio-button>
         <el-radio-button label="网站"></el-radio-button>
         <el-radio-button label="项目"></el-radio-button>
@@ -160,8 +161,8 @@ export default {
       fileAction: '',
       fileList: [],
       activeNav:{
-        type : this.$route.query.type,
-        sort : this.$route.query.sort,
+        type : this.$route.query.type || '',
+        sort : this.$route.query.sort || 'create_time',
       }
     };
   },
@@ -205,14 +206,14 @@ export default {
     //初始化
     loadTable(){
       let params = new URLSearchParams();
-      params.append("type", this.activeNav.type);
-      params.append("sort", this.activeNav.sort);
+      if (this.activeNav.type) params.append("type", this.activeNav.type);
+      if (this.activeNav.sort) params.append("sort", this.activeNav.sort);
       params.append("pageNo", this.pageNo);
       params.append("pageSize", this.pageSize);
       getTableData(params)
           .then((res) => {
-            this.tableData = res.records;
-            this.total = res.total;
+            this.tableData = res.records || [];
+            this.total = res.total || 0;
           })
           .catch((err) => {
             console.log(err);

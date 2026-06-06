@@ -298,8 +298,7 @@ public class UserController implements InitializingBean {
     @ApiOperation(value = "管理员获得所有用户")
     public Result<List<User>> getAllUser() {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.ne("role", AuthConstant.ADMIN.toString())
-                .select(User.class, info -> !"password".equals(info.getColumn()));
+        wrapper.select(User.class, info -> !"password".equals(info.getColumn()));
         List<User> users = userService.list(wrapper);
         return Result.success(users);
     }

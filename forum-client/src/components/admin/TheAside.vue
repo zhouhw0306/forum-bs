@@ -107,4 +107,15 @@ export default {
 .aside-control-button:hover{
   background-color: #ecf5ff;
 }
+
+@media (max-width: 900px) {
+  .sidebar {
+    left: -150px;
+    z-index: 2000;
+    transition: left .3s;
+  }
+  .sidebar.mobile-open {
+    left: 0;
+  }
+}
 </style>

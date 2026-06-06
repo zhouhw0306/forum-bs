@@ -51,13 +51,24 @@ export default {
   top: 60px;
   bottom: 0;
   overflow-y: auto;
-  -webkit-transition: left .3s ease-in-out;
   transition: left .3s ease-in-out;
+}
+.content-box.content-collapse {
+  left: 70px;
 }
 
 .content {
   width: auto;
   padding: 20px;
+}
+
+@media (max-width: 900px) {
+  .content-box {
+    left: 0 !important;
+  }
+  .content {
+    padding: 12px;
+  }
 }
 
 .handle-input {

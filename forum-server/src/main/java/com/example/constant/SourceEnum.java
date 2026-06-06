@@ -14,10 +14,10 @@ public enum SourceEnum {
     /**
      * 类型
      */
-    TOOL("1", "工具"),
-    SITE("2", "网站"),
-    PROJECT("3", "项目"),
-    COURSES("4","教程");
+    TOOL("tool", "工具"),
+    SITE("site", "网站"),
+    PROJECT("project", "项目"),
+    COURSE("course","教程");
 
     /**
      * code

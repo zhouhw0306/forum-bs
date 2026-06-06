@@ -34,6 +34,9 @@ public class CategoryController {
     @ApiOperation(value = "根据id获取类型名")
     public Result<String> getName(Integer id) {
         Category category = categoryService.getById(id);
+        if (category == null) {
+            return Result.success("未分类");
+        }
         return Result.success(category.getCategoryName());
     }
 }

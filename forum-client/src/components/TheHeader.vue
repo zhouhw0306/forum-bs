@@ -3,15 +3,19 @@
 
     <el-row class="me-header">
 
-      <el-col :span="4" class="me-header-left">
+      <div class="me-header-left">
         <router-link to="/" class="me-title">
           <img src="../assets/logo.png"/>
-          <span> codebase</span>
+          <span class="me-logo-text"> codebase</span>
         </router-link>
-      </el-col>
-      <el-col v-if="!simple" :span="16">
+        <span class="me-logo-arrow" @click.stop="toggleMobileMenu">
+          <i :class="mobileMenu ? 'el-icon-close' : 'el-icon-caret-bottom'"></i>
+        </span>
+      </div>
+
+      <div v-if="!simple" class="me-nav-wrap" :class="{ 'mobile-open': mobileMenu }">
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
-                 mode="horizontal">
+                 mode="horizontal" class="main-nav-menu">
           <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/source?type=工具&sort=create_time&pageNo=1">资源</el-menu-item>
           <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
@@ -29,13 +33,13 @@
             </el-input>
           </div>
         </el-menu>
-      </el-col>
+      </div>
 
       <template v-else>
         <slot></slot>
       </template>
 
-      <el-col :span="4">
+      <div class="me-header-right">
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
           <template v-if="!loginIn">
             <el-tooltip class="item" effect="dark" content="登录查看更多内容" placement="bottom">
@@ -108,7 +112,7 @@
             </el-drawer>
           </template>
         </el-menu>
-      </el-col>
+      </div>
 
     </el-row>
 
@@ -139,7 +143,8 @@ export default {
       drawer: false,
       wsManager: null,
       unreadCount: 0,
-      notifyVisible: false
+      notifyVisible: false,
+      mobileMenu: false
     }
   },
   computed: {
@@ -169,6 +174,7 @@ export default {
     }
   },
   methods: {
+    toggleMobileMenu() { this.mobileMenu = !this.mobileMenu; },
     async fetchUnreadCount() {
       if (!this.loginIn) return
       try {
@@ -290,18 +296,45 @@ export default {
   color: #409EFF;
 }
 
-.me-header-left {
-  margin-top: 10px;
-  white-space: nowrap;
+.me-header {
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
 }
+.me-header-left {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.me-nav-wrap { flex: 1; min-width: 0; overflow: hidden; }
+.me-header-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-left: auto !important;
+}
+
+/* 覆盖 el-row 默认样式 */
+.el-row.me-header {
+  flex-wrap: nowrap !important;
+  margin: 0 !important;
+}
+.me-logo-text { white-space: nowrap; }
+.me-logo-arrow {
+  display: none;
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.me-logo-arrow:hover { color: #409eff; }
+
 /* ---- 右侧操作区（头像 / 通知 / AI）---- */
 .header-actions {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   height: 60px;
-  float: right;
-  margin-right: 16px;
 }
 .header-action-btn {
   position: relative;
@@ -403,7 +436,43 @@ export default {
 .el-scrollbar__bar.is-horizontal {
   display: none;
 }
-/*.icon:hover {*/
-/*  color: rgb(81, 255, 0);*/
-/*}*/
+/* ---- 响应式 ---- */
+@media (max-width: 900px) {
+  .me-logo-text { display: none !important; }
+  .me-logo-arrow { display: flex !important; align-items: center; height: 60px; }
+  .me-nav-wrap { display: none !important; }
+  .me-nav-wrap.mobile-open {
+    display: block !important;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    z-index: 2000;
+  }
+  .me-nav-wrap.mobile-open .el-menu {
+    display: flex !important;
+    flex-direction: column;
+    border: none;
+  }
+  .me-nav-wrap.mobile-open .el-menu .el-menu-item {
+    height: 46px !important;
+    line-height: 46px !important;
+  }
+  .el-search { width: 140px !important; margin-right: 8px; }
+  .header-action-btn { width: 36px !important; height: 36px !important; font-size: 18px !important; }
+  .header-action-avatar-wrap img { width: 26px !important; height: 26px !important; }
+  .el-header { padding: 0 12px !important; }
+}
+
+@media (max-width: 600px) {
+  .el-header { padding: 0 8px !important; }
+  .me-title img { max-height: 28px; }
+  .el-search { width: 100px !important; margin-right: 4px; font-size: 12px; }
+  .header-actions { gap: 6px; }
+  .header-action-btn { width: 32px !important; height: 32px !important; font-size: 16px !important; border-radius: 8px; }
+  .header-action-avatar-wrap img { width: 24px !important; height: 24px !important; }
+  .notify-dot { height: 14px; min-width: 14px; line-height: 14px; font-size: 9px; padding: 0 4px; }
+}
 </style>
