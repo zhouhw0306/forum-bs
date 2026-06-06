@@ -14,7 +14,7 @@
           <div>
             简介: {{u.introduction}}
           </div>
-          <img slot="reference" class="me-list-picture" :src="attachImageUrl(u.avatar)"/>
+          <img slot="reference" class="me-list-picture" :src="attachImageUrl(u.avatar)" @error="e => e.target.src = avatarFallback(u.username)"/>
         </el-popover>
 
         <span style="display: inline-block;width: 50%;margin-left: 10px">

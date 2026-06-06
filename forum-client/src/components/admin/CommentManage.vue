@@ -21,7 +21,7 @@
       <div v-for="item in pagedData" :key="item.id" class="cm-card" :class="{ 'cm-is-reply': item.level !== '0' }">
         <!-- 主评论头部 -->
         <div class="cm-card-top">
-          <img v-if="item.user" :src="attachImageUrl(item.user.avatar)" class="cm-card-avatar" />
+          <img v-if="item.user" :src="attachImageUrl(item.user.avatar)" class="cm-card-avatar" @error="e => e.target.src = avatarFallback(item.user.username)" />
           <div class="cm-card-meta">
             <span class="cm-card-user">{{ item.user?.username || '匿名' }}</span>
             <span class="cm-card-time">{{ item.createTime }}</span>
@@ -45,7 +45,7 @@
           <div v-if="openIds.includes(item.id)" class="cm-reply-list">
             <div v-for="child in item.children" :key="child.id" class="cm-card cm-reply-card">
               <div class="cm-card-top">
-                <img v-if="child.user" :src="attachImageUrl(child.user.avatar)" class="cm-card-avatar" />
+                <img v-if="child.user" :src="attachImageUrl(child.user.avatar)" class="cm-card-avatar" @error="e => e.target.src = avatarFallback(child.user.username)" />
                 <div class="cm-card-meta">
                   <span class="cm-card-user">{{ child.user?.username || '匿名' }}</span>
                   <span v-if="child.toUser" class="cm-reply-to">回复 @{{ child.toUser?.username }}</span>

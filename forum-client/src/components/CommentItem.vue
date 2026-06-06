@@ -2,7 +2,7 @@
   <div class="comment-item">
     <!-- 评论头部 -->
     <div class="comment-header">
-      <el-avatar :src="attachImageUrl(comment.user.avatar)" :size="36" class="comment-avatar" />
+      <img :src="attachImageUrl(comment.user.avatar)" class="comment-avatar" @error="e => e.target.src = avatarFallback(comment.user.username)" />
       <div class="comment-info">
         <div class="comment-author">
           <span class="author-name">{{ comment.user.username }}</span>
@@ -81,7 +81,7 @@
         class="reply-item"
       >
         <div class="reply-header">
-          <el-avatar :src="attachImageUrl(reply.user.avatar)" :size="32" class="reply-avatar" />
+          <img :src="attachImageUrl(reply.user.avatar)" class="reply-avatar" @error="e => e.target.src = avatarFallback(reply.user.username)" />
           <div class="reply-info">
             <div class="reply-author">
               <span class="author-name">{{ reply.user.username }}</span>
@@ -137,7 +137,7 @@
     <transition name="reply-form">
       <div v-show="commentShow" class="reply-form">
         <div class="reply-form-header">
-          <el-avatar :src="attachImageUrl(currentUserAvatar)" :size="32" class="reply-avatar" />
+          <img :src="attachImageUrl(currentUserAvatar)" class="reply-avatar" @error="e => e.target.src = avatarFallback(username)" />
           <div class="reply-input-container">
             <el-input
               v-model="reply.content"
@@ -446,6 +446,9 @@ export default {
 }
 
 .comment-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
   margin-right: 12px;
   border: 1px solid #e0e0e0;
   transition: all 0.2s ease;
@@ -586,6 +589,9 @@ export default {
 }
 
 .reply-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
   margin-right: 8px;
   border: 1px solid #e0e0e0;
 }

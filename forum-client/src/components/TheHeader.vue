@@ -16,14 +16,14 @@
       <div v-if="!simple" class="me-nav-wrap" :class="{ 'mobile-open': mobileMenu }">
         <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
                  mode="horizontal" class="main-nav-menu">
-          <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/source?type=工具&sort=create_time&pageNo=1">资源</el-menu-item>
-          <el-menu-item v-if="loginIn" index="/carePost">关注</el-menu-item>
-          <el-menu-item v-if="loginIn" index="/center">个人中心</el-menu-item>
-          <el-menu-item index="/searchPage">搜索</el-menu-item>
-          <el-menu-item v-if="role === 'ADMIN'" index="/info">管理</el-menu-item>
+          <el-menu-item index="/">{{ $t('common.home') }}</el-menu-item>
+          <el-menu-item index="/source?type=工具&sort=create_time&pageNo=1">{{ $t('common.resources') }}</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/carePost">{{ $t('common.following') }}</el-menu-item>
+          <el-menu-item v-if="loginIn" index="/center">{{ $t('common.profile') }}</el-menu-item>
+          <el-menu-item index="/searchPage">{{ $t('common.search') }}</el-menu-item>
+          <el-menu-item v-if="role === 'ADMIN'" index="/info">{{ $t('common.admin') }}</el-menu-item>
           <div>
-            <el-input @keyup.enter.native="toSearch" v-model="inputValue" placeholder="请输入想要搜索的内容" class="el-search">
+            <el-input @keyup.enter.native="toSearch" v-model="inputValue" :placeholder="$t('header.searchPlaceholder')" class="el-search">
               <i
                   slot="suffix"
                   style="cursor: pointer"
@@ -42,13 +42,13 @@
       <div class="me-header-right">
         <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
           <template v-if="!loginIn">
-            <el-tooltip class="item" effect="dark" content="登录查看更多内容" placement="bottom">
+            <el-tooltip class="item" effect="dark" :content="$t('header.loginTip')" placement="bottom">
               <el-menu-item index="/login">
-                <el-button type="text">登录</el-button>
+                <el-button type="text">{{ $t('common.login') }}</el-button>
               </el-menu-item>
             </el-tooltip>
             <el-menu-item index="/register">
-              <el-button type="text">注册</el-button>
+              <el-button type="text">{{ $t('common.register') }}</el-button>
             </el-menu-item>
           </template>
 
@@ -62,12 +62,12 @@
                 trigger="hover"
               >
                 <div>
-                  <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                  <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>发帖</el-button>
+                  <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>{{ $t('common.settings') }}</el-button>
+                  <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>{{ $t('common.post') }}</el-button>
                   <el-button class="btt" @click="logout" style="margin-left: 0;color: #e86f6f"><i class="el-icon-switch-button icon"></i>退出</el-button>
                 </div>
-                <span slot="reference" class="header-action-btn header-action-avatar-wrap">
-                  <img :src="attachImageUrl(avatar)"/>
+                <span slot="reference" class="header-action-avatar-wrap">
+                  <img :src="attachImageUrl(avatar)" @error="e => e.target.src = avatarFallback(username)"/>
                 </span>
               </el-popover>
 
@@ -99,6 +99,11 @@
                   </svg>
                 </span>
               </el-tooltip>
+
+              <!-- 语言切换 -->
+              <span class="header-action-btn lang-switch" @click="switchLang">
+                {{ $i18n.locale === 'zh' ? '中' : 'EN'}}
+              </span>
             </div>
 
             <el-drawer
@@ -175,6 +180,11 @@ export default {
   },
   methods: {
     toggleMobileMenu() { this.mobileMenu = !this.mobileMenu; },
+    switchLang() {
+      const next = this.$i18n.locale === 'zh' ? 'en' : 'zh';
+      this.$i18n.locale = next;
+      localStorage.setItem('lang', next);
+    },
     async fetchUnreadCount() {
       if (!this.loginIn) return
       try {
@@ -342,7 +352,7 @@ export default {
   align-items: center;
   justify-content: center;
   width: 42px;
-  height: 80px;
+  height: 42px;
   border-radius: 12px;
   color: #555;
   cursor: pointer;
@@ -390,6 +400,11 @@ export default {
 .header-action-avatar-wrap:hover {
   background: transparent !important;
 }
+.lang-switch {
+  font-size: 13px !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
 .header-action-avatar-wrap:hover img {
   transform: scale(1.18);
   border-color: #409eff;
@@ -398,9 +413,13 @@ export default {
     0 4px 16px rgba(64,158,255,.25);
 }
 .me-title img {
-  max-height: 2.4rem;
+  height: 28px;
   max-width: 100%;
-  vertical-align: bottom;
+  vertical-align: middle;
+}
+.me-title {
+  display: flex;
+  align-items: center;
 }
 .el-menu-item:hover{
   color: #1787FB !important;

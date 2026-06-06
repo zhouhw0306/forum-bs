@@ -5,6 +5,7 @@ import com.example.annotation.RateLimiter;
 import com.example.constant.RateLimiterType;
 import com.example.exception.RateLimitException;
 import com.example.utils.IPUtils;
+import com.example.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -56,7 +57,7 @@ public class RateLimitAspect {
                 String.valueOf(time * 1000), String.valueOf(count)
         );
         if (result == null || result.intValue() != 1) {
-            throw new RateLimitException("访问频繁，请稍后再试");
+            throw new RateLimitException(MessageUtils.get("rate.too_frequent"));
         }
     }
 

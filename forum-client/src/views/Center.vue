@@ -5,7 +5,7 @@
       <div class="profile-card">
         <div class="profile-avatar-col">
           <div class="profile-avatar-ring">
-            <img :src="attachImageUrl(user.avatar)" class="profile-avatar" />
+            <img :src="attachImageUrl(user.avatar)" class="profile-avatar" @error="e => e.target.src = avatarFallback(user.username, 100)" />
           </div>
         </div>
         <div class="profile-info-col">

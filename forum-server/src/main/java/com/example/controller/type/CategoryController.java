@@ -3,6 +3,7 @@ package com.example.controller.type;
 import com.example.constant.Result;
 import com.example.domain.dao.Category;
 import com.example.service.CategoryService;
+import com.example.utils.MessageUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class CategoryController {
     public Result<String> getName(Integer id) {
         Category category = categoryService.getById(id);
         if (category == null) {
-            return Result.success("未分类");
+            return Result.success(MessageUtils.get("category.unknown"));
         }
         return Result.success(category.getCategoryName());
     }

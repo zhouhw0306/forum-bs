@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.example.utils.MessageUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -69,7 +70,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         if (StringUtils.isNotBlank(article.getId())) {
             Article article1 = articleMapper.selectOne(Wrappers.lambdaQuery(Article.class).eq(Article::getId, article.getId()));
             if (ObjectUtil.isEmpty(article1)) {
-                return Result.error(ResultCode.ERROR, "文章不存在");
+                return Result.error(ResultCode.ERROR, MessageUtils.get("article.not_found"));
             }
             if (!Objects.equals(UserUtils.getCurrentUser(), article1.getUserId())) {
                 return Result.error(ResultCode.ERROR, "非法修改");

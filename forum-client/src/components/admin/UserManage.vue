@@ -9,7 +9,7 @@
       <el-table-column label="用户" min-width="160">
         <template slot-scope="{ row }">
           <div class="um-user-cell">
-            <img :src="attachImageUrl(row.avatar)" class="um-avatar" />
+            <img :src="attachImageUrl(row.avatar)" class="um-avatar" @error="e => e.target.src = avatarFallback(row.username)" />
             <span>{{ row.username }}</span>
           </div>
         </template>

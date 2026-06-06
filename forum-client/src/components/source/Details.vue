@@ -10,7 +10,7 @@
       <div class="detail-card">
         <!-- 作者 -->
         <div class="detail-author">
-          <img :src="attachImageUrl(source.user?.avatar)" class="detail-author-avatar" />
+          <img :src="attachImageUrl(source.user?.avatar)" class="detail-author-avatar" @error="e => e.target.src = avatarFallback(source.user?.username)" />
           <div class="detail-author-info">
             <span class="detail-author-name">{{ source.user?.username }}</span>
             <span class="detail-author-time">{{ formatTime(source.createTime) }}</span>
@@ -52,7 +52,7 @@
 
         <!-- 发表评论 -->
         <div class="comment-write">
-          <img :src="attachImageUrl(avatar)" class="comment-write-avatar" />
+          <img :src="attachImageUrl(avatar)" class="comment-write-avatar" @error="e => e.target.src = avatarFallback(username)" />
           <div class="comment-write-body">
             <VueEmoji ref="emoji" width="100%" height="80" :value="comment.content" @input="onInput" />
             <div class="comment-write-foot">

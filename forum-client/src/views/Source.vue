@@ -22,7 +22,7 @@
       <el-col :xs="13" :sm="13" :md="12" :lg="8" :xl="8" v-for="(item,index) in tableData" :key="index" style="margin-bottom: 20px;">
         <el-card shadow="hover" style="height: 270px;">
           <div>
-            <el-avatar style="vertical-align: top" :size="50" :src="attachImageUrl(item.user.avatar)"></el-avatar>
+            <img :src="attachImageUrl(item.user.avatar)" class="source-avatar" @error="e => e.target.src = avatarFallback(item.user.username)" />
             <span class="hover-title" style="margin-left: 20px;font-size: 20px;">{{item.user.username}}</span>
           </div>
 
@@ -317,5 +317,11 @@ export default {
 .hover-title:hover{
   color: #1890ff;
   cursor: pointer;
+}
+.source-avatar {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: top;
 }
 </style>

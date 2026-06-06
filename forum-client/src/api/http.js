@@ -16,6 +16,9 @@ axios.interceptors.request.use(config => {
       if (token){
         config.headers['token'] = token; // 设置请求头
       }
+      // 国际化：根据语言设置 Accept-Language
+      const lang = localStorage.getItem('lang') || 'zh';
+      config.headers['Accept-Language'] = lang === 'zh' ? 'zh-CN' : 'en-US';
       return config
   },error => {
       return Promise.reject(error)

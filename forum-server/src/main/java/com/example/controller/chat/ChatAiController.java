@@ -2,6 +2,7 @@ package com.example.controller.chat;
 
 import cn.hutool.core.util.StrUtil;
 import com.example.controller.chat.client.DeepSeekStreamClient;
+import com.example.utils.MessageUtils;
 import com.example.controller.chat.dto.MsgDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,7 +28,7 @@ public class ChatAiController {
         SseEmitter emitter = new SseEmitter(200_000L);
 
         if (StrUtil.isBlank(issue)) {
-            sendSafe(emitter, "请输入有效问题");
+            sendSafe(emitter, MessageUtils.get("ai.invalid_question"));
             emitter.complete();
             return emitter;
         }

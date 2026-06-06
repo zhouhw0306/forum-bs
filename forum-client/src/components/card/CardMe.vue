@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <div style="text-align: center;">
-      <img class="me-picture" :src="attachImageUrl(avatar)"/>
+      <img class="me-picture" :src="attachImageUrl(avatar)" @error="e => e.target.src = avatarFallback(username)"/>
     </div>
 
     <h1 class="me-author-name">{{username}}</h1>
