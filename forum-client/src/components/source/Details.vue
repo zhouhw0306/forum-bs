@@ -122,17 +122,37 @@ export default {
     },
     thumb(targetId) {
       let p = new URLSearchParams(); p.append("targetId", targetId);
+      // 乐观更新：先切换本地状态
+      const prev = this.source.hasThumb;
+      this.source.hasThumb = !prev;
+      this.source.thumbNum = (this.source.thumbNum || 0) + (prev ? -1 : 1);
       thumb(p).then((res) => {
-        this.$message.success(res.data === 1 ? "点赞成功" : "取消点赞");
-        this.init();
-      }).catch(() => {});
+        if (res.data !== 1 && res.data !== -1) {
+          // 失败时回滚
+          this.source.hasThumb = prev;
+          this.source.thumbNum = (this.source.thumbNum || 0) + (prev ? 1 : -1);
+          this.$message.error(res.msg || "操作失败");
+        }
+      }).catch(() => {
+        this.source.hasThumb = prev;
+        this.source.thumbNum = (this.source.thumbNum || 0) + (prev ? 1 : -1);
+      });
     },
     favour(targetId) {
       let p = new URLSearchParams(); p.append("targetId", targetId);
+      const prev = this.source.hasFavour;
+      this.source.hasFavour = !prev;
+      this.source.favourNum = (this.source.favourNum || 0) + (prev ? -1 : 1);
       favour(p).then((res) => {
-        this.$message.success(res.data === 1 ? "收藏成功" : "取消收藏");
-        this.init();
-      }).catch(() => {});
+        if (res.data !== 1 && res.data !== -1) {
+          this.source.hasFavour = prev;
+          this.source.favourNum = (this.source.favourNum || 0) + (prev ? 1 : -1);
+          this.$message.error(res.msg || "操作失败");
+        }
+      }).catch(() => {
+        this.source.hasFavour = prev;
+        this.source.favourNum = (this.source.favourNum || 0) + (prev ? 1 : -1);
+      });
     },
     pushComment() {
       if (!this.comment.content.trim()) return this.$message.error("评论不能为空");
