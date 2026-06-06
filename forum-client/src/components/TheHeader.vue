@@ -100,7 +100,8 @@ export default {
   data() {
     return {
       inputValue: "", //搜索框输入
-      drawer: false
+      drawer: false,
+      wsManager: null
     }
   },
   computed: {
@@ -112,7 +113,46 @@ export default {
       'loginIn'
     ]),
   },
+  watch: {
+    // 监听登录状态变化
+    loginIn: {
+      handler(newVal) {
+        if (newVal && this.userId) {
+          // 用户登录后初始化WebSocket
+          this.initWebSocket();
+        } else {
+          // 用户登出时关闭WebSocket连接
+          this.closeWebSocket();
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
+    async initWebSocket() {
+      console.log('WebSocket初始化ing');
+      if (!this.wsManager && this.userId) {
+        try {
+          // 动态导入WebSocket模块
+          const websocketModule = await import('@/assets/js/websocket');
+          const WebSocketManager = websocketModule.default;
+
+          // 将Vue实例绑定到WebSocketManager
+          WebSocketManager.prototype.$notify = this.$notify;
+
+          this.wsManager = new WebSocketManager(this.userId);
+          this.wsManager.init();
+        } catch (error) {
+          console.error('WebSocket模块加载失败:', error);
+        }
+      }
+    },
+    closeWebSocket() {
+      if (this.wsManager) {
+        this.wsManager.close();
+        this.wsManager = null;
+      }
+    },
     write(){
       this.$router.push('/write')
     },
@@ -127,6 +167,8 @@ export default {
       this.$router.push({path: '/write'})
     },
     logout() {
+      this.closeWebSocket(); // 关闭WebSocket连接
+
       this.$store.commit('setLoginIn', false) //是否登录
       this.$store.commit('setUserId', '')  //用户id
       this.$store.commit('setUsername', '')  //用户名

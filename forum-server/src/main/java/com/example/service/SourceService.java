@@ -17,4 +17,10 @@ public interface SourceService extends IService<Source> {
     IPage<Source> pageVo(String type, String sort, Integer pageNo, Integer pageSize);
 
     Result<Source> queryById(Integer id);
+
+    /**
+     * 通知用户资源审核结果
+     */
+    void notifyUserOfApprovalResult(Source source, boolean approved);
+
 }

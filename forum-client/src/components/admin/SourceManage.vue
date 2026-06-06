@@ -2,6 +2,7 @@
   <div>
   <el-radio v-model="state" label="1">已上线</el-radio>
   <el-radio v-model="state" label="0">待审核</el-radio>
+  <el-radio v-model="state" label="-1">已驳回</el-radio>
   <el-input v-model="select_word" size="mini" placeholder="筛选标题关键词" class="handle-input"></el-input>
   <el-table
       :data="tableData"
@@ -57,12 +58,14 @@
         <el-button size="mini" v-if="props.row.state === 1"
                    type="danger"
                    @click="handleDelete(props.row.id)">删除</el-button>
+
         <el-button size="mini" v-if="props.row.state === 0"
                    type="success"
                    @click="handlePass(props.row.id,1)">通过</el-button>
+
         <el-button size="mini" v-if="props.row.state === 0"
                    type="danger"
-                   @click="handlePass(props.row.id,0)">拒绝</el-button>
+                   @click="handlePass(props.row.id,-1)">驳回</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -135,8 +138,8 @@ export default {
           if (res.data === 1){
             this.$message.success('上线成功')
           }
-          if (res.data === 0){
-            this.$message.warning('拒绝成功')
+          if (res.data === -1){
+            this.$message.warning('驳回成功')
           }
         }else {
           this.$message.error(res.msg)

@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.type;
 
 import com.example.constant.Result;
 import com.example.constant.ResultCode;

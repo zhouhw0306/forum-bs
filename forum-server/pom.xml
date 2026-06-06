@@ -19,8 +19,8 @@
     <properties>
         <java.version>1.8</java.version>
     </properties>
+    
     <dependencies>
-
         <!-- elasticsearch -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -157,6 +157,11 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.10.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
     </dependencies>
 

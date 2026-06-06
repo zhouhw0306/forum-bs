@@ -72,8 +72,7 @@ export default {
     }
 
     this.getCategorysAndTags()
-    let but = document.getElementsByClassName("op-icon fa fa-mavon-eye-slash selected")
-    but[0].click();
+    // vditor 默认就是所见即所得模式，无需再点击预览按钮
   },
   data() {
     return {
@@ -155,7 +154,7 @@ export default {
         return
       }
 
-      if (!this.articleForm.editor.ref.d_render) {
+      if (!this.articleForm.editor.value || !this.articleForm.editor.ref?.d_render) {
         this.$message({message: '内容不能为空哦', type: 'warning', showClose: true})
         return
       }
@@ -182,7 +181,7 @@ export default {
             categoryId : this.articleForm.category, //分类
             tags: tags, //标签
             content: this.articleForm.editor.value,
-            contentHtml: this.articleForm.editor.ref.d_render
+            contentHtml: this.articleForm.editor.ref?.d_render || ''
           }
 
           this.publishVisible = false;
@@ -241,18 +240,6 @@ export default {
       })
 
     },
-    editorToolBarToFixed() {
-
-      let toolbar = document.querySelector('.v-note-op');
-      let curHeight = document.documentElement.scrollTop || document.body.scrollTop;
-      if (curHeight >= 160) {
-        document.getElementById("placeholder").style.display = "block"; //bad  用计算属性较好
-        toolbar.classList.add("me-write-toolbar-fixed");
-      } else {
-        document.getElementById("placeholder").style.display = "none";
-        toolbar.classList.remove("me-write-toolbar-fixed");
-      }
-    }
   },
   components: {
     'the-header': TheHeader,
@@ -325,19 +312,19 @@ export default {
     top: 60px;
   }
 
-  .v-note-wrapper{
+  .bytemd{
     box-shadow: none !important;
-
+    border: none !important;
   }
-  .v-note-show{
+  .bytemd-preview{
     padding-left: 15px !important;
   }
-  .v-note-op {
+  .bytemd-toolbar {
     border-bottom: 1px solid #dedfe0 !important;
     background-color: white !important;
   }
 
-  .auto-textarea-input, .auto-textarea-block {
+  .markdown-body {
     font-size: 18px !important;
   }
 </style>

@@ -12,7 +12,12 @@
       </el-input>
     </div>
 
-
+<!--    <iframe-->
+<!--        src="http://127.0.0.1:8090/chatbot/kd6Lu4Avod3Dypkh"-->
+<!--        style="width: 100%; height: 100%; min-height: 700px"-->
+<!--        frameBorder="0"-->
+<!--        allow="microphone">-->
+<!--    </iframe>-->
   </div>
 </template>
 

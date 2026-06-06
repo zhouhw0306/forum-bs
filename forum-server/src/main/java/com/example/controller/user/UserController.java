@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.user;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;

@@ -43,62 +43,18 @@ a:hover {
   float: right;
 }
 
-/** 代码高亮stackoverflow-dark.css **/
-pre code.hljs{
-  display:block !important;
-  overflow-x:auto !important;
-  padding:1em !important;
+/* 评论区代码高亮（文章正文由 ByteMD 高亮插件负责）*/
+.comment-content pre code.hljs {
+  display: block !important;
+  overflow-x: auto !important;
+  padding: 20px !important;
+  border-radius: 10px;
+  color: #d4d4d4 !important;
+  background: #1e1e1e !important;
 }
-code.hljs{
-  padding:3px 5px !important;
-}
-.hljs{
-  color:#fff !important;
-  background:#1c1b1b !important;
-}
-.hljs-subst{
-  color:#fff !important;
-}
-.hljs-comment{
-   color:#999 !important;
- }
-.hljs-attr,.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-section,.hljs-selector-tag{
-  color:#88aece !important;
-}
-.hljs-attribute{
-  color:#c59bc1 !important;
-}
-.hljs-name,.hljs-number,.hljs-quote,.hljs-selector-id,.hljs-template-tag,.hljs-type{
-  color:#f08d49 !important;
-}
-.hljs-selector-class{
-  color:#88aece !important;
-}
-.hljs-link,.hljs-regexp,.hljs-selector-attr,.hljs-string,.hljs-symbol,.hljs-template-variable,.hljs-variable{
-  color:#b5bd68 !important;
-}
-.hljs-meta,.hljs-selector-pseudo{
-  color:#88aece !important;
-}
-.hljs-built_in,.hljs-literal,.hljs-title{
-  color:#f08d49 !important;
-}
-.hljs-bullet,.hljs-code{
-  color:#ccc !important;
-}
-.hljs-meta .hljs-string{
-  color:#b5bd68 !important;
-}
-.hljs-deletion{
-  color:#de7176 !important;
-}
-.hljs-addition{
-  color:#76c490 !important;
-}
-.hljs-emphasis{
-  font-style:italic !important;
-}
-.hljs-strong{
-  font-weight:700 !important;
+.comment-content code.hljs {
+  padding: 3px 5px !important;
+  color: #e74c3c !important;
+  background: #f0f0f0 !important;
 }
 </style>

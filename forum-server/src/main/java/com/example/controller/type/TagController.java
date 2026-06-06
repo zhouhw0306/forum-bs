@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.type;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.constant.Result;

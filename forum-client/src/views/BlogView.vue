@@ -461,15 +461,11 @@ export default {
     font-size: 16px;
   }
 
-  .v-show-content {
+  .bytemd-view-container {
     padding: 8px 25px 15px 0 !important;
   }
 
-  .v-note-wrapper .v-note-panel {
-    box-shadow: none !important;
-  }
-
-  .v-note-wrapper .v-note-panel .v-note-show .v-show-content, .v-note-wrapper .v-note-panel .v-note-show .v-show-content-html {
+  .bytemd-view-container .markdown-body {
     background: #fff !important;
   }
 

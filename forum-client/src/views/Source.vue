@@ -1,8 +1,8 @@
 <template>
-  <div style="padding: 20px">
+  <div style="width:100vw;padding: 20px">
     <el-card style="margin: 0px 0px 20px 0px;" shadow="never">
       <i class="el-icon-s-operation" style="margin-right: 10px"></i>分类
-      <el-radio-group v-model="type" size="medium" style="margin: 0 20px">
+      <el-radio-group v-model="activeNav.type" size="medium" style="margin: 0 20px">
         <el-radio-button label="工具"></el-radio-button>
         <el-radio-button label="网站"></el-radio-button>
         <el-radio-button label="项目"></el-radio-button>
@@ -11,7 +11,7 @@
       <el-button v-if="this.$store.getters.loginIn" type="success" icon="el-icon-upload" size="small" @click="dialogFormVisible = true">分享</el-button>
       <div style="margin-top: 20px">
         <i class="el-icon-finished" style="margin-right: 10px"></i>排序
-        <el-radio-group v-model="sort" size="medium" style="margin-left: 20px">
+        <el-radio-group v-model="activeNav.sort" size="medium" style="margin-left: 20px">
           <el-radio-button label="create_time">最新</el-radio-button>
           <el-radio-button label="thumb_num">点赞</el-radio-button>
         </el-radio-group>
@@ -145,11 +145,9 @@ export default {
   data() {
     return {
       tableData: [],
-      pageNo: 1,
-      pageSize: 9,
       total: 0,
-      type: '工具',
-      sort: 'create_time',
+      pageNo: Number(this.$route.query.pageNo),
+      pageSize: 9,
       dialogFormVisible: false,
       form: {
         title:'',
@@ -158,15 +156,18 @@ export default {
         cover:'',
         category:''
       },
-      sourceForm: {},
+      sourceForm: sourceForm,
       fileAction: '',
-      fileList: []
+      fileList: [],
+      activeNav:{
+        type : this.$route.query.type,
+        sort : this.$route.query.sort,
+      }
     };
   },
   mixins: [mixin],
   mounted() {
     this.fileAction = `${this.HOST}/source/upload`
-    this.sourceForm = sourceForm
     this.loadTable();
   },
   computed: {
@@ -174,17 +175,14 @@ export default {
   },
   // 条件改变刷新页面
   watch: {
-    sort : {
-      handler(newName, oldName) {
-        this.pageNo=1
+    activeNav : {
+      handler() {
+        let {type,sort} = this.activeNav
+        this.pageNo = 1
+        this.$router.push({query: {type: type,sort: sort,pageNo:this.pageNo}})
         this.loadTable()
-      }
-    },
-    type : {
-      handler(newName, oldName) {
-        this.pageNo=1
-        this.loadTable()
-      }
+      },
+      deep: true
     }
   },
   methods:{
@@ -197,15 +195,18 @@ export default {
       this.pageSize = val;
       this.loadTable();
     },
+    // 翻页回调
     handleCurrentChange(val) {
       this.pageNo = val;
+      let {type,sort} = this.activeNav
+      this.$router.push({query: {type: type,sort: sort,pageNo:this.pageNo}})
       this.loadTable();
     },
     //初始化
     loadTable(){
       let params = new URLSearchParams();
-      params.append("type", this.type);
-      params.append("sort", this.sort);
+      params.append("type", this.activeNav.type);
+      params.append("sort", this.activeNav.sort);
       params.append("pageNo", this.pageNo);
       params.append("pageSize", this.pageSize);
       getTableData(params)
