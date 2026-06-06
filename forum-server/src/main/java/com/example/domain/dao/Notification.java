@@ -9,7 +9,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 公告表
+ * 通知表（兼容系统公告 + 用户通知）
  * @TableName tb_notification
  */
 @TableName(value ="tb_notification")
@@ -33,10 +33,40 @@ public class Notification implements Serializable {
     private String content;
 
     /**
+     * 通知类型: COMMENT/REPLY/LIKE/FAVOUR/FOLLOW/SYSTEM
+     */
+    private String type;
+
+    /**
+     * 触发者用户ID
+     */
+    private String senderId;
+
+    /**
+     * 接收者用户ID (NULL表示全体公告)
+     */
+    private String receiverId;
+
+    /**
+     * 是否已读 0未读 1已读
+     */
+    private Integer isRead;
+
+    /**
+     * 关联资源类型: ARTICLE/COMMENT/SOURCE
+     */
+    private String resourceType;
+
+    /**
+     * 关联资源ID
+     */
+    private String resourceId;
+
+    /**
      * 创建时间
      */
     private Date createTime;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 287984246061046551L;
+    private static final long serialVersionUID = 287984246061046552L;
 }

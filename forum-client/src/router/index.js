@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+const VueRouterPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
@@ -8,9 +12,7 @@ const routes = [
   {
     path: '/write/:id?',
     component: resolve => require(['../views/BlogWrite'], resolve),
-    meta: {
-      requireLogin: true
-    },
+    meta: {requireLogin: true}
   },
   {
     path: '',
@@ -35,33 +37,67 @@ const routes = [
       },
       {
         path: '/setting',
-        component: resolve => require(['../views/Setting'], resolve)
+        component: resolve => require(['../views/Setting'], resolve),
+        meta: {requireLogin: true}
       },
       {
         path: '/carePost',
-        component: resolve => require(['../views/SecondPage'], resolve)
-      },
-      {
-        path: '/nav',
-        component: resolve => require(['../views/Nav'], resolve)
+        component: resolve => require(['../views/SecondPage'], resolve),
+        meta: {requireLogin: true}
       },
       {
         path: '/source',
         component: resolve => require(['../views/Source'], resolve),
-        children: [
-          {
-            path: '/tools/:type',
-            component: resolve => require(['../components/source/Tools'], resolve)
-          },
-          {
-            path: '/details/:id',
-            component: resolve => require(['../components/source/Details'], resolve)
-          }
-        ]
       },
       {
-        path: '/world',
-        component: resolve => require(['../views/World'], resolve)
+        path: '/details/:id',
+        component: resolve => require(['../components/source/Details'], resolve)
+      },
+      {
+        path: '/center',
+        component: resolve => require(['../views/Center'], resolve),
+        meta: {requireLogin: true}
+      },
+      {
+        path: '/searchPage',
+        component: resolve => require(['../views/SearchPage'], resolve)
+      },
+      {
+        path: '/notifications',
+        component: resolve => require(['../views/Notifications'], resolve),
+        meta: {requireLogin: true}
+      },
+      {
+        path: '/admin',
+        component: resolve => require(['../views/Admin'], resolve),
+        meta: {requireLogin: true},
+        children: [
+          {
+            path: '/info',
+            component: resolve => require(['../components/admin/Info'], resolve),
+            meta: {requireLogin: true,admin:true}
+          },
+          {
+            path: '/userManage',
+            component: resolve => require(['../components/admin/UserManage'], resolve),
+            meta: {requireLogin: true,admin:true}
+          },
+          {
+            path: '/articleManage',
+            component: resolve => require(['../components/admin/ArticleManage'], resolve),
+            meta: {requireLogin: true,admin:true}
+          },
+          {
+            path: '/commentManage',
+            component: resolve => require(['../components/admin/CommentManage'], resolve),
+            meta: {requireLogin: true,admin:true}
+          },
+          {
+            path: '/sourceManage',
+            component: resolve => require(['../components/admin/SourceManage'], resolve),
+            meta: {requireLogin: true,admin:true}
+          }
+        ]
       }
     ]
   },

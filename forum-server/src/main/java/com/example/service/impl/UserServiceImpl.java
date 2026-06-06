@@ -1,6 +1,7 @@
 package com.example.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.constant.Result;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,39 +43,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Result login(String username, String password) {
-        Result result = new Result();
+    public Result<User> login(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username);
+        queryWrapper.eq("username", username);
         queryWrapper.eq("password", MD5Util.MD5Lower(password));
         List<User> list = list(queryWrapper);
-        if (list.size()==0){
-            result.setResultCode(ResultCode.USER_LOGIN_ERROR);
-            return result;
+        if (list.size() == 0) {
+            return Result.error(ResultCode.USER_LOGIN_ERROR);
         }
         User user = list.get(0);
-        if ("0".equals(user.getLockState())){
+        if ("0".equals(user.getLockState())) {
             return Result.error(ResultCode.USER_ACCOUNT_FORBIDDEN);
         }
         // 生成token
-        String token = JWTUtil.sign(user.getId(),user.getPassword());
+        String token = JWTUtil.sign(user.getId(), user.getPassword());
         user.setPassword("it's a secret");
         user.setToken(token);
         //缓存到Redis
         Map<String,Object> userMap = BeanUtil.beanToMap(user);
-        //使用Jackson2JsonRedisSerialize 替换默认序列化
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        stringRedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         stringRedisTemplate.opsForHash().putAll(LOGIN_TOKEN_KEY+token,userMap);
         stringRedisTemplate.expire(LOGIN_TOKEN_KEY+token,LOGIN_TOKEN_TTL, TimeUnit.MINUTES);
-
-        result.setResultCode(ResultCode.SUCCESS);
-        result.setData(user);
-        return result;
+        return Result.success(user);
     }
 
     @Override
-    public Result signUp(HttpServletRequest req) {
+    public Result<Void> signUp(HttpServletRequest req) {
         String username = req.getParameter("username").trim();
         String password = req.getParameter("password").trim();
         String sex = req.getParameter("sex").trim();
@@ -83,10 +77,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String location = req.getParameter("location").trim();
         String avatar = req.getParameter("avatar").trim();
         // 验证是否为空
-        if ("".equals(username)){
+        if ("".equals(username)) {
             return Result.error(ResultCode.USER_Register_ERROR);
         }
-        if ("".equals(password)){
+        if ("".equals(password)) {
             return Result.error(ResultCode.USER_Register_ERROR);
         }
         // 验证码
@@ -97,25 +91,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 验证用户是否已存在
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("username", username);
-        User one = getOne(queryWrapper);
-        if (one != null){
+        User one = lambdaQuery().eq(User::getUsername,username).one();
+        if (ObjectUtil.isNotEmpty(one)){
             return Result.error(ResultCode.USER_HAS_EXISTED);
         }
 
         User user = new User();
-        if (birth!=""){
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date myBirth = new Date();
+        if (StringUtils.isNotBlank(birth)){
+            Date myBirth = null;
             try {
-                myBirth = dateFormat.parse(birth);
-            } catch (Exception e){
+                myBirth = new SimpleDateFormat("yyyy-MM-dd").parse(birth);
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
             user.setBirth(myBirth);
         }
-
         user.setUsername(username);
         user.setPassword(MD5Util.MD5Lower(password));
         user.setSex(Integer.parseInt(sex));

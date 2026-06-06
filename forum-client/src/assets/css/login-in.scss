@@ -1,28 +1,157 @@
-@import "var.scss";
-@import "global.scss";
+@use "var.scss" as *;
+@use "global.scss" as *;
+
+.login-in {
+  // 固定定位，相对于视口，绕过所有父元素布局干扰
+  position: fixed;
+  top: $header-height;       // header 下方
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // 背景透明，让 canvas-nest.js 粒子动画透出
+}
 
 .login {
-  position: absolute;
-  margin-left: 900px;
-  width: 300px;
-  height: 210px;
-  top: $header-height + 60px;
-  padding: 30px 50px;
-  border-radius: 10px;
+  width: 400px;
+  padding: 40px 36px;
   background-color: $color-white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
   .login-head {
     text-align: center;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 600;
+    margin-bottom: 32px;
+
+    span {
+      font-size: 22px;
+      font-weight: 600;
+      color: #303133;
+      position: relative;
+      padding-bottom: 12px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #409eff, #66b1ff);
+      }
+    }
   }
 
-  .login-btn {
-    @include layout(space-between);
-    button {
-      display: block;
-      width: 50%;
+  .demo-ruleForm {
+    .el-form-item {
+      margin-bottom: 22px;
+    }
+
+    .el-input__inner {
+      height: 44px;
+      line-height: 44px;
+      border-radius: 8px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+
+      &:focus {
+        border-color: #409eff;
+        box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.15);
+      }
+    }
+
+    .login-btn {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 28px;
+
+      .el-button {
+        flex: 1;
+        height: 44px;
+        border-radius: 8px;
+        font-size: 15px;
+        letter-spacing: 2px;
+
+        &:first-child {
+          margin-right: 16px;
+          border-color: #dcdfe6;
+          color: #606266;
+
+          &:hover {
+            color: #409eff;
+            border-color: #c6e2ff;
+            background-color: #ecf5ff;
+          }
+        }
+
+        &:last-child {
+          background: linear-gradient(135deg, #409eff, #337ecc);
+
+          &:hover {
+            background: linear-gradient(135deg, #66b1ff, #409eff);
+          }
+        }
+      }
+    }
+  }
+
+  .login-sns {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #ebeef5;
+    text-align: center;
+
+    .login-sns-title {
+      font-size: 13px;
+      color: #909399;
+      margin-bottom: 16px;
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 60px;
+        height: 1px;
+        background-color: #e4e7ed;
+      }
+
+      &::before {
+        left: 50px;
+      }
+
+      &::after {
+        right: 50px;
+      }
+    }
+
+    .login-sns-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border: 1px solid #e4e7ed;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #606266;
+      font-size: 14px;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #409eff;
+        color: #409eff;
+        background-color: #f0f7ff;
+        box-shadow: 0 2px 12px rgba(64, 158, 255, 0.1);
+      }
+
+      img {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 }

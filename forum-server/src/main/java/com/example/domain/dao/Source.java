@@ -8,6 +8,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 
 /**
  * @author zhw
@@ -56,27 +57,32 @@ public class Source implements Serializable {
     /**
      * 点赞数
      */
+    @Null
     private Integer thumbNum;
 
     /**
      * 收藏数
      */
+    @Null
     private Integer favourNum;
 
     /**
      * 状态 默认0审核中 1上线
      */
+    @Null
     private Integer state;
 
     /**
      * 删除标识
      */
+    @Null
     @TableLogic(value = "0",delval = "1")
     private String isDelete;
 
     /**
      * 创建时间
      */
+    @Null
     private Date createTime;
 
     /**

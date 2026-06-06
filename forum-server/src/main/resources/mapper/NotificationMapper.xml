@@ -8,10 +8,16 @@
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="senderId" column="sender_id" jdbcType="VARCHAR"/>
+            <result property="receiverId" column="receiver_id" jdbcType="VARCHAR"/>
+            <result property="isRead" column="is_read" jdbcType="TINYINT"/>
+            <result property="resourceType" column="resource_type" jdbcType="VARCHAR"/>
+            <result property="resourceId" column="resource_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,content,create_time
+        id,title,content,type,sender_id,receiver_id,is_read,resource_type,resource_id,create_time
     </sql>
 </mapper>

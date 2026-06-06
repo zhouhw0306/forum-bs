@@ -14,6 +14,7 @@ import lombok.Data;
 @TableName(value ="tb_category")
 @Data
 public class Category implements Serializable {
+
     /**
      * id
      */
@@ -36,5 +37,5 @@ public class Category implements Serializable {
     private String description;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -7049964225082687735L;
 }

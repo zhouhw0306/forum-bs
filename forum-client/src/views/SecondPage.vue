@@ -1,5 +1,5 @@
 <template>
-  <div data-title="鸭鸭论坛" style="margin:10px auto">
+  <div data-title="鸭鸭论坛" class="me-care-wrapper" style="margin-top: 60px">
     <el-container>
 
       <!--我关注的文章-->
@@ -28,27 +28,39 @@ export default {
 
 <style scoped>
 
+/* 外层居中 */
+.me-care-wrapper {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 /*主窗口*/
 .el-container {
   padding-top: 100px;
-  paddingn-left: 500px;
-  width: 1000px;
   padding-bottom: 80px;
 }
 
 .el-aside {
-  margin-left: 60px;
+  margin-left: 40px;
   width: 260px;
+  flex-shrink: 0;
 }
 
 .el-main {
-  padding: 0px;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
   line-height: 16px;
 }
 
+@media (max-width: 900px) {
+  .el-aside {
+    display: none;
+  }
+}
+
 .el-card {
-  /*background-color: white;*/
-  /*height: 300px;*/
   border-radius: 5px;
 }
 

@@ -60,8 +60,8 @@
 import TheHeader from '@/components/TheHeader'
 import MarkdownEditor from '@/components/article/MarkdownEditor'
 import {publishArticle, getArticleById} from '@/api/index'
-import {getAllCategorys} from '@/api/index'
-import {getAllTags} from '@/api/index'
+import {getAllCategorys} from '@/api'
+import {getAllTags} from '@/api'
 
 export default {
   name: 'BlogWrite',
@@ -276,7 +276,7 @@ export default {
   }
 
   .me-write-box {
-    max-width: 850px;
+    max-width: 80vw;
     margin: 80px auto 0;
     box-shadow: 0 0 3px 3px #eceaea;
   }

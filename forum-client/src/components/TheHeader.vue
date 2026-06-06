@@ -49,29 +49,63 @@
           </template>
 
           <template v-else>
-                <el-popover
-                    :visible-arrow="false"
-                    placement="bottom"
-                    width="150"
-                    trigger="hover">
-                    <div>
-                      <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
-                      <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>发帖</el-button>
-<!--                      <el-button class="btt" style="margin-left: 0"><i class="el-icon-user icon"></i>内容管理</el-button>-->
-                      <el-button class="btt" @click="logout" style="margin-left: 0;color: #e86f6f"><i class="el-icon-switch-button icon"></i>退出</el-button>
-                    </div>
-                  <img slot="reference" class="me-header-picture" :src="attachImageUrl(avatar)"/>
-                </el-popover>
-                <i @click="drawer = true" class="fa fa-commenting-o"  style="font-size: 30px;vertical-align: middle;margin-left: 10px"></i>
-                <el-drawer
-                    title="讯飞星火大模型"
-                    :visible.sync="drawer"
-                    size="50%"
-                    direction="rtl"
-                    :append-to-body="true"
-                    :modal-append-to-body="false">
-                    <AiModel/>
-                </el-drawer>
+            <div class="header-actions">
+              <!-- 用户头像 -->
+              <el-popover
+                :visible-arrow="false"
+                placement="bottom"
+                width="150"
+                trigger="hover"
+              >
+                <div>
+                  <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>个人资料</el-button>
+                  <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>发帖</el-button>
+                  <el-button class="btt" @click="logout" style="margin-left: 0;color: #e86f6f"><i class="el-icon-switch-button icon"></i>退出</el-button>
+                </div>
+                <span slot="reference" class="header-action-btn header-action-avatar-wrap">
+                  <img :src="attachImageUrl(avatar)"/>
+                </span>
+              </el-popover>
+
+              <!-- 通知 -->
+              <el-popover
+                placement="bottom"
+                width="360"
+                trigger="click"
+                v-model="notifyVisible"
+                @show="onNotifyPanelOpen"
+              >
+                <NotificationCenter
+                  ref="notifyCenter"
+                  @read="onNotifyRead"
+                  @read-all="onNotifyReadAll"
+                  @delete="onNotifyRead"
+                />
+                <span slot="reference" class="header-action-btn">
+                  <i class="el-icon-bell"></i>
+                  <sup v-if="unreadCount > 0" class="notify-dot">{{ unreadCount > 99 ? '99+' : unreadCount }}</sup>
+                </span>
+              </el-popover>
+
+              <!-- AI -->
+              <el-tooltip content="DeepSeek AI" placement="bottom" effect="light">
+                <span class="header-action-btn" @click="drawer = true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                </span>
+              </el-tooltip>
+            </div>
+
+            <el-drawer
+                title="DeepSeek AI"
+                :visible.sync="drawer"
+                size="50%"
+                direction="rtl"
+                :append-to-body="true"
+                :modal-append-to-body="false">
+                <AiModel/>
+            </el-drawer>
           </template>
         </el-menu>
       </el-col>
@@ -85,10 +119,12 @@
 import {mixin} from "@/mixins";
 import { mapGetters } from 'vuex';
 import AiModel from "@/components/aiModel/AiModel";
+import NotificationCenter from "@/components/NotificationCenter";
+import { getUnreadCount } from "@/api";
 
 export default {
   name: 'TheHeader',
-  components: {AiModel},
+  components: {AiModel, NotificationCenter},
   mixins: [mixin],
   props: {
     activeIndex: String,
@@ -101,7 +137,9 @@ export default {
     return {
       inputValue: "", //搜索框输入
       drawer: false,
-      wsManager: null
+      wsManager: null,
+      unreadCount: 0,
+      notifyVisible: false
     }
   },
   computed: {
@@ -120,28 +158,59 @@ export default {
         if (newVal && this.userId) {
           // 用户登录后初始化WebSocket
           this.initWebSocket();
+          this.fetchUnreadCount();
         } else {
           // 用户登出时关闭WebSocket连接
           this.closeWebSocket();
+          this.unreadCount = 0;
         }
       },
       immediate: true
     }
   },
   methods: {
+    async fetchUnreadCount() {
+      if (!this.loginIn) return
+      try {
+        const res = await getUnreadCount()
+        if (res.code === 0) {
+          this.unreadCount = res.data
+        }
+      } catch (e) {
+        console.error('获取未读通知数失败', e)
+      }
+    },
+    onNotifyPanelOpen() {
+      this.fetchUnreadCount()
+    },
+    onNotifyRead() {
+      this.fetchUnreadCount()
+    },
+    onNotifyReadAll() {
+      this.unreadCount = 0
+    },
     async initWebSocket() {
       console.log('WebSocket初始化ing');
       if (!this.wsManager && this.userId) {
         try {
-          // 动态导入WebSocket模块
           const websocketModule = await import('@/assets/js/websocket');
           const WebSocketManager = websocketModule.default;
 
-          // 将Vue实例绑定到WebSocketManager
-          WebSocketManager.prototype.$notify = this.$notify;
-
           this.wsManager = new WebSocketManager(this.userId);
           this.wsManager.init();
+
+          // 注册消息回调：收到通知时更新未读计数
+          this.wsManager.onMessage((msg) => {
+            this.fetchUnreadCount();
+            // 弹出通知提示
+            this.$notify({
+              title: msg.title || '新通知',
+              message: msg.content || '',
+              type: msg.type === 'ERROR' ? 'error' : (msg.type || 'info').toLowerCase(),
+              duration: 5000,
+              position: 'top-right'
+            });
+          });
         } catch (error) {
           console.error('WebSocket模块加载失败:', error);
         }
@@ -175,6 +244,7 @@ export default {
       this.$store.commit('setAvatar', '')  //头像url
       this.$store.commit('setRole', '')  //身份
       this.$store.commit('setToken','') //存储用户信息到浏览器
+      this.$store.commit('setLikedComments',null)
       this.$router.push('/')
       this.$router.go(0)
     },
@@ -207,12 +277,13 @@ export default {
 }
 .el-header {
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
   z-index: 1024;
-  min-width: 100%;
   box-shadow: 0 2px 3px hsla(0, 0%, 7%, .1), 0 0 0 1px hsla(0, 0%, 7%, .1);
-}
-.me-header{
-  background: rgba(255,255,255,0.7);
 }
 .me-title {
   font-size: 22px;
@@ -223,27 +294,80 @@ export default {
   margin-top: 10px;
   white-space: nowrap;
 }
-
+/* ---- 右侧操作区（头像 / 通知 / AI）---- */
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  float: right;
+  margin-right: 16px;
+}
+.header-action-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 80px;
+  border-radius: 12px;
+  color: #555;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.2s, background 0.2s;
+}
+.header-action-btn:hover {
+  color: #409eff;
+  background: #ecf5ff;
+}
+.notify-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 17px;
+  min-width: 17px;
+  line-height: 17px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #f56c6c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(30%, -30%);
+  pointer-events: none;
+}
+.header-action-avatar-wrap {
+  border-radius: 50% !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+.header-action-avatar-wrap img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e8eaed;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+}
+.header-action-avatar-wrap:hover {
+  background: transparent !important;
+}
+.header-action-avatar-wrap:hover img {
+  transform: scale(1.18);
+  border-color: #409eff;
+  box-shadow:
+    0 0 0 3px rgba(64,158,255,.2),
+    0 4px 16px rgba(64,158,255,.25);
+}
 .me-title img {
   max-height: 2.4rem;
   max-width: 100%;
-  vertical-align: bottom
-}
-
-.me-header-picture {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #4377fc;
-  border-radius: 50%;
-  vertical-align: middle;
-  background-color: #409EFF;
-  margin-left: 30px;
-  transition: all 0.3s ease 0s;
-}
-.me-header-picture:hover{
-  width: 50px;
-  height: 50px;
-  transition: all 0.3s ease 0s;
+  vertical-align: bottom;
 }
 .el-menu-item:hover{
   color: #1787FB !important;

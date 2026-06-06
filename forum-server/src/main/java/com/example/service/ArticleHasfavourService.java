@@ -1,19 +1,22 @@
 package com.example.service;
 
 import com.example.constant.Result;
+import com.example.domain.dao.Article;
 import com.example.domain.dao.ArticleHasfavour;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
-* @author zhw
-* @description 针对表【tb_article_hasfavour】的数据库操作Service
-* @createDate 2023-04-04 23:01:09
-*/
+ * @author zhw
+ * @description 针对表【tb_article_hasfavour】的数据库操作Service
+ * @createDate 2023-04-04 23:01:09
+ */
 public interface ArticleHasfavourService extends IService<ArticleHasfavour> {
 
-    Result favour(String targetId);
+    Result<Integer> favour(String targetId);
 
-    Result isFavour(String id);
+    Result<Boolean> isFavour(String id);
 
-    Result getHasFavour();
+    Result<List<Article>> getHasFavour();
 }

@@ -20,9 +20,7 @@ yarn-error.log*
 .project
 /forum-server/target/
 /forum-server/src/test/
-
-# Maven Wrapper
-/forum-server/mvnw
-/forum-server/mvnw.cmd
-/forum-server/.mvn/
-/forum-server/forum-server.iml
+forum-server/.mvn/wrapper/maven-wrapper.jar
+forum-server/.mvn/wrapper/maven-wrapper.properties
+forum-server/mvnw.cmd
+forum-server/mvnw

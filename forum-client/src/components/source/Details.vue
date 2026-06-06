@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div style="margin: 80px auto 30px;">
   <el-card class="box-card" :body-style="{ padding: '0px' }">
+    <el-page-header @back="goBack" content="详情页面" style="padding: 15px"></el-page-header>
     <div class="main">
       <div class="head">
         <el-col :span="2">
@@ -16,6 +17,13 @@
         <div style="color: #00000073;margin-bottom: 15px">{{source.description}}</div>
         <div v-html="urlToLink(source.content)"></div>
       </div>
+    </div>
+    <div v-if="source.fileName">
+      <el-alert
+          :closable="false"
+          type="warning">
+        <el-link style="font-size: 10px" icon="el-icon-download" :href="source.fileUrl" type="warning" :underline="false">{{source.fileName}}</el-link>
+      </el-alert>
     </div>
     <div class="foot">
       <el-button class="san" @click="thumb(source.id)">
@@ -34,7 +42,7 @@
 
    <el-card style="margin: 20px 0px;" class="box-card">
      <div class="me-view-comment-title">
-       <span>{{comments.length}} 条评论</span>
+       <span>{{commentCount}} 条评论</span>
      </div>
 
      <div class="me-view-comment">
@@ -46,14 +54,15 @@
              </a>
            </el-col>
            <el-col :span="22">
-             <el-input
-                 type="textarea"
-                 :autosize="{ minRows: 2}"
-                 placeholder="你的评论..."
-                 class="me-view-comment-text"
-                 v-model="comment.content"
-                 resize="none">
-             </el-input>
+<!--             <el-input-->
+<!--                 type="textarea"-->
+<!--                 :autosize="{ minRows: 2}"-->
+<!--                 placeholder="你的评论..."-->
+<!--                 class="me-view-comment-text"-->
+<!--                 v-model="comment.content"-->
+<!--                 resize="none">-->
+<!--             </el-input>-->
+             <VueEmoji ref="emoji" width="100%" height="100" :value="comment.content" @input="onInput" />
            </el-col>
          </el-row>
 
@@ -68,9 +77,9 @@
            v-for="(c,index) in comments"
            :comment="c"
            :articleId="source.id"
+           :articleAuthorId="source.user.id"
            :index="index"
            :rootCommentCounts="comments.length"
-           @commentCountsIncrement="commentCountsIncrement"
            :key="c.id">
        </commment-item>
 
@@ -82,6 +91,7 @@
 </template>
 
 <script>
+import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins";
 import {favour, getCommentsByArticle, getSourceById, pushComment, thumb} from "@/api";
 import CommmentItem from "@/components/CommentItem";
@@ -91,7 +101,21 @@ export default {
   data () {
     return {
       id : '',
-      source : {},
+      source : {
+        id:'',
+        createTime:'',
+        title:'',
+        description:'',
+        content:'',
+        hasThumb:'',
+        thumbNum:'',
+        hasFavour:'',
+        favourNum:'',
+        user:{
+          avatar:'',
+          username:''
+        },
+      },
       comments: [],
       comment: {
         content: ''
@@ -100,9 +124,11 @@ export default {
   },
   mixins: [mixin],
   components: {
-    CommmentItem
+    CommmentItem,
+    VueEmoji
   },
   mounted () {
+    window.scrollTo({top:0,left:0})
     this.id = this.$route.params.id
     this.init()
   },
@@ -114,8 +140,20 @@ export default {
       }
       return '/avatarImages/default_user.jpg'
     },
+    commentCount(){
+      let sum = this.comments.length
+      for(let i = 0; i < this.comments.length; i++){
+        if (this.comments[i].childrens){
+          sum += this.comments[i].childrens.length
+        }
+      }
+      return sum
+    }
   },
   methods : {
+    onInput (event) {
+      this.comment.content = event.data
+    },
     init (){
       getSourceById(this.id)
           .then((res) => {
@@ -171,21 +209,26 @@ export default {
       let params = new URLSearchParams();
       params.append("content",this.comment.content)
       params.append("articleId",this.source.id)
-      params.append("authorId",this.$store.getters.userId)
       params.append("level","0")
       pushComment(params).then(res => {
         if (res.code===0){
           this.$message({type: 'success', message: '评论成功', showClose: true})
           this.comments.unshift(res.data)
+          this.$refs.emoji.clear()
           this.comment.content = ''
         }else{
           this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
         }
       }).catch(err => {
-        this.$message({type: 'error', message: `评论失败${err.msg}`, showClose: true})
+        if(err.status === 401){
+          this.$message({type: 'error', message: `请重新登录`, showClose: true})
+          this.$store.commit('setLoginIn',false)
+        }else{
+          this.$message({type: 'error', message: `评论失败`, showClose: true})
+        }
       })
     },
-    //得到文章评论
+    //得到资源评论
     getCommentsByArticle() {
       let params = new URLSearchParams();
       params.append('articleId',this.source.id)
@@ -198,7 +241,18 @@ export default {
       })
     },
     share(){
-      alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+      if (navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(`http://localhost:8080${this.$route.fullPath}`).then(()=>{
+          this.$message({type: 'success', message: '复制成功', showClose: true})
+        }).catch(()=>{
+          this.$message({type: 'error', message: '复制失败', showClose: true})
+        })
+      }else {
+        alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+      }
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 
@@ -238,11 +292,5 @@ export default {
 .me-view-comment {
   margin-top: 20px;
 }
-/*a{*/
-/*  color: #0969da !important;*/
-/*}*/
-/*a:hover{*/
-/*  text-decoration: underline !important;*/
-/*  color: #409EFF;*/
-/*}*/
+
 </style>

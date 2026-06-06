@@ -23,15 +23,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 public class LogAspect {
 
-    @Pointcut("execution(* com.example.controller..*(..))")
+    @Pointcut("execution(* com.example.controller..*(..)) " +
+              "&& !execution(* com.example.controller.chat.client..*(..))")
     public void LogPointcut() {
     }
 
     @Around("LogPointcut()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        // 接收到请求，记录请求内容
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return proceedingJoinPoint.proceed();
+        }
         javax.servlet.http.HttpServletRequest request = attributes.getRequest();
         // 获取方法的返回结果
         Long startTime = System.currentTimeMillis();

@@ -2,9 +2,11 @@ const user = {
   state: {
     userId: '',
     username: '',
-    avatar: '',
-    token:'',
-    loginIn: false // 用户是否登录
+    avatar: '', // 头像
+    token:'', // token
+    role:'', // 身份
+    loginIn: false, // 用户是否登录
+    likedComments: null // 点赞的评论
   },
   getters: {
     userId: state => {
@@ -35,12 +37,26 @@ const user = {
       }
       return token;
     },
+    role: state => {
+      let role = state.role
+      if (!role){
+        role = JSON.parse(window.localStorage.getItem('role') || null)
+      }
+      return role;
+    },
     loginIn: state => {
       let loginIn = state.loginIn
       if (!loginIn) {
         loginIn = JSON.parse(window.localStorage.getItem('loginIn') || null)
       }
       return loginIn
+    },
+    likedComments : state => {
+      let likedComments = state.likedComments
+      if (!likedComments) {
+        likedComments = JSON.parse(window.localStorage.getItem('likedComments') || null)
+      }
+      return likedComments
     }
   },
   mutations: {
@@ -60,9 +76,17 @@ const user = {
       state.token = token
       token ==='' ? window.localStorage.removeItem('token') : window.localStorage.setItem('token', JSON.stringify(token));
     },
+    setRole : (state,role) => {
+      state.role = role
+      role ==='' ? window.localStorage.removeItem('role') : window.localStorage.setItem('role', JSON.stringify(role));
+    },
     setLoginIn: (state, loginIn) => {
       state.loginIn = loginIn
       window.localStorage.setItem('loginIn', JSON.stringify(loginIn))
+    },
+    setLikedComments: (state, likedComments) => {
+      state.likedComments = likedComments
+      window.localStorage.setItem('likedComments', JSON.stringify(likedComments))
     }
   },
   actions: {}

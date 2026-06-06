@@ -64,7 +64,7 @@ public class JWTUtil {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withClaim("userId", userId) // 创建负载
-                    .withExpiresAt(DateUtil.offsetHour(new Date(),2)) // 设置超时日期 2小时
+                    .withExpiresAt(DateUtil.offsetHour(new Date(),200)) // 设置超时日期 2小时
                     .sign(algorithm); // 创建签名并设置密钥
         } catch (Exception e) {
             return null;

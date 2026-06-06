@@ -16,7 +16,15 @@ router.beforeEach((to,from,next) => {
     let loginIn = window.localStorage.getItem('loginIn')
     let role = window.localStorage.getItem('role')
     if (loginIn === 'true'){
-      if (to.matched[1].path === '/admin' && role !== '"ADMIN"') return
+      if (role === '"ADMIN"') {
+        next()
+        return
+      }
+      if (to.meta.admin === true) {
+        next({
+          path: '/',
+        })
+      }
       next()
     } else {
       next({

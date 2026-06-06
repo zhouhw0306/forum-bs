@@ -2,9 +2,9 @@
   <div>
     <el-empty v-if="tableData.length===0" :image-size="100" description="暂无搜索内容"></el-empty>
     <el-col v-else :span="24" v-for="(item,index) in tableData" :key="index" style="margin-bottom: 10px;">
-      <el-card  shadow="hover" style="height: 120px;">
+      <el-card shadow="hover" style="height: 120px;">
         <div @click="view(item.id)">
-          <a class="me-article-title">{{item.title}}</a>
+          <a class="me-article-title" v-html="item.title"/>
           <span class="me-pull-right me-article-count">
             <i class="el-icon-chat-dot-round"></i>&nbsp;{{item.commentCount}}
           </span>

@@ -137,8 +137,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         String id = UserUtils.getCurrentUser();
         // 未登录推默认
         if (ObjectUtil.isEmpty(id)) {
-            List<Article> list = query().list().subList(0,5);
-            return list;
+            List<Article> list = query().list();
+            return list.subList(0, Math.min(list.size(), 5));
         }
         Set<String> set = new HashSet<>();
         // 查询所有关注者article集合

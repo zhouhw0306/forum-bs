@@ -1,3 +1,4 @@
+@use 'sass:math';
 //Colors
 $color-white: #ffffff;
 $color-light-white: #fefefe;
@@ -34,12 +35,12 @@ $header-logo-margin: 0 10px;
 $header-nav-padding: 0 10px;
 $header-nav-margin: 0 10px;
 $header-search-radius: 5px;
-$header-search-height: ($header-height / 2);
+$header-search-height: math.div($header-height,2);
 $header-search-width: 270px;
-$header-search-btn-height: ($header-height / 2);
+$header-search-btn-height: math.div($header-height,2);
 $header-search-btn-width: 60px;
-$header-user-height: ($header-height / 3) * 2;
-$header-user-width: ($header-height / 3) * 2;
+$header-user-height: math.div($header-height,3) * 2;
+$header-user-width: math.div($header-height,3) * 2;
 $header-user-margin: 0 25px;
 $header-user-radius: 50%;
 $header-menu-width: 150px;

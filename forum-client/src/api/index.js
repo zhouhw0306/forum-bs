@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, post } from './http'
+import { get, post, put, deletes } from './http'
 // =======================> 用户 API
 // 登录
 export const loginIn = (params) => post(`api/login/status`, params)
@@ -37,7 +37,9 @@ export const getAllTags = () =>get(`tag/getTagAll`)
 //根据id获得文章
 export const getArticle = (id) => get(`articles/${id}`)
 //获取收藏
-export const getArticleHasFavour = () => get(`hasArticle/getHasFavour`)
+export const getArticleHasFavour = () => get(`hasArticle/getArticleHasFavour`)
+//获取浏览历史
+export const getBrowsingHistory = () => get(`articles/getBrowsingHistory`)
 //获得所有文章
 export function getArticles(isCareMe, index, page) {
     return axios({
@@ -84,6 +86,11 @@ export const getCommentsByArticle = (params) => get(`comment/getCommentsByArticl
 //发布评论
 export const pushComment = (params) => post(`comment/pushComment`,params)
 
+// 点赞
+export const likeComment = (params) => post(`comment/likeComment`,params)
+
+export const allLikeCommonId = () => post(`comment/allLikeCommonId`)
+
 //添加文章阅览量
 export const addViewCount = (id) => get(`articles/addViewCount/${id}`)
 
@@ -93,9 +100,19 @@ export const isFavour = (id) => get(`hasArticle/isFavour/${id}`)
 // 更新(用户&文章)收藏关系
 export const articleFavour = (params) => post(`hasArticle/favour`,params)
 
-// =======================> 公告 API
-//获得所有公告
+// =======================> 通知 API
+//获得所有公告（系统通知）
 export const getAllNotify = () => get(`notify/getAll`)
+// 获取未读通知数量
+export const getUnreadCount = () => get(`notify/unread-count`)
+// 分页获取用户通知列表
+export const getNotifyList = (params) => get(`notify/list`, params)
+// 标记单条已读
+export const readNotify = (id) => put(`notify/read/${id}`)
+// 全部标记已读
+export const readAllNotify = () => put(`notify/read-all`)
+// 删除通知
+export const deleteNotify = (id) => deletes(`notify/${id}`)
 
 // =======================> 关注关系 API
 //判断用户是否关注某人
@@ -127,7 +144,7 @@ export const getSourceById = (id) => get(`source/${id}`)
 export const sourceShare = (source) => post(`source/insert`,source)
 
 //获取收藏资源
-export const getSourceHasFavour = () => get(`source/getHasFavour`)
+export const getSourceHasFavour = () => get(`source/getSourceHasFavour`)
 
 // =======================> 管理员 API
 //获取所有用户

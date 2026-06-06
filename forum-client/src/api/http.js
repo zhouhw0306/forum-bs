@@ -1,10 +1,13 @@
 /* eslint-disable */
 import axios from 'axios';
+import router from "@/router";
 
 axios.defaults.timeout = 100000;  //超时时间设置
 axios.defaults.withCredentials = true;  //true允许跨域
 //Content-Type 响应头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+
+axios.defaults.baseURL = 'http://localhost:8888';
 
 //请求拦截器
 axios.interceptors.request.use(config => {
@@ -18,7 +21,7 @@ axios.interceptors.request.use(config => {
       return Promise.reject(error)
   }
 )
-
+import ElementUI from 'element-ui'
 //响应拦截器
 axios.interceptors.response.use(
   response => {
@@ -36,8 +39,9 @@ axios.interceptors.response.use(
       switch (error.response.status) {
         // 401: 未登录
         case 401:
+          window.localStorage.clear()
           router.replace({
-            path: '/',
+            path: '/login',
             query: {
               redirect: router.currentRoute.fullPath
             }
@@ -60,6 +64,8 @@ axios.interceptors.response.use(
         case 404:
           // console.log('请求页面飞到火星去了')
           break;
+        default:
+          ElementUI.Notification(error.response.data.msg);
       }
       return Promise.reject(error.response);
     }
@@ -93,7 +99,7 @@ export function get(url, params = {}) {
    * 封装post请求
    * @param url
    * @param data
-   * @returns {Promise}
+   * @returns {Promise}l
    */
 
 export function post(url, data = {}) {

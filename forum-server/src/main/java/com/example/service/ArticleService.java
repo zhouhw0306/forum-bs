@@ -5,6 +5,7 @@ import com.example.domain.dao.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,15 +15,17 @@ import java.util.List;
 */
 public interface ArticleService extends IService<Article> {
 
-    String publishArticle(Article article);
+    Result<String> publishArticle(Article article);
 
-    Result addViewCount(String id);
+    void addViewCount(String id);
 
-    Result findById(String id);
+    Article findById(String id);
 
-    Result searchByKey(String word);
+    Map<String, Object> searchByKey(String word);
 
     List<Article> getRecommend();
 
     List<Article> listArticles(Integer pageNumber, Integer pageSize, Boolean isCareMe, String sort, String index);
+
+    List<Article> getBrowsingHistory();
 }

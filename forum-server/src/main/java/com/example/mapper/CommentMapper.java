@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
 * @author zhw
-* @description 针对表【tb_comment】的数据库操作Mapper
-* @createDate 2022-09-29 14:20:56
-* @Entity com.example.domain.dao.Comment
 */
 public interface CommentMapper extends BaseMapper<Comment> {
 
+    int likeComment(String commentId);
+
+    int disLikeComment(String commentId);
 }
 
 

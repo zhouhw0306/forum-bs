@@ -99,13 +99,19 @@ CREATE TABLE `tb_comment` (
 -- Table structure for tb_notification
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_notification`;
-CREATE TABLE `tb_notification`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '标题',
-  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '内容',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+CREATE TABLE `tb_notification` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
+   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内容',
+   `type` varchar(50) DEFAULT NULL COMMENT '通知类型: COMMENT/REPLY/LIKE/FAVOUR/FOLLOW/SYSTEM',
+   `sender_id` varchar(64) DEFAULT NULL COMMENT '触发者用户ID',
+   `receiver_id` varchar(64) DEFAULT NULL COMMENT '接收者用户ID (NULL表示全体公告)',
+   `is_read` int DEFAULT '0' COMMENT '是否已读 0未读 1已读',
+   `resource_type` varchar(50) DEFAULT NULL COMMENT '关联资源类型: ARTICLE/COMMENT/SOURCE',
+   `resource_id` varchar(64) DEFAULT NULL COMMENT '关联资源ID',
+   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for tb_source

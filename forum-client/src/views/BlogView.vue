@@ -1,5 +1,5 @@
 <template>
-  <div style="margin: 100px auto 140px;min-width: 1000px">
+  <div style="max-width: 1000px; width: 90%; margin: 100px auto 140px;">
   <div class="me-view-body" :data-title="title">
     <el-container class="me-view-container">
       <el-main>
@@ -10,12 +10,12 @@
           <h1 class="me-view-title">{{article.title}}</h1>
           <div class="me-view-author">
             <a class="">
-              <img class="me-view-picture" :src="attachImageUrl(article.author.avatar)"/>
+              <img class="me-view-picture" :src="attachImageUrl(article.author?.avatar)"/>
             </a>
             <div class="me-view-info">
               <div>
-                <span>{{article.author.username}}</span>
-                <template v-if="this.article.author.id !== this.$store.getters.userId">
+                <span>{{article.author?.username}}</span>
+                <template v-if="this.article.author?.id !== this.$store.getters.userId">
                   <el-button v-if="!isFollow" @click="updateFollow" style="margin-left: 10px;background-color:#ecf5ff;border-color:#bad6f1;color: #58a3f1" size="mini">关注√</el-button>
                   <el-button v-else @click="updateFollow" style="margin-left: 10px" size="mini">已关注</el-button>
                 </template>
@@ -29,7 +29,7 @@
 
             </div>
             <el-button
-              v-if="this.article.author.id === this.$store.getters.userId"
+              v-if="this.article.author?.id === this.$store.getters.userId"
               @click="editArticle()"
               style="position: relative;left: 30%;"
               size="mini"
@@ -83,15 +83,16 @@
               <span>{{article.commentCount}} 条评论</span>
             </div>
 
-            <commment-item
+            <comment-item
               v-for="(c,index) in comments"
               :comment="c"
               :articleId="article.id"
+              :articleAuthorId="article.author.id"
               :index="index"
               :rootCommentCounts="comments.length"
               @commentCountsIncrement="commentCountsIncrement"
               :key="c.id">
-            </commment-item>
+            </comment-item>
 
           </div>
         </div>
@@ -105,7 +106,7 @@
     <el-divider style="margin: 15px 0"></el-divider>
     <div class="me-view-tag">
       作者：
-      {{article.author.username}}
+      {{article.author?.username}}
     </div>
     <div class="me-view-tag">
       标签：
@@ -123,7 +124,7 @@
 import VueEmoji from 'emoji-vue2'
 import {mixin} from "@/mixins"
 import MarkdownEditor from '@/components/article/MarkdownEditor'
-import CommmentItem from '@/components/CommentItem'
+import CommentItem from '@/components/CommentItem'
 import {
   getTypeById,
   getCommentsByArticle,
@@ -150,7 +151,7 @@ export default {
         title: '',
         commentCount: 0,
         viewCount: 0,
-        author: {},
+        author: {id : '',avatar : '',username : ''},
         tags: [],
         categoryId:'',
         categoryName:'',
@@ -288,6 +289,8 @@ export default {
       }).catch(err => {
         this.$message({type: 'error', message: `文章加载失败${err.msg}`, showClose: true})
       })
+      // 如果文章加载失败则不再继续
+      if (!this.article) return
       // 获取作者
       await getAuthorById(this.article.userId).then(res => {
         if (res.code === 0){
@@ -374,7 +377,7 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor,
-    CommmentItem,
+    CommentItem,
     VueEmoji
   },
 }
@@ -486,7 +489,9 @@ export default {
     padding: 0 !important;
   }
   .hljs{
-    padding: 10px;
+    padding: 20px;
     border-radius: 10px;
   }
+
+
 </style>

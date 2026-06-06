@@ -8,7 +8,11 @@
         element-loading-text="拼命加载中"
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(245,245,245)"></div>
+
+    <el-empty v-if="this.$route.path==='/carePost'" description="快去关注更多人吧"></el-empty>
+
   </div>
+
 
 </template>
 
@@ -36,10 +40,10 @@ export default {
   },
   methods: {
     handleScroll(e) {
-      var that = this
+      let that = this
       if (!that.noData) {
         let curHeight = document.documentElement.scrollTop || document.body.scrollTop
-        var scrollPage = document.getElementById('scroll-page');
+        let scrollPage = document.getElementById('scroll-page');
 
         if ((curHeight + window.innerHeight >= that.$refs.scroll.offsetHeight + that.offset) && that.isDownDirection()) {
           if (!that.loading) {
@@ -53,8 +57,8 @@ export default {
         this.scrollAction.x = window.pageXOffset;
         this.scrollAction.y = window.pageYOffset;
       }
-      var diffX = this.scrollAction.x - window.pageXOffset;
-      var diffY = this.scrollAction.y - window.pageYOffset;
+      let diffX = this.scrollAction.x - window.pageXOffset;
+      let diffY = this.scrollAction.y - window.pageYOffset;
 
       this.scrollAction.x = window.pageXOffset;
       this.scrollAction.y = window.pageYOffset;

@@ -16,10 +16,10 @@ public interface UserService extends IService<User> {
     /**
      * 登录
      */
-    Result login(String username, String password);
+    Result<User> login(String username, String password);
 
     /**
      * 注册
      */
-    Result signUp(HttpServletRequest req);
+    Result<Void> signUp(HttpServletRequest req);
 }

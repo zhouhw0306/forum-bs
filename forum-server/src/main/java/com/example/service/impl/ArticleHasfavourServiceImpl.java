@@ -2,20 +2,25 @@ package com.example.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.constant.NotificationTypeEnum;
 import com.example.constant.Result;
 import com.example.constant.ResultCode;
 import com.example.domain.dao.Article;
 import com.example.domain.dao.ArticleHasfavour;
+import com.example.domain.dao.Notification;
 import com.example.domain.dao.User;
 import com.example.service.ArticleHasfavourService;
 import com.example.mapper.ArticleHasfavourMapper;
 import com.example.service.ArticleService;
+import com.example.service.NotificationService;
 import com.example.service.UserService;
 import com.example.utils.UserUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
@@ -25,6 +30,7 @@ import static com.example.utils.RedisConstants.FAVOUR_ART_KEY;
 * @description 针对表【tb_article_hasfavour】的数据库操作Service实现
 * @createDate 2023-04-04 23:01:09
 */
+@Slf4j
 @Service
 public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMapper, ArticleHasfavour>
     implements ArticleHasfavourService{
@@ -38,29 +44,47 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Resource
+    private NotificationService notificationService;
+
     /**
      * 收藏操作
      */
     @Override
-    public Result favour(String targetId) {
+    public Result<Integer> favour(String targetId) {
         QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
         User user = userService.getById(currentUser);
-        if (user == null){
+        if (user == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",targetId);
-        ArticleHasfavour one = getOne(queryWrapper);;
-        if (one == null){
+        queryWrapper.eq("user_id", currentUser);
+        queryWrapper.eq("article_id", targetId);
+        ArticleHasfavour one = getOne(queryWrapper);
+        if (one == null) {
             //添加收藏关系
             save(ArticleHasfavour.builder().userId(currentUser).articleId(targetId).build());
             stringRedisTemplate.opsForSet().add(FAVOUR_ART_KEY + currentUser, targetId);
+            // 触发收藏通知
+            try {
+                Article article = articleService.getById(targetId);
+                if (article != null && !currentUser.equals(article.getUserId())) {
+                    User sender = userService.getById(currentUser);
+                    Notification notify = new Notification();
+                    notify.setType(NotificationTypeEnum.FAVOUR.getCode());
+                    notify.setTitle("新收藏");
+                    notify.setContent((sender != null ? sender.getUsername() : "有人") + " 收藏了你的文章「" + article.getTitle() + "」");
+                    notify.setSenderId(currentUser);
+                    notify.setReceiverId(article.getUserId());
+                    notify.setResourceType("ARTICLE");
+                    notify.setResourceId(targetId);
+                    notificationService.createAndPush(notify);
+                }
+            } catch (Exception e) {
+                log.error("发送收藏通知失败", e);
+            }
             return Result.success(1);
-        }else {
+        } else {
             //删除收藏关系
             remove(queryWrapper);
             stringRedisTemplate.opsForSet().remove(FAVOUR_ART_KEY + currentUser, targetId);
@@ -69,31 +93,25 @@ public class ArticleHasfavourServiceImpl extends ServiceImpl<ArticleHasfavourMap
     }
 
     @Override
-    public Result isFavour(String id) {
-        QueryWrapper<ArticleHasfavour> queryWrapper = new QueryWrapper<>();
+    public Result<Boolean> isFavour(String id) {
         String currentUser = UserUtils.getCurrentUser();
-        if (currentUser == null ){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        queryWrapper.eq("user_id",currentUser);
-        queryWrapper.eq("article_id",id);
-        ArticleHasfavour one = getOne(queryWrapper);;
+        ArticleHasfavour one = lambdaQuery()
+                .eq(ArticleHasfavour::getUserId, currentUser)
+                .eq(ArticleHasfavour::getArticleId, id)
+                .one();
         return Result.success(one != null);
     }
 
     @Override
-    public Result getHasFavour() {
-        String userId = UserUtils.getCurrentUser();
-        if (userId == null){
-            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
-        List<ArticleHasfavour> favourList = lambdaQuery().eq(ArticleHasfavour::getUserId, userId).list();
+    public Result<List<Article>> getHasFavour() {
+        String currentUser = UserUtils.getCurrentUser();
+        List<ArticleHasfavour> favourList = lambdaQuery().eq(ArticleHasfavour::getUserId, currentUser).list();
         List<Article> articleList = favourList.stream().map(articleHasfavour ->
                 articleService.lambdaQuery()
                         .select(Article::getId, Article::getTitle)
                         .eq(Article::getId, articleHasfavour.getArticleId())
                         .one()
-        ).collect(Collectors.toList());
+        ).filter(Objects::nonNull).collect(Collectors.toList());
         return Result.success(articleList);
     }
 }

@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 标签表
@@ -13,9 +17,12 @@ import lombok.Data;
  */
 @TableName(value ="tb_tag")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tag implements Serializable {
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -31,5 +38,5 @@ public class Tag implements Serializable {
     private String tagName;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -66078278895318126L;
 }

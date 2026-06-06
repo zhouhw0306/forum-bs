@@ -132,7 +132,9 @@ public class SourceServiceImpl extends ServiceImpl<SourceMapper, Source>
                 messageContent,
                 new Date(),
                 approved ? "SUCCESS" : "WARNING",
-                source.getId()
+                "SYSTEM",
+                source.getId(),
+                "SOURCE"
         );
 
         // 发送WebSocket通知给资源作者
