@@ -137,7 +137,7 @@
     <transition name="reply-form">
       <div v-show="commentShow" class="reply-form">
         <div class="reply-form-header">
-          <img :src="attachImageUrl(currentUserAvatar)" class="reply-avatar" @error="e => e.target.src = avatarFallback(username)" />
+          <img :src="attachImageUrl(currentUserAvatar)" class="reply-avatar" @error="e => e.target.src = avatarFallback($store.getters.username || 'U')" />
           <div class="reply-input-container">
             <el-input
               v-model="reply.content"

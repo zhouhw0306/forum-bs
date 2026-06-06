@@ -56,7 +56,7 @@
               <el-row :gutter="20">
                 <el-col :span="2">
                   <a class="">
-                    <img class="me-view-picture" :src="attachImageUrl(avatar)" @error="e => e.target.src = avatarFallback(username)"/>
+                    <img class="me-view-picture" :src="attachImageUrl(avatar)" @error="e => e.target.src = avatarFallback($store.getters.username || 'U')"/>
                   </a>
                 </el-col>
                 <el-col :span="22">

@@ -10,7 +10,7 @@
       </div>
 
       <!-- 文章列表 -->
-      <el-main :class="{ 'full-width': !showRight }">
+      <el-main :class="{ 'full-width': !showCard }">
         <!-- 移动端切换按钮 -->
         <div class="mobile-toolbar">
           <el-button size="small" @click="showLeft = !showLeft">

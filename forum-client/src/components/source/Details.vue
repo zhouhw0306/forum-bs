@@ -52,7 +52,7 @@
 
         <!-- 发表评论 -->
         <div class="comment-write">
-          <img :src="attachImageUrl(avatar)" class="comment-write-avatar" @error="e => e.target.src = avatarFallback(username)" />
+          <img :src="attachImageUrl(avatar)" class="comment-write-avatar" @error="e => e.target.src = avatarFallback($store.getters.username || 'U')" />
           <div class="comment-write-body">
             <VueEmoji ref="emoji" width="100%" height="80" :value="comment.content" @input="onInput" />
             <div class="comment-write-foot">
