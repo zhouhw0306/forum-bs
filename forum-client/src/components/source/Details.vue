@@ -1,296 +1,244 @@
 <template>
-  <div style="margin: 80px auto 30px;">
-  <el-card class="box-card" :body-style="{ padding: '0px' }">
-    <el-page-header @back="goBack" content="详情页面" style="padding: 15px"></el-page-header>
-    <div class="main">
-      <div class="head">
-        <el-col :span="2">
-          <el-avatar style="vertical-align: top" :size="50" :src="attachImageUrl(source.user.avatar)"></el-avatar>
-        </el-col>
-        <el-col :span="19">
-          <span style="color: #000000d9;font-size: 16px;">{{source.user.username}}</span><br>
-          <span style="color: #8c939d;font-size: small;">{{source.createTime}}</span>
-        </el-col>
+  <div class="detail-page">
+    <div class="detail-container">
+      <!-- 返回 -->
+      <div class="detail-back" @click="goBack">
+        <i class="el-icon-arrow-left"></i> 返回
       </div>
-      <div class="content">
-        <h1 style="color: #000000d9;font-weight: 600;font-size: 30px;margin-bottom: 15px">{{source.title}}</h1>
-        <div style="color: #00000073;margin-bottom: 15px">{{source.description}}</div>
-        <div v-html="urlToLink(source.content)"></div>
+
+      <!-- 内容卡 -->
+      <div class="detail-card">
+        <!-- 作者 -->
+        <div class="detail-author">
+          <img :src="attachImageUrl(source.user?.avatar)" class="detail-author-avatar" />
+          <div class="detail-author-info">
+            <span class="detail-author-name">{{ source.user?.username }}</span>
+            <span class="detail-author-time">{{ formatTime(source.createTime) }}</span>
+          </div>
+        </div>
+
+        <!-- 正文 -->
+        <h1 class="detail-title">{{ source.title }}</h1>
+        <p class="detail-desc" v-if="source.description">{{ source.description }}</p>
+        <div class="detail-body" v-html="urlToLink(source.content)"></div>
+
+        <!-- 下载 -->
+        <div v-if="source.fileName" class="detail-download">
+          <el-link icon="el-icon-download" :href="source.fileUrl" type="primary" :underline="false">
+            {{ source.fileName }}
+          </el-link>
+        </div>
+      </div>
+
+      <!-- 操作栏 -->
+      <div class="detail-actions">
+        <button :class="['action-btn', { active: source.hasThumb }]" @click="thumb(source.id)">
+          <i :class="source.hasThumb ? 'fa fa-thumbs-up' : 'fa fa-thumbs-o-up'"></i>
+          <span>点赞 {{ source.thumbNum || 0 }}</span>
+        </button>
+        <button :class="['action-btn', { active: source.hasFavour }]" @click="favour(source.id)">
+          <i :class="source.hasFavour ? 'fa fa-star' : 'fa fa-star-o'"></i>
+          <span>收藏 {{ source.favourNum || 0 }}</span>
+        </button>
+        <button class="action-btn" @click="share">
+          <i class="el-icon-share"></i>
+          <span>分享</span>
+        </button>
+      </div>
+
+      <!-- 评论区 -->
+      <div class="comment-card">
+        <h3 class="comment-title">{{ totalComments }} 条评论</h3>
+
+        <!-- 发表评论 -->
+        <div class="comment-write">
+          <img :src="attachImageUrl(avatar)" class="comment-write-avatar" />
+          <div class="comment-write-body">
+            <VueEmoji ref="emoji" width="100%" height="80" :value="comment.content" @input="onInput" />
+            <div class="comment-write-foot">
+              <span class="comment-hint">支持 Markdown 和 Emoji</span>
+              <el-button type="primary" size="small" @click="pushComment" :disabled="!comment.content.trim()">发表评论</el-button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 评论列表 -->
+        <div class="comment-list" v-if="comments.length > 0">
+          <commment-item
+            v-for="(c, i) in comments"
+            :key="c.id"
+            :comment="c"
+            :articleId="source.id"
+            :articleAuthorId="source.user?.id"
+            :index="i"
+            :rootCommentCounts="comments.length"
+          />
+        </div>
+        <el-empty v-else :image-size="80" description="暂无评论" />
       </div>
     </div>
-    <div v-if="source.fileName">
-      <el-alert
-          :closable="false"
-          type="warning">
-        <el-link style="font-size: 10px" icon="el-icon-download" :href="source.fileUrl" type="warning" :underline="false">{{source.fileName}}</el-link>
-      </el-alert>
-    </div>
-    <div class="foot">
-      <el-button class="san" @click="thumb(source.id)">
-        <i v-if="!source.hasThumb" class="fa fa-thumbs-o-up"></i>
-        <i v-else class="fa fa-thumbs-up"></i> {{source.thumbNum}}
-      </el-button>
-      <el-button class="san san1" @click="favour(source.id)">
-        <i v-if="!source.hasFavour" class="fa fa-star-o"></i>
-        <i v-else class="fa fa-star"></i> {{source.favourNum}}
-      </el-button>
-      <el-button class="san" @click="share()">
-        <i class="el-icon-share"></i>
-      </el-button>
-    </div>
-  </el-card>
-
-   <el-card style="margin: 20px 0px;" class="box-card">
-     <div class="me-view-comment-title">
-       <span>{{commentCount}} 条评论</span>
-     </div>
-
-     <div class="me-view-comment">
-       <div class="me-view-comment-write">
-         <el-row :gutter="20">
-           <el-col :span="2">
-             <a class="">
-               <el-avatar :src="attachImageUrl(avatar)"></el-avatar>
-             </a>
-           </el-col>
-           <el-col :span="22">
-<!--             <el-input-->
-<!--                 type="textarea"-->
-<!--                 :autosize="{ minRows: 2}"-->
-<!--                 placeholder="你的评论..."-->
-<!--                 class="me-view-comment-text"-->
-<!--                 v-model="comment.content"-->
-<!--                 resize="none">-->
-<!--             </el-input>-->
-             <VueEmoji ref="emoji" width="100%" height="100" :value="comment.content" @input="onInput" />
-           </el-col>
-         </el-row>
-
-         <el-row :gutter="20">
-           <el-col :span="2" :offset="22">
-             <el-button type="text" @click="pushComment()">评论</el-button>
-           </el-col>
-         </el-row>
-       </div>
-
-       <commment-item
-           v-for="(c,index) in comments"
-           :comment="c"
-           :articleId="source.id"
-           :articleAuthorId="source.user.id"
-           :index="index"
-           :rootCommentCounts="comments.length"
-           :key="c.id">
-       </commment-item>
-
-       <el-empty :image-size="50" v-if="comments.length === 0"></el-empty>
-     </div>
-   </el-card>
-
   </div>
 </template>
 
 <script>
-import VueEmoji from 'emoji-vue2'
-import {mixin} from "@/mixins";
-import {favour, getCommentsByArticle, getSourceById, pushComment, thumb} from "@/api";
+import VueEmoji from "emoji-vue2";
+import { mixin } from "@/mixins";
+import { favour, getCommentsByArticle, getSourceById, pushComment, thumb } from "@/api";
 import CommmentItem from "@/components/CommentItem";
 
 export default {
-
-  data () {
-    return {
-      id : '',
-      source : {
-        id:'',
-        createTime:'',
-        title:'',
-        description:'',
-        content:'',
-        hasThumb:'',
-        thumbNum:'',
-        hasFavour:'',
-        favourNum:'',
-        user:{
-          avatar:'',
-          username:''
-        },
-      },
-      comments: [],
-      comment: {
-        content: ''
-      }
-    }
-  },
   mixins: [mixin],
-  components: {
-    CommmentItem,
-    VueEmoji
+  components: { CommmentItem, VueEmoji },
+  data() {
+    return {
+      id: "",
+      source: { id: "", createTime: "", title: "", description: "", content: "", hasThumb: "", thumbNum: "", hasFavour: "", favourNum: "", user: { avatar: "", username: "" } },
+      comments: [],
+      comment: { content: "" },
+    };
   },
-  mounted () {
-    window.scrollTo({top:0,left:0})
-    this.id = this.$route.params.id
-    this.init()
+  mounted() {
+    window.scrollTo({ top: 0, left: 0 });
+    this.id = this.$route.params.id;
+    this.init();
   },
   computed: {
     avatar() {
-      let avatar = this.$store.getters.avatar
-      if (avatar !== null) {
-        return avatar
-      }
-      return '/avatarImages/default_user.jpg'
+      return this.$store.getters.avatar || "/avatarImages/default_user.jpg";
     },
-    commentCount(){
-      let sum = this.comments.length
-      for(let i = 0; i < this.comments.length; i++){
-        if (this.comments[i].childrens){
-          sum += this.comments[i].childrens.length
-        }
-      }
-      return sum
-    }
+    totalComments() {
+      let sum = this.comments.length;
+      this.comments.forEach((c) => { if (c.childrens) sum += c.childrens.length; });
+      return sum;
+    },
   },
-  methods : {
-    onInput (event) {
-      this.comment.content = event.data
+  methods: {
+    onInput(event) { this.comment.content = event.data; },
+    init() {
+      getSourceById(this.id).then((res) => {
+        this.source = res.data;
+        this.getCommentsByArticle();
+      }).catch(() => {});
     },
-    init (){
-      getSourceById(this.id)
-          .then((res) => {
-            this.source = res.data;
-            this.getCommentsByArticle()
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+    thumb(targetId) {
+      let p = new URLSearchParams(); p.append("targetId", targetId);
+      thumb(p).then((res) => {
+        this.$message.success(res.data === 1 ? "点赞成功" : "取消点赞");
+        this.init();
+      }).catch(() => {});
     },
-    //点赞
-    thumb(targetId){
-      let params = new URLSearchParams();
-      params.append("targetId", targetId);
-      thumb(params)
-          .then(res => {
-            if (res.data == 1){
-              this.$message.success('点赞成功')
-            }else if(res.data == -1){
-              this.$message.success('取消点赞成功')
-            }else{
-              this.$message.error(res.msg)
-            }
-            this.init();
-          }).catch(err => this.$message.error(err.data.msg))
+    favour(targetId) {
+      let p = new URLSearchParams(); p.append("targetId", targetId);
+      favour(p).then((res) => {
+        this.$message.success(res.data === 1 ? "收藏成功" : "取消收藏");
+        this.init();
+      }).catch(() => {});
     },
-    //收藏
-    favour(targetId){
-      let params = new URLSearchParams();
-      params.append("targetId", targetId);
-      favour(params)
-          .then(res => {
-            if (res.data == 1){
-              this.$message.success('收藏成功')
-            }else if(res.data == -1){
-              this.$message.success('取消收藏成功')
-            }else{
-              this.$message.error(res.msg)
-            }
-            this.init();
-          }).catch(err => this.$message.error(err.data.msg))
-    },
-    //发布评论
     pushComment() {
-      if (!this.comment.content.trim()) {
-        this.$message({type: 'error', message: '评论不能为空', showClose: true})
-        return;
-      }
-      if (!this.$store.getters.loginIn){
-        this.$message({type: 'error', message: '请先登录', showClose: true})
-        return;
-      }
-      let params = new URLSearchParams();
-      params.append("content",this.comment.content)
-      params.append("articleId",this.source.id)
-      params.append("level","0")
-      pushComment(params).then(res => {
-        if (res.code===0){
-          this.$message({type: 'success', message: '评论成功', showClose: true})
-          this.comments.unshift(res.data)
-          this.$refs.emoji.clear()
-          this.comment.content = ''
-        }else{
-          this.$message({type: 'error', message: `评论失败${res.msg}`, showClose: true})
+      if (!this.comment.content.trim()) return this.$message.error("评论不能为空");
+      if (!this.$store.getters.loginIn) return this.$message.error("请先登录");
+      let p = new URLSearchParams();
+      p.append("content", this.comment.content);
+      p.append("articleId", this.source.id);
+      p.append("level", "0");
+      pushComment(p).then((res) => {
+        if (res.code === 0) {
+          this.$message.success("评论成功");
+          this.comments.unshift(res.data);
+          this.$refs.emoji.clear();
+          this.comment.content = "";
+        } else {
+          this.$message.error(res.msg);
         }
-      }).catch(err => {
-        if(err.status === 401){
-          this.$message({type: 'error', message: `请重新登录`, showClose: true})
-          this.$store.commit('setLoginIn',false)
-        }else{
-          this.$message({type: 'error', message: `评论失败`, showClose: true})
+      }).catch((err) => {
+        if (err.status === 401) {
+          this.$store.commit("setLoginIn", false);
+          this.$message.error("请重新登录");
         }
-      })
+      });
     },
-    //得到资源评论
     getCommentsByArticle() {
-      let params = new URLSearchParams();
-      params.append('articleId',this.source.id)
-      getCommentsByArticle(params).then(res => {
-        this.comments = res.data
-      }).catch(err => {
-        if (err !== 'error') {
-          this.$message({type: 'error', message: '评论加载失败', showClose: true})
-        }
-      })
+      let p = new URLSearchParams(); p.append("articleId", this.source.id);
+      getCommentsByArticle(p).then((res) => { this.comments = res.data; }).catch(() => {});
     },
-    share(){
-      if (navigator.clipboard && window.isSecureContext){
-        navigator.clipboard.writeText(`http://localhost:8080${this.$route.fullPath}`).then(()=>{
-          this.$message({type: 'success', message: '复制成功', showClose: true})
-        }).catch(()=>{
-          this.$message({type: 'error', message: '复制失败', showClose: true})
-        })
-      }else {
-        alert('http://localhost:8080'+this.$route.fullPath+'  ~快复制分享给朋友吧!!')
+    share() {
+      const url = `http://localhost:8080${this.$route.fullPath}`;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(() => this.$message.success("链接已复制")).catch(() => {});
+      } else {
+        this.$message.info(url);
       }
     },
-    goBack() {
-      this.$router.go(-1)
-    }
-  }
-
-}
+    goBack() { this.$router.go(-1); },
+    formatTime(t) {
+      if (!t) return "";
+      const d = new Date(t);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    },
+  },
+};
 </script>
+
 <style scoped>
-.box-card{
-  width: 800px;
-  min-height: 300px;
+.detail-page { min-height: calc(100vh - 60px); background: transparent; }
+.detail-container { max-width: 800px; width: 92%; margin: 0 auto; padding: 24px 0 60px; }
+
+/* 返回 */
+.detail-back {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 14px; color: #606266; cursor: pointer;
+  padding: 8px 0; margin-bottom: 12px; transition: color .2s;
 }
-.main{
-  min-height: 260px;
-  padding: 20px;
+.detail-back:hover { color: #409eff; }
+
+/* 内容卡 */
+.detail-card {
+  background: #fff; border-radius: 16px; padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05); margin-bottom: 14px;
 }
-.head{
-  height: 80px;
-}
-.content{
-  padding-top: 20px;
-  border-top: rgba(0,0,0,.06) solid 1px;
-}
-.foot{
-  height: 38px;
-  width: 800px;
-  border-top: rgba(0,0,0,.06) solid 1px;
-}
-.san{
-  width: 33.33%;
-  margin-left: 0px;
-  border: none;
-  background-color: white;
-}
-.san1{
-  border-left: rgba(0,0,0,.06) solid 1px;
-  border-right: rgba(0,0,0,.06) solid 1px;
-}
-.me-view-comment {
-  margin-top: 20px;
+.detail-author { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.detail-author-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.detail-author-name { display: block; font-size: 15px; font-weight: 600; color: #1a1a2e; }
+.detail-author-time { display: block; font-size: 12px; color: #909399; margin-top: 2px; }
+.detail-title { margin: 0 0 14px; font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1.4; }
+.detail-desc { margin: 0 0 20px; padding: 14px 16px; background: #f7f8fa; border-radius: 10px; font-size: 14px; color: #606266; line-height: 1.6; border-left: 3px solid #409eff; }
+.detail-body { font-size: 15px; color: #303133; line-height: 1.8; word-break: break-word; }
+.detail-body >>> a { color: #409eff; }
+.detail-body >>> img { max-width: 100%; border-radius: 8px; }
+.detail-download {
+  margin-top: 24px; padding-top: 18px; border-top: 1px solid #f0f0f0;
 }
 
+/* 操作栏 */
+.detail-actions {
+  display: flex; gap: 0;
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05); margin-bottom: 14px;
+  overflow: hidden;
+}
+.action-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px 0; border: none; background: transparent;
+  font-size: 14px; color: #606266; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.action-btn:not(:last-child) { border-right: 1px solid #f0f0f0; }
+.action-btn:hover { background: #fafbfc; color: #409eff; }
+.action-btn.active { color: #409eff; }
+.action-btn.active i { color: #409eff; }
+
+/* 评论区 */
+.comment-card {
+  background: #fff; border-radius: 16px; padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+}
+.comment-title { margin: 0 0 20px; font-size: 16px; font-weight: 600; color: #1a1a2e; }
+
+.comment-write { display: flex; gap: 14px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
+.comment-write-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.comment-write-body { flex: 1; min-width: 0; }
+.comment-write-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.comment-hint { font-size: 12px; color: #c0c4cc; }
+
+.comment-list { margin-top: 8px; }
 </style>
