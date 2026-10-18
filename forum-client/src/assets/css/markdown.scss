@@ -1,0 +1,32 @@
+.markdown-body {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  min-width: 0;
+
+  > :first-child { margin-top: 0; }
+  > :last-child { margin-bottom: 0; }
+  p, ul, ol, blockquote, table, pre { margin: 0 0 16px; }
+  ul, ol { padding-left: 24px; }
+  li + li { margin-top: 4px; }
+  li > p { margin-bottom: 8px; }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.4; margin: 24px 0 16px; }
+  h1 { font-size: 1.8em; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); }
+  h2 { font-size: 1.4em; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle); }
+  h3 { font-size: 1.15em; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  code { font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-size: .87em; }
+  :not(pre) > code { padding: 2px 6px; background: #afb8c133; color: var(--text); border-radius: 4px; }
+  pre { overflow-x: auto; padding: 16px; border: 1px solid var(--border-subtle); border-radius: 6px; background: var(--surface-muted); line-height: 1.6; }
+  pre code, pre code.hljs { display: block; width: max-content; min-width: 100%; padding: 0; background: transparent; font-size: 13px; }
+  blockquote { padding: 0 16px; border-left: 3px solid var(--border); color: var(--text-muted); }
+  blockquote > :last-child { margin-bottom: 0; }
+  table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--surface-muted); font-weight: 600; }
+  tr:nth-child(even) { background: #f6f8fa80; }
+  img { max-width: 100%; height: auto; border-radius: 6px; }
+  hr { height: 1px; background: var(--border); border: 0; margin: 24px 0; }
+  input[type="checkbox"] { margin: 0 6px 0 0; }
+}

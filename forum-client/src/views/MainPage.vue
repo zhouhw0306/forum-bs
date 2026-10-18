@@ -1,60 +1,19 @@
 <template>
-  <div data-title="codebase" class="me-main-wrapper">
-    <el-container>
-      <!-- 移动端遮罩 -->
-      <div v-if="showLeft || showCard" class="mobile-overlay" @click="showLeft = false; showCard = ''"></div>
-
-      <!-- 左侧导航 -->
-      <div class="left-nav" :class="{ 'mobile-show': showLeft }">
-        <nav-type />
-      </div>
-
-      <!-- 文章列表 -->
-      <el-main :class="{ 'full-width': !showCard }">
-        <!-- 移动端切换按钮 -->
-        <div class="mobile-toolbar">
-          <el-button size="small" @click="showLeft = !showLeft">
-            <i :class="showLeft ? 'el-icon-close' : 'el-icon-menu'"></i> 分类
-          </el-button>
-          <el-button size="small" @click="showCard = showCard === 'list' ? '' : 'list'">
-            <i class="el-icon-trophy"></i> 积分榜
-          </el-button>
-          <el-button size="small" @click="showCard = showCard === 'msg' ? '' : 'msg'">
-            <i class="el-icon-bell"></i> 公告
-          </el-button>
-          <el-button size="small" @click="showCard = showCard === 'hot' ? '' : 'hot'">
-            <i class="el-icon-s-data"></i> 热帖
-          </el-button>
-          <el-button size="small" @click="showCard = showCard === 'push' ? '' : 'push'">
-            <i class="el-icon-present"></i> 猜你喜欢
-          </el-button>
-        </div>
-        <article-page></article-page>
-      </el-main>
-
-      <!-- 右侧边栏（宽屏） -->
-      <el-aside class="desktop-aside">
-        <card-list/>
-        <card-msg/>
-        <card-hot/>
-        <push-art/>
-      </el-aside>
-
-      <!-- 移动端弹出面板 -->
-      <div v-if="showCard" class="mobile-panel" :class="{ 'mobile-show': !!showCard }">
-        <div class="mobile-panel-head">
-          <span>{{ cardTitle }}</span>
-          <i class="el-icon-close" @click="showCard = ''"></i>
-        </div>
-        <div class="mobile-panel-body">
-          <card-list v-if="showCard === 'list'"/>
-          <card-msg  v-if="showCard === 'msg'"/>
-          <card-hot  v-if="showCard === 'hot'"/>
-          <push-art  v-if="showCard === 'push'"/>
-        </div>
-      </div>
-
-    </el-container>
+  <div class="community-page">
+    <div class="page-heading">
+      <div><div class="page-eyebrow"><i class="el-icon-chat-dot-square"></i> CodeBase / 社区</div><h1>社区讨论</h1><p>分享经验、提出问题，与开发者一起进步。</p></div>
+      <router-link to="/write" class="button-primary"><i class="el-icon-plus"></i> 发起讨论</router-link>
+    </div>
+    <div class="community-layout">
+      <aside class="community-navigation"><nav-type /></aside>
+      <main class="discussion-main">
+        <div class="mobile-toolbar"><el-button size="small" icon="el-icon-menu" @click="showLeft = !showLeft" :aria-expanded="String(showLeft)">浏览分类</el-button><el-button size="small" icon="el-icon-data-line" @click="showCard = showCard ? '' : 'hot'">社区看板</el-button></div>
+        <div v-if="showLeft" class="mobile-categories"><nav-type @selected="showLeft = false" /></div>
+        <article-page />
+      </main>
+      <aside class="community-aside"><div class="aside-label">社区看板</div><card-msg /><card-hot /><card-list /><push-art /></aside>
+    </div>
+    <el-drawer title="社区看板" :visible="!!showCard" @close="showCard = ''" size="min(360px, 100vw)" :append-to-body="true"><div class="mobile-board"><card-msg /><card-hot /><card-list /><push-art /></div></el-drawer>
   </div>
 </template>
 
@@ -102,122 +61,17 @@ export default {
 </script>
 
 <style scoped>
-.me-main-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 80px 20px 60px;
-}
-.el-container {
-  padding-bottom: 40px;
-}
-.el-main {
-  padding: 0 40px;
-  flex: 1;
-  min-width: 0;
-  max-width: 900px;
-  line-height: 16px;
-}
-.el-aside, .desktop-aside {
-  width: 260px;
-  flex-shrink: 0;
-}
-@media (max-width: 900px) {
-  .desktop-aside { display: none; }
-}
 
-/* 左侧导航 */
-.left-nav {
-  width: 160px;
-  flex-shrink: 0;
-}
-.left-nav >>> .el-menu-vertical-demo {
-  position: sticky;
-  top: 80px;
-  width: 160px;
-}
+.community-page { max-width: 1360px; margin: 0 auto; padding: 32px 32px 48px; }
+.community-layout { display: grid; grid-template-columns: 192px minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+.community-navigation { position: sticky; top: 88px; min-width: 0; }
+.discussion-main { min-width: 0; }
+.aside-label { color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+.community-aside { min-width: 0; } .community-aside > .el-card + .el-card, .mobile-board > .el-card + .el-card { margin-top: 16px; }
+.mobile-toolbar, .mobile-categories { display: none; }
+.mobile-board { padding: 0 16px 24px; }
+@media (max-width: 1150px) { .community-layout { grid-template-columns: 172px minmax(0, 1fr) 250px; gap: 20px; } .community-page { padding: 28px 24px 40px; } }
+@media (max-width: 1000px) { .community-layout { grid-template-columns: 172px minmax(0, 1fr); } .community-aside { display: none; } .mobile-toolbar { display: flex; margin-bottom: 12px; } .mobile-toolbar > .el-button:first-child { display: none; } }
+@media (max-width: 700px) { .community-page { padding: 24px 16px 32px; } .community-layout { display: block; } .community-navigation { display: none; } .mobile-toolbar > .el-button:first-child { display: inline-block; } .mobile-categories { display: block; margin-bottom: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; } }
 
-/* 大屏 */
-@media (min-width: 1600px) {
-  .me-main-wrapper { padding-left: 5vw; padding-right: 5vw; }
-}
-
-.el-card { border-radius: 5px; }
-.el-card:not(:first-child) { margin-top: 20px; }
-
-/* 桌面端：el-main 左侧留出 nav 的空间 */
-@media (min-width: 901px) {
-  .el-main { margin-left: 0; }
-}
-
-/* ---- 响应式 ---- */
-.mobile-toolbar {
-  display: none;
-  margin-bottom: 12px;
-  padding: 8px 0;
-  gap: 10px;
-}
-.mobile-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.3);
-  z-index: 1400;
-}
-
-@media (max-width: 900px) {
-  .mobile-toolbar { display: flex; }
-  .mobile-overlay { display: block; }
-
-  .left-nav {
-    position: fixed;
-    top: 60px; left: -240px; bottom: 0;
-    width: 240px;
-    z-index: 1450;
-    background: #fff;
-    overflow-y: auto;
-    transition: left .25s;
-    box-shadow: 2px 0 12px rgba(0,0,0,.1);
-  }
-  .left-nav.mobile-show { left: 0; }
-  .left-nav >>> .el-menu-vertical-demo { position: static; width: 100%; }
-
-  .desktop-aside { display: none; }
-  .el-aside { display: none; }
-
-  .mobile-panel {
-    position: fixed;
-    top: 0; right: -100%; bottom: 0;
-    width: 90%;
-    max-width: 340px;
-    z-index: 1450;
-    background: #fff;
-    box-shadow: -2px 0 16px rgba(0,0,0,.15);
-    transition: right .3s;
-    display: flex;
-    flex-direction: column;
-  }
-  .mobile-panel.mobile-show { right: 0; }
-  .mobile-panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 18px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a2e;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .mobile-panel-head i { font-size: 20px; color: #909399; cursor: pointer; }
-  .mobile-panel-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px;
-  }
-
-  .el-main {
-    margin-left: 0 !important;
-    padding: 0 10px;
-    width: 100%;
-  }
-}
 </style>

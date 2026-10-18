@@ -1,87 +1,27 @@
 <template>
-
-  <div ref="scroll" id="scroll-page" style="overflow: hidden">
-    <slot></slot>
-    <div
-        style="height: 40px;margin-top: 10px;z-index: 1"
-        v-loading="loading"
-        element-loading-text="拼命加载中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(245,245,245)"></div>
-
-    <el-empty v-if="this.$route.path==='/carePost'" description="快去关注更多人吧"></el-empty>
-
+  <div ref="scroll" class="scroll-page">
+    <slot />
+    <div v-if="loading" class="scroll-loading" role="status"><i class="el-icon-loading"></i> 正在加载讨论…</div>
+    <div v-else-if="!noData" class="scroll-more"><el-button size="small" @click="$emit('load')">加载更多讨论 <i class="el-icon-arrow-down"></i></el-button></div>
   </div>
-
-
 </template>
-
 <script>
 export default {
-  props: {
-    loading: Boolean,
-    noData: Boolean,
-    offset: Number
-  },
-  name: "index",
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll, false);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll)
-  },
-  data() {
-    return {
-      scrollAction: {
-        x: 'undefined',
-        y: 'undefined'
-      }
-    }
-  },
+  name: 'ScrollPage',
+  props: { loading: Boolean, noData: Boolean, offset: { type: Number, default: 100 } },
+  data: () => ({ previousY: 0 }),
+  mounted() { this.previousY = window.scrollY; window.addEventListener('scroll', this.handleScroll, { passive: true }) },
+  beforeDestroy() { window.removeEventListener('scroll', this.handleScroll) },
   methods: {
-    handleScroll(e) {
-      let that = this
-      if (!that.noData) {
-        let curHeight = document.documentElement.scrollTop || document.body.scrollTop
-        let scrollPage = document.getElementById('scroll-page');
-
-        if ((curHeight + window.innerHeight >= that.$refs.scroll.offsetHeight + that.offset) && that.isDownDirection()) {
-          if (!that.loading) {
-            that.$emit('load')
-          }
-        }
-      }
-    },
-    isDownDirection() {
-      if (typeof this.scrollAction.x == 'undefined') {
-        this.scrollAction.x = window.pageXOffset;
-        this.scrollAction.y = window.pageYOffset;
-      }
-      let diffX = this.scrollAction.x - window.pageXOffset;
-      let diffY = this.scrollAction.y - window.pageYOffset;
-
-      this.scrollAction.x = window.pageXOffset;
-      this.scrollAction.y = window.pageYOffset;
-
-      if (diffX < 0) {
-        // Scroll right
-      } else if (diffX > 0) {
-        // Scroll left
-      } else if (diffY < 0) {
-        // Scroll down
-        return true
-      } else if (diffY > 0) {
-        // Scroll up
-      } else {
-        // First scroll event
-      }
-      return false
+    handleScroll() {
+      const currentY = window.scrollY
+      const movingDown = currentY > this.previousY
+      this.previousY = currentY
+      if (movingDown && !this.loading && !this.noData && this.$refs.scroll.getBoundingClientRect().bottom <= window.innerHeight + this.offset) this.$emit('load')
     }
-
   }
 }
 </script>
-
 <style scoped>
-
+.scroll-loading, .scroll-more { display: flex; align-items: center; justify-content: center; padding: 20px; gap: 8px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-subtle); }
 </style>

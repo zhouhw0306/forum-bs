@@ -1,6 +1,6 @@
 <template>
   <transition>
-    <div @click="toTop" v-show="topShow" class="me-to-top"><i class="el-icon-caret-top"></i></div>
+    <button @click="toTop" v-show="topShow" class="me-to-top" aria-label="回到顶部"><i class="el-icon-top"></i></button>
   </transition>
 </template>
 
@@ -22,6 +22,7 @@
         this.topShow = curHeight > 400;
       }
     },
+    beforeDestroy() { window.removeEventListener('scroll', this.needToTop); },
     mounted() {
       /**
        * 等到整个视图都渲染完毕
@@ -33,27 +34,8 @@
   }
 </script>
 
-<style>
-  .me-to-top {
-    background-color: #fff;
-    position: fixed;
-    right: 100px;
-    bottom: 100px;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: .3s;
-    box-shadow: 0 0 6px rgba(0, 0, 0, .12);
-    z-index: 5;
-  }
-
-  .me-to-top i {
-    color: #00d1b2;
-    display: block;
-    line-height: 40px;
-    text-align: center;
-    font-size: 18px;
-  }
-
+<style scoped>
+.me-to-top { position: fixed; right: 24px; bottom: 24px; display: grid; place-items: center; width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; color: var(--text-muted); z-index: 5; font-size: 18px; box-shadow: 0 1px 2px #1f23280a; }
+.me-to-top:hover { color: var(--text); background: var(--hover); }
+@media (max-width: 600px) { .me-to-top { right: 16px; bottom: 16px; } }
 </style>

@@ -59,7 +59,8 @@ public class ChatAiController {
 
     private void sendSafe(SseEmitter emitter, String data) {
         try {
-            emitter.send(SseEmitter.event().data(data));
+            // Encode text as JSON so SSE framing preserves leading spaces and newlines.
+            emitter.send(SseEmitter.event().data(Collections.singletonMap("content", data)));
         } catch (Exception ignored) {
         }
     }

@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 1000px; width: 90%; margin: 100px auto 140px;">
+  <div class="article-detail-page">
   <div class="me-view-body" :data-title="title">
     <el-container class="me-view-container">
       <el-main>
@@ -31,7 +31,7 @@
             <el-button
               v-if="this.article.author?.id === this.$store.getters.userId"
               @click="editArticle()"
-              style="position: relative;left: 30%;"
+              class="article-edit-button"
               size="mini"
               round
               icon="el-icon-edit">编辑</el-button>
@@ -42,7 +42,7 @@
 
           <div class="me-view-end">
             <el-alert
-              title="帖子End..."
+              title="感谢阅读，欢迎在下方参与讨论"
               type="success"
               center
               :closable="false">
@@ -114,7 +114,7 @@
     </div>
     <div class="me-view-tag">
       文章分类：
-      <el-tag size="small" @click="tagOrCategory('category', article.category.id)">{{article.categoryName}}</el-tag>
+      <el-tag size="small" @click="tagOrCategory('category', article.categoryId)">{{article.categoryName}}</el-tag>
     </div>
   </div>
   </div>
@@ -275,7 +275,7 @@ export default {
       }).catch( err => {this.$message.error(err)})
     },
     tagOrCategory(type, id) {
-      this.$router.push({path: `/${type}/${id}`})
+      this.$router.push({ path: '/', query: { sw: String(id) } })
     },
     editArticle() {
       this.$router.push({path: `/write/${this.article.id}`})
@@ -383,115 +383,23 @@ export default {
 }
 </script>
 
-<style>
-  .me-view-body {
-    background-color: white;
-    border-radius: 10px;
-    display: inline-block;
-  }
-
-  .me-view-container {
-    width: 700px;
-  }
-
-  .el-main {
-    overflow: hidden;
-
-  }
-
-  .me-view-title {
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-top: 10px;
-  }
-
-  .me-view-author {
-    margin: 20px 0 10px;
-    /*margin-top: 30px;*/
-    vertical-align: middle;
-  }
-
-  .me-view-picture {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    vertical-align: middle;
-    background-color: rgb(255, 153, 195);
-  }
-
-  .me-view-info {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 8px;
-  }
-
-  .me-view-meta {
-    font-size: 12px;
-    color: #525151;
-  }
-
-  .me-view-end {
-    margin-top: 20px;
-  }
-
-  .me-view-tag {
-    margin-top: 20px;
-    padding-left: 6px;
-    border-left: 4px solid #6fcbc3;
-  }
-
-  .me-view-tag-item {
-    margin: 0 4px;
-  }
-
-  .me-view-comment {
-    margin-top: 60px;
-  }
-
-  .me-view-comment-title {
-    font-weight: 600;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 20px;
-  }
-
-  .me-view-comment-write {
-    margin-top: 20px;
-  }
-
-  .me-view-comment-text {
-    font-size: 16px;
-  }
-
-  .bytemd-view-container {
-    padding: 8px 25px 15px 0 !important;
-  }
-
-  .bytemd-view-container .markdown-body {
-    background: #fff !important;
-  }
-
-  .infoCard{
-    float: right;
-    margin-left: 20px;
-    width: 240px;
-    background-color: white;
-    padding: 15px;
-    position: sticky;
-    top: 100px
-  }
-  .far_box {
-    height: 100vh;
-    text-align: left;
-  }
-  .markdown-body .highlight pre, .markdown-body pre{
-    padding: 0 !important;
-  }
-  .hljs{
-    padding: 20px;
-    border-radius: 10px;
-  }
-
-
+<style scoped>
+.article-detail-page { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 24px; max-width: 1240px; margin: auto; padding: 32px 32px 48px; align-items: start; }
+.me-view-body { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.me-view-container { width: 100%; min-width: 0; } .me-view-container > .el-main { padding: 28px; min-width: 0; overflow: visible; }
+.me-view-card { min-width: 0; } .me-view-title { font-size: 28px; font-weight: 600; line-height: 1.4; margin-top: 20px; overflow-wrap: anywhere; letter-spacing: -.5px; }
+.me-view-author { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); }
+.me-view-picture { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; object-fit: cover; vertical-align: middle; }
+.me-view-info { min-width: 0; flex: 1; } .article-edit-button { margin-left: auto; }
+.me-view-meta { display: flex; flex-wrap: wrap; row-gap: 5px; font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+.me-view-content { overflow-wrap: anywhere; min-width: 0; }
+.me-view-content >>> .bytemd-view-container { padding: 0; min-width: 0; } .me-view-content >>> .markdown-body { font-size: 15px; line-height: 1.8; min-width: 0; overflow-wrap: anywhere; }
+.me-view-content >>> .markdown-body pre { max-width: 100%; overflow-x: auto; } .me-view-content >>> .markdown-body table { display: block; overflow-x: auto; max-width: 100%; }
+.me-view-end { margin: 28px 0; } .me-view-end >>> .el-alert { background: var(--surface-muted); color: var(--text-muted); border: 1px solid var(--border-subtle); }
+.me-view-comment { margin-top: 24px; } .me-view-comment-title { font-weight: 600; font-size: 14px; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); }
+.me-view-comment-write { margin-top: 20px; } .me-view-comment-write > .el-row { display: flex; gap: 12px; margin: 0 !important; } .me-view-comment-write .el-col { padding: 0 !important; } .me-view-comment-write .el-col-2 { width: 36px; flex-shrink: 0; } .me-view-comment-write .el-col-22 { flex: 1; width: auto; min-width: 0; } .me-view-comment-write .el-col-offset-22 { margin-left: auto; }
+.infoCard { border: 1px solid var(--border); border-radius: 6px; padding: 20px; background: var(--surface); position: sticky; top: 88px; min-width: 0; font-size: 13px; }
+.infoCard > span { font-weight: 600; } .me-view-tag { color: var(--text-muted); margin-top: 16px; line-height: 1.8; overflow-wrap: anywhere; } .me-view-tag .el-tag { margin-bottom: 5px; }
+@media (max-width: 1000px) { .article-detail-page { grid-template-columns: minmax(0, 1fr); max-width: 900px; padding: 24px; } .infoCard { position: static; } }
+@media (max-width: 600px) { .article-detail-page { padding: 20px 16px 32px; gap: 16px; } .me-view-container > .el-main { padding: 20px 16px; } .me-view-title { font-size: 23px; } .me-view-meta { font-size: 11px; } }
 </style>

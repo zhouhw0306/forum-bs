@@ -23,7 +23,7 @@ export const updateUser = (params) => post(`api/updateUser`,params)
 //获取帖子数量
 export const getAllNoPage = () => get(`articles/getAllNOPage`)
 //模糊查询
-export const searchData = (word) => get(`articles/by/${word}`)
+export const searchData = (word) => get(`articles/by/${encodeURIComponent(word)}`)
 //获得热帖
 export const getHot = () => get(`articles/getHot`)
 //获推荐

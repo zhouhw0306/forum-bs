@@ -1,11 +1,12 @@
 <template>
-  <div class="user-manage">
-    <div class="um-toolbar">
-      <el-input v-model="keyword" size="small" placeholder="搜索用户名/邮箱..." prefix-icon="el-icon-search" clearable class="um-search" />
-      <span class="um-total">共 {{ filteredData.length }} 个用户</span>
+  <div class="user-manage management-panel">
+    <div class="um-toolbar management-toolbar">
+      <el-input v-model="keyword" size="small" placeholder="搜索用户名/邮箱..." prefix-icon="el-icon-search" clearable class="um-search management-search" />
+      <span class="um-total management-count">{{ filteredData.length }} 位成员</span>
     </div>
 
-    <el-table :data="pagedData" style="width: 100%" size="medium" :row-class-name="rowClass">
+    <div v-if="loadError" class="management-error" role="status"><i class="el-icon-warning-outline"></i> 成员列表暂时无法加载 <button @click="loadData">重试</button></div>
+    <el-table v-else v-loading="loading" :data="pagedData" style="width: 100%" size="medium">
       <el-table-column label="用户" min-width="160">
         <template slot-scope="{ row }">
           <div class="um-user-cell">
@@ -75,6 +76,8 @@ export default {
   data() {
     return {
       allData: [],
+      loading: false,
+      loadError: false,
       keyword: "",
       currentPage: 1,
       pageSize: 15,
@@ -101,11 +104,8 @@ export default {
   mounted() { this.loadData(); },
   methods: {
     async loadData() {
-      try {
-        const res = await getAllUser();
-        if (res.code === 0) this.allData = res.data || [];
-        else this.$message.error(res.msg);
-      } catch (e) { this.$message.error("加载失败"); }
+      this.loading = true; this.loadError = false
+      try { const response = await getAllUser(); if (response.code !== 0 || !Array.isArray(response.data)) throw new Error('Load failed'); this.allData = response.data } catch (error) { this.loadError = true } finally { this.loading = false }
     },
     rowClass({ rowIndex }) { return rowIndex % 2 ? "um-even" : ""; },
     handleToggle(row) {

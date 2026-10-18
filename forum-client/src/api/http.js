@@ -38,7 +38,7 @@ axios.interceptors.response.use(
   },
   // 服务器状态码不是2开头的的情况
   error => {
-    if (error.response.status) {
+    if (error.response && error.response.status) {
       switch (error.response.status) {
         // 401: 未登录
         case 401:
@@ -72,6 +72,7 @@ axios.interceptors.response.use(
       }
       return Promise.reject(error.response);
     }
+    return Promise.reject(error);
   });
 
 

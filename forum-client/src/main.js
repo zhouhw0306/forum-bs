@@ -6,6 +6,9 @@ import i18n from './assets/lang'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.min.css';
+import './assets/css/theme.scss'
+import './assets/css/markdown.scss'
+import 'highlight.js/styles/github.min.css'
 import VCharts from 'v-charts'
 Vue._watchers = Vue.prototype._watchers = [] //消除v-charts引入任意图表的时候报错 ：map undefined #935
 Vue.use(ElementUI)

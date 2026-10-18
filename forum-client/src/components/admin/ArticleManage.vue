@@ -1,11 +1,12 @@
 <template>
-  <div class="article-manage">
-    <div class="am-toolbar">
-      <el-input v-model="keyword" size="small" placeholder="搜索标题..." prefix-icon="el-icon-search" clearable class="am-search" />
-      <span class="am-total">共 {{ tableData.length }} 篇</span>
+  <div class="article-manage management-panel">
+    <div class="am-toolbar management-toolbar">
+      <el-input v-model="keyword" size="small" placeholder="搜索标题..." prefix-icon="el-icon-search" clearable class="am-search management-search" />
+      <span class="am-total management-count">{{ total }} 条讨论</span>
     </div>
 
-    <el-table :data="pagedData" style="width: 100%" size="medium" :row-class-name="rowClass">
+    <div v-if="loadError" class="management-error" role="status"><i class="el-icon-warning-outline"></i> 讨论列表暂时无法加载 <button @click="loadData">重试</button></div>
+    <el-table v-else v-loading="loading" :data="pagedData" style="width: 100%" size="medium">
       <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
       <el-table-column prop="userId" label="作者ID" width="120" show-overflow-tooltip />
       <el-table-column prop="viewCount" label="阅读" width="70" align="center" />
@@ -31,27 +32,29 @@
 
     <!-- 预览弹窗 -->
     <el-dialog :title="previewTitle" :visible.sync="dialogVisible" width="70%" top="5vh" destroy-on-close>
-      <div class="am-preview-body" v-html="previewHtml"></div>
+      <div class="am-preview-body"><markdown-editor :editor="{ value: previewContent, defaultOpen: 'preview' }" /></div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { deleteArticle, getArticles } from "@/api";
-import { marked } from "marked";
-import hljs from "highlight.js";
+import MarkdownEditor from '@/components/article/MarkdownEditor'
 
 export default {
+  components: { MarkdownEditor },
   data() {
     return {
       tableData: [],
       allData: [],
+      loading: false,
+      loadError: false,
       keyword: "",
       currentPage: 1,
       pageSize: 15,
       dialogVisible: false,
       previewTitle: "",
-      previewHtml: "",
+      previewContent: "",
     };
   },
   computed: {
@@ -78,25 +81,16 @@ export default {
   mounted() { this.loadData(); },
   methods: {
     async loadData() {
-      try {
-        const res = await getArticles(false, -1, { pageSize: 0, pageNumber: 0, sort: "desc" });
-        this.allData = res.data?.data || [];
-        this.tableData = this.allData;
-      } catch (e) { this.$message.error("加载失败"); }
+      this.loading = true; this.loadError = false
+      try { const response = await getArticles(false, -1, { pageSize: 0, pageNumber: 0, sort: 'desc' }); if (response.data.code !== 0 || !Array.isArray(response.data.data)) throw new Error('Load failed'); this.allData = response.data.data; this.tableData = this.allData } catch (error) { this.loadError = true } finally { this.loading = false }
     },
     rowClass({ rowIndex }) {
       return rowIndex % 2 ? "am-even" : "";
     },
     preview(row) {
       this.previewTitle = row.title || "预览";
-      this.previewHtml = this.md2html(row.content || "");
+      this.previewContent = row.content || "";
       this.dialogVisible = true;
-    },
-    md2html(text) {
-      try {
-        marked.setOptions({ highlight: (c) => hljs.highlightAuto(c).value, breaks: true });
-        return marked(text);
-      } catch (e) { return text; }
     },
     handleDelete(row) {
       this.$confirm("确认删除该文章？", "提示", { type: "warning" }).then(() => {
@@ -129,19 +123,11 @@ export default {
   max-height: 70vh;
   overflow-y: auto;
   padding: 16px 20px;
-  background: #fafbfc;
+  background: var(--surface);
   border-radius: 8px;
   font-size: 15px;
   line-height: 1.8;
   color: #303133;
-}
-.am-preview-body >>> pre {
-  background: #1e1e1e; color: #d4d4d4;
-  padding: 14px 16px; border-radius: 8px;
-  overflow-x: auto; font-size: 13px;
-}
-.am-preview-body >>> code {
-  font-family: "Fira Code", monospace; font-size: 13px;
 }
 </style>
 

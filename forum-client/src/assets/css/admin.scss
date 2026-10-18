@@ -1,0 +1,51 @@
+.admin-content {
+  .management-panel { border: 1px solid var(--border); border-radius: 6px; background: var(--surface); overflow: hidden; }
+  .management-panel .management-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--surface); margin: 0; }
+  .management-panel .management-search { width: 280px; max-width: 100%; }
+  .management-count { padding: 2px 8px; border: 1px solid var(--border-subtle); border-radius: 12px; color: var(--text-muted); background: var(--surface-muted); font-size: 11px; }
+  .management-toolbar .toolbar-note { margin-left: auto; color: var(--text-muted); font-size: 11px; }
+  .management-panel .el-table { border: 0; border-radius: 0; }
+  .management-panel .el-table th.el-table__cell { background: var(--surface-muted); font-size: 11px; padding: 11px 0; }
+  .management-panel .el-table td.el-table__cell { padding: 14px 0; font-size: 12px; }
+  .management-panel .el-table .cell { padding-left: 18px; padding-right: 18px; }
+  .management-panel .el-table .el-button--text { font-size: 11px; }
+  .management-panel .el-pagination { display: flex; justify-content: center; margin: 0; padding: 18px 12px; border-top: 1px solid var(--border-subtle); }
+  .management-panel .management-empty { padding: 48px 20px; text-align: center; font-size: 12px; color: var(--text-muted); }
+  .management-error { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 200px; padding: 20px; font-size: 12px; color: var(--text-muted); }
+  .management-error button { color: var(--accent); border: 0; background: none; cursor: pointer; font-size: 12px; }
+  .cm-page { border: 1px solid var(--border); border-radius: 6px; background: var(--surface); overflow: hidden; }
+  .cm-topbar { padding: 16px 20px; margin: 0; border-bottom: 1px solid var(--border); }
+  .cm-list { padding: 20px; }
+  .cm-page .cm-card { border: 1px solid var(--border-subtle); border-radius: 6px; box-shadow: none; }
+  .cm-is-reply { border-left: 3px solid var(--border); }
+  .cm-card .el-button { font-size: 11px; }
+  .cm-count, .cm-card-time { color: var(--text-muted); font-size: 11px; }
+  .cm-card-foot { font-size: 10px; }
+  .cm-pager { border-top: 1px solid var(--border-subtle); margin: 0; padding: 18px; }
+  .management-panel .resource-expand { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; padding: 8px 20px; font-size: 12px; }
+  .resource-expand > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .resource-expand dt { color: var(--text-muted); font-size: 11px; }
+  .resource-expand dd { margin: 0; overflow-wrap: anywhere; color: var(--text); }
+  .resource-review-tabs { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+  .resource-review-tabs button { position: relative; display: flex; align-items: center; gap: 5px; padding: 7px 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; }
+  .resource-review-tabs button.active { color: var(--text); background: var(--surface-muted); border-color: var(--border); font-weight: 500; }
+  .resource-review-tabs button:hover { color: var(--text); background: var(--hover); }
+}
+body .el-tag--success { color: #1a7f37; background: #dafbe1; border-color: #1f883d26; }
+body .el-tag--warning { color: #9a6700; background: #fff8c5; border-color: #9a670026; }
+body .el-tag--danger { color: #cf222e; background: #ffebe9; border-color: #cf222e26; }
+body .el-tag--info { color: var(--text-muted); background: var(--surface-muted); border-color: var(--border); }
+body .el-button--danger.is-plain { color: var(--danger); background: var(--surface); border-color: var(--border); }
+body .el-button--danger.is-plain:hover { color: var(--danger); background: #ffebe9; border-color: #cf222e66; }
+@media (max-width: 600px) {
+  .admin-content .management-panel .management-toolbar { padding: 14px 16px; gap: 10px; }
+  .admin-content .management-panel .management-search { width: 100%; order: 1; flex-basis: 100%; }
+  .admin-content .management-toolbar .toolbar-note { display: none; }
+  .admin-content .cm-topbar { padding: 14px 16px; }
+  .admin-content .cm-topbar-left { width: 100%; flex-wrap: wrap; }
+  .admin-content .cm-search { width: 100%; }
+  .admin-content .cm-list { padding: 12px; }
+  .admin-content .cm-card-meta { flex-wrap: wrap; }
+  .admin-content .cm-card-time { font-size: 10px; }
+  .admin-content .management-panel .resource-expand { grid-template-columns: 1fr; padding: 8px 16px; }
+}

@@ -1,127 +1,52 @@
 <template>
-  <el-header class="me-area">
-
-    <el-row class="me-header">
-
-      <div class="me-header-left">
-        <router-link to="/" class="me-title">
-          <img src="../assets/logo.png"/>
-          <span class="me-logo-text"> codebase</span>
-        </router-link>
-        <span class="me-logo-arrow" @click.stop="toggleMobileMenu">
-          <i :class="mobileMenu ? 'el-icon-close' : 'el-icon-caret-bottom'"></i>
-        </span>
-      </div>
-
-      <div v-if="!simple" class="me-nav-wrap" :class="{ 'mobile-open': mobileMenu }">
-        <el-menu :router=true menu-trigger="click" active-text-color="#409EFF" :default-active="activeIndex"
-                 mode="horizontal" class="main-nav-menu">
-          <el-menu-item index="/">{{ $t('common.home') }}</el-menu-item>
-          <el-menu-item index="/source?type=工具&sort=create_time&pageNo=1">{{ $t('common.resources') }}</el-menu-item>
-          <el-menu-item v-if="loginIn" index="/carePost">{{ $t('common.following') }}</el-menu-item>
-          <el-menu-item v-if="loginIn" index="/center">{{ $t('common.profile') }}</el-menu-item>
-          <el-menu-item index="/searchPage">{{ $t('common.search') }}</el-menu-item>
-          <el-menu-item v-if="role === 'ADMIN'" index="/info">{{ $t('common.admin') }}</el-menu-item>
-          <div>
-            <el-input @keyup.enter.native="toSearch" v-model="inputValue" :placeholder="$t('header.searchPlaceholder')" class="el-search">
-              <i
-                  slot="suffix"
-                  style="cursor: pointer"
-                  class="el-input__icon el-icon-search"
-                  @click="toSearch"
-              ></i>
-            </el-input>
-          </div>
-        </el-menu>
-      </div>
-
-      <template v-else>
-        <slot></slot>
-      </template>
-
-      <div class="me-header-right">
-        <el-menu :router=true menu-trigger="click" mode="horizontal" active-text-color="#409EFF">
-          <template v-if="!loginIn">
-            <el-tooltip class="item" effect="dark" :content="$t('header.loginTip')" placement="bottom">
-              <el-menu-item index="/login">
-                <el-button type="text">{{ $t('common.login') }}</el-button>
-              </el-menu-item>
-            </el-tooltip>
-            <el-menu-item index="/register">
-              <el-button type="text">{{ $t('common.register') }}</el-button>
-            </el-menu-item>
-          </template>
-
-          <template v-else>
-            <div class="header-actions">
-              <!-- 用户头像 -->
-              <el-popover
-                :visible-arrow="false"
-                placement="bottom"
-                width="150"
-                trigger="hover"
-              >
-                <div>
-                  <el-button class="btt" @click="setting"><i class="el-icon-user icon"></i>{{ $t('common.settings') }}</el-button>
-                  <el-button class="btt" @click="write" style="margin-left: 0"><i class="el-icon-edit icon"></i>{{ $t('common.post') }}</el-button>
-                  <el-button class="btt" @click="logout" style="margin-left: 0;color: #e86f6f"><i class="el-icon-switch-button icon"></i>退出</el-button>
-                </div>
-                <span slot="reference" class="header-action-avatar-wrap">
-                  <img :src="attachImageUrl(avatar)" @error="e => e.target.src = avatarFallback(username)"/>
-                </span>
-              </el-popover>
-
-              <!-- 通知 -->
-              <el-popover
-                placement="bottom"
-                width="360"
-                trigger="click"
-                v-model="notifyVisible"
-                @show="onNotifyPanelOpen"
-              >
-                <NotificationCenter
-                  ref="notifyCenter"
-                  @read="onNotifyRead"
-                  @read-all="onNotifyReadAll"
-                  @delete="onNotifyRead"
-                />
-                <span slot="reference" class="header-action-btn">
-                  <i class="el-icon-bell"></i>
-                  <sup v-if="unreadCount > 0" class="notify-dot">{{ unreadCount > 99 ? '99+' : unreadCount }}</sup>
-                </span>
-              </el-popover>
-
-              <!-- AI -->
-              <el-tooltip content="DeepSeek AI" placement="bottom" effect="light">
-                <span class="header-action-btn" @click="drawer = true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-                  </svg>
-                </span>
-              </el-tooltip>
-
-              <!-- 语言切换 -->
-              <span class="header-action-btn lang-switch" @click="switchLang">
-                {{ $i18n.locale === 'zh' ? '中' : 'EN'}}
-              </span>
+  <header class="site-header" :class="{ 'is-simple': simple }" @keydown.esc="mobileMenu = false">
+    <div class="header-inner">
+      <router-link to="/" class="brand" aria-label="CodeBase 首页">
+        <span class="brand-mark"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5M14 4l-4 16"/></svg></span>
+        <span>CodeBase</span>
+      </router-link>
+      <span class="header-divider"></span>
+      <button v-if="!simple" class="icon-button mobile-menu-toggle" @click="toggleMobileMenu" :aria-expanded="String(mobileMenu)" aria-controls="community-navigation" aria-label="切换导航菜单"><i :class="mobileMenu ? 'el-icon-close' : 'el-icon-menu'"></i></button>
+      <nav v-if="!simple" id="community-navigation" class="header-navigation" :class="{ 'is-open': mobileMenu }" aria-label="主导航">
+        <router-link to="/" exact @click.native="mobileMenu = false"><i class="el-icon-chat-dot-square"></i>{{ $t('common.home') }}</router-link>
+        <router-link to="/source" @click.native="mobileMenu = false"><i class="el-icon-collection"></i>{{ $t('common.resources') }}</router-link>
+        <router-link to="/searchPage" @click.native="mobileMenu = false"><i class="el-icon-discover"></i>{{ $t('common.search') }}</router-link>
+        <router-link v-if="loginIn" to="/carePost" @click.native="mobileMenu = false">{{ $t('common.following') }}</router-link>
+        <router-link v-if="role === 'ADMIN'" to="/info" @click.native="mobileMenu = false">{{ $t('common.admin') }}</router-link>
+        <form class="header-search" role="search" @submit.prevent="toSearch(); mobileMenu = false">
+          <i class="el-icon-search" aria-hidden="true"></i>
+          <input v-model="inputValue" aria-label="搜索社区" placeholder="搜索文章、资源、开发者…" />
+          <button type="submit" aria-label="搜索"><i class="el-icon-right"></i></button>
+        </form>
+      </nav>
+      <div v-else class="header-slot"><slot></slot></div>
+      <div class="header-account">
+        <template v-if="!loginIn">
+          <router-link to="/login" class="login-link">{{ $t('common.login') }}</router-link>
+          <router-link to="/register" class="register-link">{{ $t('common.register') }}</router-link>
+        </template>
+        <template v-else>
+          <el-tooltip content="DeepSeek AI 助手" placement="bottom"><button class="icon-button" aria-label="打开 AI 助手" @click="drawer = true"><i class="el-icon-magic-stick"></i></button></el-tooltip>
+          <el-popover placement="bottom-end" width="340" trigger="click" v-model="notifyVisible" @show="onNotifyPanelOpen">
+            <NotificationCenter ref="notifyCenter" @read="onNotifyRead" @read-all="onNotifyReadAll" @delete="onNotifyRead" />
+            <button slot="reference" class="icon-button notification-button" aria-label="查看通知"><i class="el-icon-bell"></i><sup v-if="unreadCount > 0" class="notification-count">{{ unreadCount > 99 ? '99+' : unreadCount }}</sup></button>
+          </el-popover>
+          <button class="icon-button language-button" @click="switchLang" aria-label="切换语言">{{ $i18n.locale === 'zh' ? '中' : 'EN' }}</button>
+          <el-popover :visible-arrow="false" placement="bottom-end" width="180" trigger="click">
+            <div class="account-menu">
+              <span class="account-name">{{ username }}</span>
+              <el-button @click="setting"><i class="el-icon-user"></i> 个人中心</el-button>
+              <el-button @click="$router.push('/setting')"><i class="el-icon-setting"></i> 账号设置</el-button>
+              <el-button @click="write"><i class="el-icon-edit"></i> 发起讨论</el-button>
+              <el-button class="logout-button" @click="logout"><i class="el-icon-switch-button"></i> 退出登录</el-button>
             </div>
-
-            <el-drawer
-                title="DeepSeek AI"
-                :visible.sync="drawer"
-                size="50%"
-                direction="rtl"
-                :append-to-body="true"
-                :modal-append-to-body="false">
-                <AiModel/>
-            </el-drawer>
-          </template>
-        </el-menu>
+            <button slot="reference" class="avatar-button" aria-label="打开个人菜单"><img :src="attachImageUrl(avatar)" :alt="username" @error="e => e.target.src = avatarFallback(username)" /><i class="el-icon-caret-bottom"></i></button>
+          </el-popover>
+          <el-drawer title="AI 编程助手" :with-header="false" :visible.sync="drawer" size="min(680px, 100vw)" direction="rtl" :append-to-body="true" custom-class="ai-assistant-drawer"><AiModel :active="drawer" @close="drawer = false" /></el-drawer>
+        </template>
       </div>
-
-    </el-row>
-
-  </el-header>
+    </div>
+  </header>
 </template>
 
 <script>
@@ -178,6 +103,7 @@ export default {
       immediate: true
     }
   },
+  beforeDestroy() { this.closeWebSocket() },
   methods: {
     toggleMobileMenu() { this.mobileMenu = !this.mobileMenu; },
     switchLang() {
@@ -272,226 +198,52 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-.el-menu-item:hover{
-  border-bottom: #2aa3ef solid 2px !important;
-}
-</style>
-<style>
-.el-dropdown-link {
-  cursor: pointer;
-  color: #409EFF;
-}
-.el-icon-arrow-down {
-  font-size: 12px;
-}
-.demonstration {
-  display: block;
-  color: #8492a6;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-.el-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 0 20px;
-  box-sizing: border-box;
-  z-index: 1024;
-  box-shadow: 0 2px 3px hsla(0, 0%, 7%, .1), 0 0 0 1px hsla(0, 0%, 7%, .1);
-}
-.me-title {
-  font-size: 22px;
-  color: #409EFF;
-}
 
-.me-header {
-  background: rgba(255,255,255,0.7);
-  display: flex;
-  align-items: center;
-}
-.me-header-left {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-.me-nav-wrap { flex: 1; min-width: 0; overflow: hidden; }
-.me-header-right {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  margin-left: auto !important;
-}
-
-/* 覆盖 el-row 默认样式 */
-.el-row.me-header {
-  flex-wrap: nowrap !important;
-  margin: 0 !important;
-}
-.me-logo-text { white-space: nowrap; }
-.me-logo-arrow {
-  display: none;
-  font-size: 18px;
-  color: #555;
-  cursor: pointer;
-  padding: 0 8px;
-}
-.me-logo-arrow:hover { color: #409eff; }
-
-/* ---- 右侧操作区（头像 / 通知 / AI）---- */
-.header-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  height: 60px;
-}
-.header-action-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  color: #555;
-  cursor: pointer;
-  font-size: 20px;
-  transition: color 0.2s, background 0.2s;
-}
-.header-action-btn:hover {
-  color: #409eff;
-  background: #ecf5ff;
-}
-.notify-dot {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 17px;
-  min-width: 17px;
-  line-height: 17px;
-  padding: 0 5px;
-  border-radius: 9px;
-  background: #f56c6c;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-  transform: translate(30%, -30%);
-  pointer-events: none;
-}
-.header-action-avatar-wrap {
-  border-radius: 50% !important;
-  background: transparent !important;
-  padding: 0 !important;
-}
-.header-action-avatar-wrap img {
-  display: block;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e8eaed;
-  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1),
-              box-shadow 0.3s ease,
-              border-color 0.3s ease;
-}
-.header-action-avatar-wrap:hover {
-  background: transparent !important;
-}
-.lang-switch {
-  font-size: 13px !important;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-.header-action-avatar-wrap:hover img {
-  transform: scale(1.18);
-  border-color: #409eff;
-  box-shadow:
-    0 0 0 3px rgba(64,158,255,.2),
-    0 4px 16px rgba(64,158,255,.25);
-}
-.me-title img {
-  height: 28px;
-  max-width: 100%;
-  vertical-align: middle;
-}
-.me-title {
-  display: flex;
-  align-items: center;
-}
-.el-menu-item:hover{
-  color: #1787FB !important;
-}
-.el-search{
-  width: 200px;
-  margin-right: 20px;
-  float: right;
-  transition: all 0.5s ease 0s;
-}
-.el-menu.el-menu--horizontal{
-  line-height: 60px;
-  border: none;
-}
-.btt{
-  width: 100%;
-  border:none;
-}
-.icon{
-  float: left;
-}
-.me-pull-right {
-  float: right;
-}
-.me-article-count {
-  color: #a6a6a6;
-  padding-left: 14px;
-  font-size: 13px;
-}
-.el-scrollbar__wrap{
-  overflow-x: hidden;
-}
-.el-scrollbar__bar.is-horizontal {
-  display: none;
-}
-/* ---- 响应式 ---- */
+.site-header { position: fixed; inset: 0 0 auto; height: 64px; z-index: 1100; border-bottom: 1px solid var(--border); background: var(--surface-muted); }
+.header-inner { height: 100%; max-width: 1504px; margin: auto; padding: 0 32px; display: flex; align-items: center; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 20px; font-weight: 650; letter-spacing: -.6px; flex-shrink: 0; }
+.brand:hover { color: var(--text); }
+.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: linear-gradient(135deg, #729fe1, #5789d0); color: #fff; border-radius: 8px; box-shadow: inset 0 0 0 1px #5789d033; }
+.header-divider { width: 1px; height: 24px; background: var(--border); }
+.header-navigation { display: flex; align-items: center; gap: 22px; flex: 1; min-width: 0; height: 100%; }
+.header-navigation > a { position: relative; display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 14px; white-space: nowrap; height: 100%; }
+.header-navigation > a:hover, .header-navigation > a.router-link-active { color: var(--text); }
+.header-navigation > a.router-link-active { font-weight: 600; }
+.header-navigation > a.router-link-active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background: #fd8c73; border-radius: 2px; }
+.header-navigation > a i { font-size: 17px; }
+.header-search { display: flex; align-items: center; gap: 8px; margin-left: auto; width: clamp(160px, 22vw, 300px); height: 34px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); padding: 0 10px; color: var(--text-muted); }
+.header-search:focus-within { border-color: var(--accent); outline: 2px solid var(--focus); }
+.header-search input { min-width: 0; flex: 1; width: 100%; border: 0; outline: none; background: transparent; font: inherit; font-size: 12px; color: var(--text); }
+.header-search button { border: 0; background: none; color: var(--text-muted); cursor: pointer; padding: 2px; }
+.header-account { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-shrink: 0; font-size: 13px; }
+.login-link { color: var(--text); white-space: nowrap; }
+.register-link { padding: 5px 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-weight: 500; white-space: nowrap; }
+.register-link:hover { background: var(--hover); color: var(--text); }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--text-muted); font-size: 19px; cursor: pointer; }
+.icon-button:hover { background: var(--hover); color: var(--text); }
+.language-button { font-size: 12px; font-weight: 600; }
+.notification-button { position: relative; }
+.notification-count { position: absolute; top: -4px; right: -5px; min-width: 16px; padding: 0 3px; border: 2px solid var(--surface-muted); border-radius: 10px; color: white; background: var(--accent); font-size: 9px; line-height: 14px; }
+.avatar-button { border: 0; display: flex; align-items: center; gap: 5px; background: none; cursor: pointer; color: var(--text-muted); }
+.avatar-button img { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 50%; object-fit: cover; }
+.account-menu { display: flex; flex-direction: column; gap: 2px; }
+.account-name { padding: 8px 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px; color: var(--text); font-weight: 600; }
+.account-menu .el-button { margin: 0; border: 0; text-align: left; padding: 10px; background: transparent; color: var(--text); }
+.account-menu .el-button:hover { background: var(--hover); }
+.account-menu .logout-button { color: var(--danger); }
+.header-slot { justify-content: space-between; display: flex; align-items: center; flex: 1; min-width: 0; gap: 16px; }
+.mobile-menu-toggle { display: none; }
+@media (max-width: 1100px) { .header-inner { gap: 16px; padding: 0 24px; } .header-navigation { gap: 16px; } .header-navigation > a i { display: none; } .header-account { gap: 8px; } }
 @media (max-width: 900px) {
-  .me-logo-text { display: none !important; }
-  .me-logo-arrow { display: flex !important; align-items: center; height: 60px; }
-  .me-nav-wrap { display: none !important; }
-  .me-nav-wrap.mobile-open {
-    display: block !important;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,.1);
-    z-index: 2000;
-  }
-  .me-nav-wrap.mobile-open .el-menu {
-    display: flex !important;
-    flex-direction: column;
-    border: none;
-  }
-  .me-nav-wrap.mobile-open .el-menu .el-menu-item {
-    height: 46px !important;
-    line-height: 46px !important;
-  }
-  .el-search { width: 140px !important; margin-right: 8px; }
-  .header-action-btn { width: 36px !important; height: 36px !important; font-size: 18px !important; }
-  .header-action-avatar-wrap img { width: 26px !important; height: 26px !important; }
-  .el-header { padding: 0 12px !important; }
+  .header-inner { padding: 0 16px; gap: 12px; } .header-divider { display: none; } .brand { font-size: 18px; } .brand-mark { width: 30px; height: 30px; }
+  .mobile-menu-toggle { display: inline-flex; } .header-navigation { display: none; }
+  .header-navigation.is-open { display: flex; position: absolute; top: 63px; left: 0; right: 0; height: auto; padding: 12px 16px 16px; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 8px 16px #1f23280a; flex-wrap: wrap; gap: 6px; }
+  .header-navigation > a { height: 38px; padding: 0 12px; border-radius: 6px; } .header-navigation > a.router-link-active { background: var(--hover); } .header-navigation > a.router-link-active::after { display: none; }
+  .header-search { width: 100%; margin: 6px 0 0; height: 38px; flex-basis: 100%; }
 }
+@media (max-width: 700px) { .is-simple .header-account { display: none; } }
+@media (max-width: 420px) { .header-inner { gap: 6px; padding: 0 12px; } .header-account { gap: 5px; } .register-link { padding: 5px 10px; } .language-button { display: none; } }
 
-@media (max-width: 600px) {
-  .el-header { padding: 0 8px !important; }
-  .me-title img { max-height: 28px; }
-  .el-search { width: 100px !important; margin-right: 4px; font-size: 12px; }
-  .header-actions { gap: 6px; }
-  .header-action-btn { width: 32px !important; height: 32px !important; font-size: 16px !important; border-radius: 8px; }
-  .header-action-avatar-wrap img { width: 24px !important; height: 24px !important; }
-  .notify-dot { height: 14px; min-width: 14px; line-height: 14px; font-size: 9px; padding: 0 4px; }
-}
 </style>
