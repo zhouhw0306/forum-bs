@@ -1,11 +1,16 @@
 <template>
   <div class="article-detail-page">
+  <nav class="article-navigation" aria-label="文章导航">
+    <button type="button" class="article-back" aria-label="返回上一页" @click="back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg>
+      <span>返回</span>
+    </button>
+    <span class="article-navigation-divider" aria-hidden="true"></span>
+    <span>文章详情</span>
+  </nav>
   <div class="me-view-body" :data-title="title">
     <el-container class="me-view-container">
       <el-main>
-        <div @click="back">
-          <a><i class="el-icon-back"></i> 返回</a>
-        </div>
         <div class="me-view-card">
           <h1 class="me-view-title">{{article.title}}</h1>
           <div class="me-view-author">
@@ -385,9 +390,15 @@ export default {
 
 <style scoped>
 .article-detail-page { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 24px; max-width: 1240px; margin: auto; padding: 32px 32px 48px; align-items: start; }
+.article-navigation { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-bottom: -8px; color: var(--text-muted); font-size: 12px; }
+.article-back { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-left: -8px; padding: 6px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-muted); font: inherit; line-height: 20px; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+.article-back:hover { background: var(--hover); color: var(--text); }
+.article-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.article-back svg { flex-shrink: 0; }
+.article-navigation-divider { width: 1px; height: 12px; background: var(--border); }
 .me-view-body { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
 .me-view-container { width: 100%; min-width: 0; } .me-view-container > .el-main { padding: 28px; min-width: 0; overflow: visible; }
-.me-view-card { min-width: 0; } .me-view-title { font-size: 28px; font-weight: 600; line-height: 1.4; margin-top: 20px; overflow-wrap: anywhere; letter-spacing: -.5px; }
+.me-view-card { min-width: 0; } .me-view-title { font-size: 28px; font-weight: 600; line-height: 1.4; margin-top: 0; overflow-wrap: anywhere; letter-spacing: -.5px; }
 .me-view-author { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); }
 .me-view-picture { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; object-fit: cover; vertical-align: middle; }
 .me-view-info { min-width: 0; flex: 1; } .article-edit-button { margin-left: auto; }

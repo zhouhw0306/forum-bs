@@ -21,6 +21,7 @@
       </nav>
       <div v-else class="header-slot"><slot></slot></div>
       <div class="header-account">
+        <button class="icon-button language-button" @click="switchLang" :aria-label="$i18n.locale === 'zh' ? '切换语言' : 'Switch language'" :title="$i18n.locale === 'zh' ? 'Switch to English' : '切换为中文'">{{ $i18n.locale === 'zh' ? '中' : 'EN' }}</button>
         <template v-if="!loginIn">
           <router-link to="/login" class="login-link">{{ $t('common.login') }}</router-link>
           <router-link to="/register" class="register-link">{{ $t('common.register') }}</router-link>
@@ -31,7 +32,6 @@
             <NotificationCenter ref="notifyCenter" @read="onNotifyRead" @read-all="onNotifyReadAll" @delete="onNotifyRead" />
             <button slot="reference" class="icon-button notification-button" aria-label="查看通知"><i class="el-icon-bell"></i><sup v-if="unreadCount > 0" class="notification-count">{{ unreadCount > 99 ? '99+' : unreadCount }}</sup></button>
           </el-popover>
-          <button class="icon-button language-button" @click="switchLang" aria-label="切换语言">{{ $i18n.locale === 'zh' ? '中' : 'EN' }}</button>
           <el-popover :visible-arrow="false" placement="bottom-end" width="180" trigger="click">
             <div class="account-menu">
               <span class="account-name">{{ username }}</span>
@@ -205,7 +205,7 @@ export default {
 .header-inner { height: 100%; max-width: 1504px; margin: auto; padding: 0 32px; display: flex; align-items: center; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 20px; font-weight: 650; letter-spacing: -.6px; flex-shrink: 0; }
 .brand:hover { color: var(--text); }
-.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: linear-gradient(135deg, #729fe1, #5789d0); color: #fff; border-radius: 8px; box-shadow: inset 0 0 0 1px #5789d033; }
+.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; background: #1f2328; color: #fff; border-radius: 8px; }
 .header-divider { width: 1px; height: 24px; background: var(--border); }
 .header-navigation { display: flex; align-items: center; gap: 22px; flex: 1; min-width: 0; height: 100%; }
 .header-navigation > a { position: relative; display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 14px; white-space: nowrap; height: 100%; }
@@ -244,6 +244,6 @@ export default {
   .header-search { width: 100%; margin: 6px 0 0; height: 38px; flex-basis: 100%; }
 }
 @media (max-width: 700px) { .is-simple .header-account { display: none; } }
-@media (max-width: 420px) { .header-inner { gap: 6px; padding: 0 12px; } .header-account { gap: 5px; } .register-link { padding: 5px 10px; } .language-button { display: none; } }
+@media (max-width: 420px) { .header-inner { gap: 6px; padding: 0 12px; } .brand { gap: 7px; font-size: 16px; } .brand-mark { width: 28px; height: 28px; } .header-account { gap: 5px; } .register-link { padding: 5px 10px; } .icon-button { width: 28px; height: 30px; font-size: 17px; } .language-button { font-size: 11px; } .avatar-button { gap: 2px; padding: 0; } .avatar-button img { width: 28px; height: 28px; } }
 
 </style>

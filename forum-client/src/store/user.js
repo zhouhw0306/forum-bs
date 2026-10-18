@@ -56,7 +56,7 @@ const user = {
       if (!likedComments) {
         likedComments = JSON.parse(window.localStorage.getItem('likedComments') || null)
       }
-      return likedComments
+      return Array.isArray(likedComments) ? likedComments : []
     }
   },
   mutations: {
